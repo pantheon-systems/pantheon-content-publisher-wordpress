@@ -4,7 +4,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: pantheon content wordpress publisher
+  name: pantheon-content-wordpress-publisher
   description: A PCC publisher module for publishing wordpress content
   annotations:
     pantheon.io/service-catalog/subdir: /
