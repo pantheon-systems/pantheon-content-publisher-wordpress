@@ -1,3 +1,5 @@
+# PCC Wordpress Publisher
+
 <p align="center">
   <a target="_blank" href="https://pcc.pantheon.io/">
     <img src="assets/images/pantheon-fist-logo.svg" alt="Plugin Logo" width="72" height="72">

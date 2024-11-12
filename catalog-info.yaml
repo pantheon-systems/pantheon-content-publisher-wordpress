@@ -1,0 +1,16 @@
+# https://backstage.io/docs/features/software-catalog/
+# https://backstage.io/docs/features/software-catalog/descriptor-format
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: pantheon-content-wordpress-publisher
+  description: A PCC publisher module for publishing wordpress content
+  annotations:
+    pantheon.io/service-catalog/subdir: /
+    github.com/project-slug: pantheon-systems/pantheon-content-publisher-for-wordpress
+    github.com/team-slug: pantheon-systems/pcc
+spec:
+  type: library
+  lifecycle: Introduction
+  owner: content-cloud
