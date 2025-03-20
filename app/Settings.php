@@ -71,7 +71,6 @@ class Settings
 	{
 		add_action('template_redirect', [$this, 'registerPantheonCloudStatusEndpoint']);
 		add_action('template_redirect', [$this, 'publishDocuments']);
-		add_action('template_redirect', [$this, 'disableWpautopForPCPPosts']);
 		add_action('admin_menu', [$this, 'addMenu']);
 		add_action(
 			'admin_enqueue_scripts',
@@ -236,19 +235,6 @@ class Settings
 			}
 		} catch (Exception $ex) {
 			// No Action needed for safe exit
-		}
-	}
-
-	/**
-	 * Disable wpautop for PCP posts.
-	 *
-	 * @return void
-	 */
-	public function disableWpautopForPCPPosts(): void
-	{
-		if (is_singular() && get_post_meta(get_the_ID(), PCC_CONTENT_META_KEY, true)) {
-			remove_filter('the_content', 'wpautop');
-			remove_filter('the_excerpt', 'wpautop');
 		}
 	}
 
