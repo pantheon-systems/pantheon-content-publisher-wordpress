@@ -117,19 +117,12 @@ class PccSyncManager
 		// Original content
 		$content = $article->content;
 
-		// Regular expression to match all <style>...</style> blocks
-		$pattern = '/<style.*?>.*?<\/style>/is';
+		// Pattern to match all <style> blocks
+		$stylePattern = '/<style.*?>.*?<\/style>/is';
 
-		// Find all <style> blocks
-		preg_match_all($pattern, $content, $matches);
+		// Remove all <style> blocks from the content
+		$content = preg_replace($stylePattern, '', $content);
 
-		// Remove all <style> blocks from the original content
-		$content = preg_replace($pattern, '', $content);
-
-		// Concatenate all <style> blocks at the end
-		foreach ($matches[0] as $styleBlock) {
-			$content .= $styleBlock;
-		}
 		$data = [
 			'post_title' => $article->title,
 			'post_content' => $content,
