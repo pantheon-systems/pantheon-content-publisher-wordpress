@@ -260,7 +260,7 @@ class Settings
 		}
 	}
 
-	 /**
+	/**
 	 * Set no-cache and noindex headers for preview pages.
 	 *
 	 * @return void
