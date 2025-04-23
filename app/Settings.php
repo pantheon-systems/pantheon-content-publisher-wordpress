@@ -163,12 +163,19 @@ class Settings
 
 	public function isPreviewRequest(): bool
 	{
-		return filter_has_var(INPUT_GET, 'preview') &&
-			filter_has_var(INPUT_GET, 'document_id') &&
-			filter_has_var(INPUT_GET, 'publishing_level') &&
-			filter_has_var(INPUT_GET, 'pccGrant') &&
-			'google_document' === filter_input(INPUT_GET, 'preview', FILTER_SANITIZE_STRING) &&
-			filter_input(INPUT_GET, 'publishing_level', FILTER_SANITIZE_STRING) === PublishingLevel::REALTIME->value;
+		// Check if required parameters exist
+		if (!filter_has_var(INPUT_GET, 'preview') ||
+			!filter_has_var(INPUT_GET, 'document_id') ||
+			!filter_has_var(INPUT_GET, 'publishing_level') ||
+			!filter_has_var(INPUT_GET, 'pccGrant')) {
+			return false;
+		}
+
+		// Check the values of the parameters
+		$preview = filter_input(INPUT_GET, 'preview');
+		$publishingLevel = filter_input(INPUT_GET, 'publishing_level');
+
+		return $preview === 'google_document' && $publishingLevel === PublishingLevel::REALTIME->value;
 	}
 
 	/**
@@ -202,9 +209,10 @@ class Settings
 			$PCCManager = new PccSyncManager();
 			// Publish document
 
+			$publishingLevelParam = filter_input(INPUT_GET, 'publishingLevel');
 			if (
-				filter_has_var(INPUT_GET, 'publishingLevel') &&
-				PublishingLevel::PRODUCTION->value === filter_input(INPUT_GET, 'publishingLevel', FILTER_SANITIZE_STRING) &&
+				$publishingLevelParam &&
+				PublishingLevel::PRODUCTION->value === $publishingLevelParam &&
 				$PCCManager->isPCCConfigured()
 			) {
 				$parts = explode('/', $wp->request);
@@ -223,7 +231,7 @@ class Settings
 			) {
 				$parts = explode('/', $wp->request);
 				$documentId = sanitize_text_field(wp_unslash(end($parts)));
-				$pccGrant = filter_input(INPUT_GET, 'pccGrant', FILTER_SANITIZE_STRING);
+				$pccGrant = filter_input(INPUT_GET, 'pccGrant');
 				$pcc = new PccSyncManager();
 
 				if (!$pcc->findExistingConnectedPost($documentId)) {
@@ -448,15 +456,8 @@ class Settings
 		if (!(new PccSyncManager())->isPCCConfigured()) {
 			return;
 		}
-		if (!filter_has_var(INPUT_GET, 'document_id')) {
-			return;
-		}
-		$publishingLevel = filter_input(INPUT_GET, 'publishing_level', FILTER_SANITIZE_STRING);
-		if (!$publishingLevel || PublishingLevel::REALTIME->value !== $publishingLevel) {
-			return;
-		}
-		$preview = filter_input(INPUT_GET, 'preview', FILTER_SANITIZE_STRING);
-		if (!$preview || 'google_document' !== $preview) {
+		
+		if (!$this->isPreviewRequest()) {
 			return;
 		}
 
