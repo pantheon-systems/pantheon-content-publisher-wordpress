@@ -29,7 +29,7 @@ if (!\defined('ABSPATH')) {
 							</p>
 							<div class="mt-8 mb-0.5">
 							<span class="font-semibold text-[0.83rem]">
-								<?php esc_html_e('Access token', 'pantheon-content-publisher-for-wordpress') ?>
+								<?php esc_html_e('Management token', 'pantheon-content-publisher-for-wordpress') ?>
 							</span>
 								<img class="scale-110 ms-1 pb-2.5 inline"
 									 src="<?php echo esc_url(PCC_PLUGIN_DIR_URL . 'assets/images/red-dot.svg') ?>"
@@ -41,8 +41,8 @@ if (!\defined('ABSPATH')) {
 										 alt="Circle Info">
 									<span class="tooltip-text">
 									<?php
-									esc_html_e('Enter the digit access token generated from
-                                    the Pantheon Content Publisher authentication dashboard', 'pantheon-content-publisher-for-wordpress') ?>
+									esc_html_e('Enter the management token obtained from
+                                    the Pantheon Content Publisher dashboard', 'pantheon-content-publisher-for-wordpress') ?>
 								</span>
 								</div>
 
