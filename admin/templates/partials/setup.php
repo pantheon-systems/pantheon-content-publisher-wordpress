@@ -60,10 +60,12 @@ if (!\defined('ABSPATH')) {
 							echo wp_kses_post(
 								__(
 									'Don’t have a token yet? Go to the
-                                        <a class="pantheon-link  hover:text-secondary"
-                                        target="_blank" href="https://content.pantheon.io/dashboard/settings/tokens?tab=1">
-                                            Pantheon Content Publisher dashboard
-                                        </a>to generate one.',
+										<a class="pantheon-link  hover:text-secondary"
+											target="_blank" 
+											href="https://content.pantheon.io/dashboard/settings/tokens?tab=1"
+										>
+											Pantheon Content Publisher dashboard
+										</a> to generate one.',
 									'pantheon-content-publisher-for-wordpress'
 								)
 							);

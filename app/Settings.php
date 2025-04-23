@@ -164,10 +164,12 @@ class Settings
 	public function isPreviewRequest(): bool
 	{
 		// Check if required parameters exist
-		if (!filter_has_var(INPUT_GET, 'preview') ||
-			!filter_has_var(INPUT_GET, 'document_id') ||
-			!filter_has_var(INPUT_GET, 'publishing_level') ||
-			!filter_has_var(INPUT_GET, 'pccGrant')) {
+		if (
+				!filter_has_var(INPUT_GET, 'preview') ||
+				!filter_has_var(INPUT_GET, 'document_id') ||
+				!filter_has_var(INPUT_GET, 'publishing_level') ||
+				!filter_has_var(INPUT_GET, 'pccGrant')
+			) {
 			return false;
 		}
 
@@ -259,7 +261,7 @@ class Settings
 	}
 
 		/**
-	 * Set no-cache and noindex headers for Google Doc preview pages.
+	 * Set no-cache and noindex headers for preview pages.
 	 *
 	 * @return void
 	 */
@@ -391,7 +393,7 @@ class Settings
 	public function renderSettingsPage(): void
 	{
 
-		$view = filter_input(INPUT_GET, 'view', FILTER_SANITIZE_KEY) ?: '';
+		$view = filter_input(INPUT_GET, 'view') ?: '';
 		if ($view && isset($this->pages[$view])) {
 			require $this->pages[$view];
 
@@ -456,7 +458,6 @@ class Settings
 		if (!(new PccSyncManager())->isPCCConfigured()) {
 			return;
 		}
-		
 		if (!$this->isPreviewRequest()) {
 			return;
 		}

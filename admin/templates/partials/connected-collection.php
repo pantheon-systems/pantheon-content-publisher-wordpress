@@ -25,7 +25,8 @@ if (!\defined('ABSPATH')) {
 							<?php echo esc_html(get_option(PCC_SITE_ID_OPTION_KEY)) ?>
 						</p>
 					</div>
-					<a class="secondary-button self-start col-span-4 justify-self-end" href="<?php echo esc_url(add_query_arg([
+					<a class="secondary-button self-start col-span-4 justify-self-end" 
+						href="<?php echo esc_url(add_query_arg([
 						'page' => 'pantheon-content-publisher-for-wordpress',
 						'view' => 'disconnect-confirmation'
 					], admin_url('admin.php'))) ?>">
