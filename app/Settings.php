@@ -169,13 +169,13 @@ class Settings
 				!filter_has_var(INPUT_GET, 'document_id') ||
 				!filter_has_var(INPUT_GET, 'publishing_level') ||
 				!filter_has_var(INPUT_GET, 'pccGrant')
-			) {
+		) {
 			return false;
 		}
 
 		// Check the values of the parameters
-		$preview = filter_input(INPUT_GET, 'preview');
-		$publishingLevel = filter_input(INPUT_GET, 'publishing_level');
+		$preview = sanitize_text_field(filter_input(INPUT_GET, 'preview'));
+		$publishingLevel = sanitize_text_field(filter_input(INPUT_GET, 'publishing_level'));
 
 		return $preview === 'google_document' && $publishingLevel === PublishingLevel::REALTIME->value;
 	}
@@ -211,7 +211,7 @@ class Settings
 			$PCCManager = new PccSyncManager();
 			// Publish document
 
-			$publishingLevelParam = filter_input(INPUT_GET, 'publishingLevel');
+			$publishingLevelParam = sanitize_text_field(filter_input(INPUT_GET, 'publishingLevel'));
 			if (
 				$publishingLevelParam &&
 				PublishingLevel::PRODUCTION->value === $publishingLevelParam &&
@@ -233,7 +233,7 @@ class Settings
 			) {
 				$parts = explode('/', $wp->request);
 				$documentId = sanitize_text_field(wp_unslash(end($parts)));
-				$pccGrant = filter_input(INPUT_GET, 'pccGrant');
+				$pccGrant = sanitize_text_field(filter_input(INPUT_GET, 'pccGrant'));
 				$pcc = new PccSyncManager();
 
 				if (!$pcc->findExistingConnectedPost($documentId)) {
@@ -393,7 +393,7 @@ class Settings
 	public function renderSettingsPage(): void
 	{
 
-		$view = filter_input(INPUT_GET, 'view') ?: '';
+		$view = sanitize_text_field(filter_input(INPUT_GET, 'view')) ?: '';
 		if ($view && isset($this->pages[$view])) {
 			require $this->pages[$view];
 
@@ -474,7 +474,6 @@ class Settings
 			'pantheon-content-publisher-for-wordpress',
 			'PCCFront',
 			[
-				// phpcs:ignore
 				'site_id' => sanitize_text_field(wp_unslash($this->getSiteId())),
 			]
 		);
