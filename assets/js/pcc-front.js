@@ -2,17 +2,19 @@ import {ARTICLE_UPDATE_SUBSCRIPTION, PantheonClient, PublishingLevel} from "@pan
 
 const url = new URL(window.location.href);
 const params = new URLSearchParams(url.search);
+const siteId = params.get('site_id') || window.PCCFront.site_id;
 const documentId = params.get('document_id');
+const pccGrant = params.get('pccGrant');
 
 const pantheonClient = new PantheonClient({
-    siteId: window.PCCFront.site_id,
-    token: window.PCCFront.token
+    siteId: siteId,
+    pccGrant: pccGrant,
 });
 
 const observable = pantheonClient.apolloClient.subscribe({
     query: ARTICLE_UPDATE_SUBSCRIPTION,
     variables: {
-        id: window.PCCFront.preview_document_id, //replace with dynamic article ID
+        id: documentId,
         contentType: "TREE_PANTHEON_V2",
         publishingLevel: PublishingLevel.REALTIME,
     },

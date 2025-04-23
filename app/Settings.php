@@ -71,6 +71,7 @@ class Settings
 	{
 		add_action('template_redirect', [$this, 'registerPantheonCloudStatusEndpoint']);
 		add_action('template_redirect', [$this, 'publishDocuments']);
+		add_action('template_redirect', [$this, 'setPreviewHeaders']);
 		add_action('admin_menu', [$this, 'addMenu']);
 		add_action(
 			'admin_enqueue_scripts',
@@ -160,6 +161,13 @@ class Settings
 		return $apiKey ?: [];
 	}
 
+	public function isPreviewRequest(): bool
+	{
+		return isset($_GET['preview'], $_GET['document_id'], $_GET['publishing_level'], $_GET['pccGrant']) &&
+			'google_document' === $_GET['preview'] &&
+			$_GET['publishing_level'] === PublishingLevel::REALTIME->value;
+	}
+
 	/**
 	 * Allow style tags in the content.
 	 *
@@ -207,18 +215,19 @@ class Settings
 
 			// Preview document
 			if (
-				isset($_GET['pccGrant']) && isset($_GET['publishingLevel']) &&
-				PublishingLevel::REALTIME->value === $_GET['publishingLevel'] &&
+				$this->isPreviewRequest() &&
 				$PCCManager->isPCCConfigured()
 			) {
 				$parts = explode('/', $wp->request);
 				$documentId = sanitize_text_field(wp_unslash(end($parts)));
+				$pccGrant = sanitize_text_field(wp_unslash($_GET['pccGrant']));
 				$pcc = new PccSyncManager();
 
 				if (!$pcc->findExistingConnectedPost($documentId)) {
 					$pcc->fetchAndStoreDocument($documentId, PublishingLevel::REALTIME, true);
 				}
 
+				// Find a published post to use as a container for the preview
 				$query = get_posts([
 					'post_type' => get_option(PCC_INTEGRATION_POST_TYPE_OPTION_KEY, 'post'),
 					'post_status' => 'publish',
@@ -228,13 +237,27 @@ class Settings
 					'fields' => 'ids'
 				]);
 
-				$url = $pcc->preparePreviewingURL($documentId, $query[0] ?? 0);
+				$url = $pcc->preparePreviewingURL($documentId, $query[0] ?? 0, $pccGrant);
 
 				wp_redirect($url);
 				exit;
 			}
 		} catch (Exception $ex) {
 			// No Action needed for safe exit
+		}
+	}
+
+		/**
+	 * Set no-cache and noindex headers for Google Doc preview pages.
+	 *
+	 * @return void
+	 */
+	public function setPreviewHeaders(): void
+	{
+		if ($this->isPreviewRequest()) {
+			nocache_headers();
+			header("X-Testing: true");
+			header('X-Robots-Tag: noindex');
 		}
 	}
 
@@ -277,13 +300,7 @@ class Settings
 	 */
 	public function addPreviewContainer(string $content): string
 	{
-		// phpcs:disable
-		if (
-			isset($_GET['preview'], $_GET['document_id'], $_GET['publishing_level']) &&
-			'google_document' === $_GET['preview'] &&
-			$_GET['publishing_level'] === PublishingLevel::REALTIME->value
-		) {
-			// phpcs:enable
+		if ($this->isPreviewRequest()) {
 			return '<div id="pcc-content-preview"></div>';
 		}
 
@@ -451,9 +468,7 @@ class Settings
 			'PCCFront',
 			[
 				// phpcs:ignore
-				'preview_document_id' => sanitize_text_field(wp_unslash($_GET['document_id'])),
 				'site_id' => sanitize_text_field(wp_unslash($this->getSiteId())),
-				'token' => get_option(PCC_API_KEY_OPTION_KEY),
 			]
 		);
 	}
