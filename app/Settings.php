@@ -316,6 +316,13 @@ class Settings
 		}
 	}
 
+	/**
+	 * Hook for pre_get_posts that allows us to extend the
+	 * results with custom logic.
+	 *
+	 * @param WP_Query $query
+	 * @return void
+	 */
 	public function handlePreviewPostResults($query)
 	{
 		if ( 
@@ -331,6 +338,15 @@ class Settings
 		}
 	}
 
+	/**
+	 * Filter for posts_results that allows us to temporarily
+	 * make a post object for a Content Publisher document
+	 * available for viewing regardless of its publishing status.
+	 *
+	 * @param array $posts
+	 * @param WP_Query $query
+	 * @return array
+	 */
 	public function temporaryPreview($posts, $query)
 	{
 		remove_filter( 'posts_results', [$this, 'temporaryPreview'], 10, 2 );
