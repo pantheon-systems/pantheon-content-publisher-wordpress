@@ -38,8 +38,9 @@ class PccSyncManager
 		$documentId,
 		PublishingLevel $publishingLevel,
 		bool $isDraft = false,
+		PccClient $pccClient = null
 	): int {
-		$articlesApi = new ArticlesApi($this->pccClient());
+		$articlesApi = new ArticlesApi($pccClient ?? $this->pccClient());
 		$article = $articlesApi->getArticleById(
 			$documentId,
 			[
@@ -91,7 +92,7 @@ class PccSyncManager
 	 * @param $value
 	 * @return int|null
 	 */
-	public function findExistingConnectedPost($value)
+	public function findExistingConnectedPost($value, $postStatus = null)
 	{
 		$args = [
 			'post_type'   => 'any',
@@ -100,6 +101,11 @@ class PccSyncManager
 			'fields'      => 'ids',
 			'numberposts' => 1,
 		];
+
+		if ($postStatus) {
+			$args['post_status'] = $postStatus;
+		}
+		
 		$posts = get_posts($args);
 		return !empty($posts) ? (int) $posts[0] : null;
 	}
@@ -357,7 +363,6 @@ class PccSyncManager
 		$postId = $postId ?: $this->findExistingConnectedPost($documentId);
 		return add_query_arg(
 			[
-				'preview' => 'google_document',
 				'publishing_level' => PublishingLevel::REALTIME->value,
 				'document_id' => $documentId,
 				'pccGrant' => $pccGrant,
