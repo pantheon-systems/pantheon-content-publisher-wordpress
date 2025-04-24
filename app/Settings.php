@@ -237,7 +237,7 @@ class Settings
 				$pccGrant = sanitize_text_field(filter_input(INPUT_GET, 'pccGrant'));
 
 				// Check if required parameters are present
-				if (!(empty($documentId) || empty($pccGrant))) {
+				if (empty($documentId) || empty($pccGrant)) {
 					wp_die(esc_html__('Content Publisher: Missing parameters for preview', 'pantheon-content-publisher-for-wordpress'));
 					exit;
 				}
