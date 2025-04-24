@@ -59,11 +59,14 @@ if (!\defined('ABSPATH')) {
 							<?php
 							echo wp_kses_post(
 								sprintf(
-									// Translators: %s is the contents of the a tag making it link to the Pantheon Content Publisher dashboard.
-									__('Don’t have a token yet? Go to the <a %s>Pantheon Content Publisher dashboard</a> to generate one.',
-										 'pantheon-content-publisher-for-wordpress'
-										), 
-										'class="pantheon-link  hover:text-secondary" target="_blank" href="https://content.pantheon.io/dashboard/settings/tokens?tab=1"'
+									// Translators: %s is the contents of the a tag 
+									// making it link to the Pantheon Content Publisher dashboard.
+									__(
+										"Don't have a token yet? Go to the <a %s>Pantheon Content Publisher dashboard</a> to generate one.",
+										'pantheon-content-publisher-for-wordpress'
+									),
+									'class="pantheon-link  hover:text-secondary" target="_blank" ' .
+									'href="https://content.pantheon.io/dashboard/settings/tokens?tab=1"'
 								)
 							)
 							?>
