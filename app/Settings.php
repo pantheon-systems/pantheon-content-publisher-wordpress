@@ -279,7 +279,8 @@ class Settings
 
 				if (empty($postId) || !is_numeric($postId) || $postId <= 0) {
 					wp_die(esc_html__(
-						'Content Publisher: Failed to preview this document. Confirm that this document is connected to your collection. ' .
+						'Content Publisher: Failed to preview this document. ' .
+						'Confirm that this document is connected to your collection. ' .
 						'Reach out to support if the issue persists.',
 						'pantheon-content-publisher-for-wordpress'
 					));
@@ -358,8 +359,7 @@ class Settings
 	 * @param WP_Query $query
 	 * @return array
 	 */
-	// phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found - $query is required by the WordPress hook signature
-	public function temporaryPreview($posts, $query)
+	public function temporaryPreview($posts)
 	{
 		remove_filter('posts_results', [$this, 'temporaryPreview'], 10, 2);
 
