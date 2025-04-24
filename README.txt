@@ -51,8 +51,15 @@ All posts/pages created with Pantheon Content Publisher will remain on your Word
 
 == Changelog ==
 = 1.2.3 =
-* Compatibility: Ensure adherence to WP Plugin guidelines
+* Feature: Display collection ID on Connected Content Collection page.
+* Feature: Improve preview request handling.
+* Fix: Disables caching of preview pages.
+* Fix: Correct font size for documentation link text.
+* Fix: Updates "Access token" mention in setup page to "Management token" to more accurately reflect the required token type.
+* Compatibility: Update pcc-sdk-core dependency.
+
 = 1.2.2 =
+* Compatibility: Ensure adherence to WP Plugin guidelines
 * Compatibility: Save <style> tag at the end of post content
 * Stability: Improve edge case handling for PCC articles
 = 1.2.1 =
