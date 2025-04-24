@@ -10,6 +10,7 @@ namespace Pantheon\ContentPublisher;
 use Exception;
 use PccPhpSdk\api\Query\Enums\PublishingLevel;
 use PccPhpSdk\api\ArticlesApi;
+use PccPhpSdk\api\Query\Enums\ContentType;
 
 use function add_action;
 use function filemtime;
@@ -255,7 +256,8 @@ class Settings
 				if (!$postId) {
 					try {
 						// Fetch and store the document with the grant based client
-						// if the grant is invalid, the document will not be fetched
+						// if the grant is invalid, the document will not be fetched 
+						// and the post will not be created
 						$postId = $PCCManager->fetchAndStoreDocument(
 							$documentId,
 							PublishingLevel::REALTIME,
@@ -337,31 +339,65 @@ class Settings
 			return $posts;
 		}
 
-		$post   = $posts[0];
-		$pccGrant  = sanitize_text_field(filter_input(INPUT_GET, 'pccGrant'));
+		$post = $posts[0];
+		$pccGrant = sanitize_text_field(filter_input(INPUT_GET, 'pccGrant'));
 		$documentId = sanitize_text_field(filter_input(INPUT_GET, 'document_id'));
 
-		// Fetch the document from PCC using the pccGrant
-		// If the grant is invalid, we will not get the document
-		$pccClient = (new PccSyncManager())->pccClient($pccGrant);
-		$articlesApi = new ArticlesApi($pccClient);
-		$publishingLevel = PublishingLevel::REALTIME;
-		$document = $articlesApi->getArticleById($documentId, ['id'], $publishingLevel);
-
-		// Doc not available, return the original posts
-		if (!$document) {
+		if (empty($pccGrant) || empty($documentId)) {
+			// Return original posts if params are missing. WP might show draft/404.
 			return $posts;
 		}
-	
-		// Flip the post status to published
-		$post->post_status = 'publish';
-	
-		// Disable comments/pings
-		add_filter('comments_open', '__return_false');
-		add_filter('pings_open',    '__return_false');
-	
-		return $posts;
-		
+
+		try {
+			// Initialize PCC client with the grant
+			$pccClient = (new PccSyncManager())->pccClient($pccGrant);
+			$articlesApi = new ArticlesApi($pccClient);
+			$publishingLevel = PublishingLevel::REALTIME;
+
+			// Fetch the article data needed for prerendering the
+			// preview page. This also serves as a guard to ensure
+			// the document is valid and the grant is valid.
+			$article = $articlesApi->getArticleById(
+				$documentId,
+				[
+					'id',
+					'title',
+					'content',
+					'metadata',
+				],
+				$publishingLevel,
+				ContentType::TREE_PANTHEON_V2
+			);
+
+			// If fetching the article fails (invalid grant, network error, document deleted),
+			// return the original posts array. WP will handle it (e.g., show draft, 404).
+			if (!$article) {
+				return $posts;
+			}
+
+			// Apply updates to the in-memory post object
+			// Set Status to Publish
+			$post->post_status = 'publish';
+
+			// Update Title, Content, and Excerpt
+			$PCCManager = new PccSyncManager();
+			$preparedData = $PCCManager->preparePostDataFromArticle($article);
+
+			$post->post_title = $preparedData['post_title'];
+			$post->post_content = $preparedData['post_content'];
+			$post->post_excerpt = $preparedData['post_excerpt'];
+
+			// Disable comments/pings for preview display
+			add_filter('comments_open', '__return_false');
+			add_filter('pings_open',    '__return_false');
+
+			// Return the array containing the modified post object
+			return $posts;
+
+		} catch (Exception $e) {
+			error_log('PCC Preview Error: Failed to fetch article ' . $documentId . ' - ' . $e->getMessage());
+			return $posts;
+		}
 	}
 
 	/**
