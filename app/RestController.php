@@ -185,9 +185,9 @@ class RestController
 		if (!current_user_can('manage_options')) {
 			return new WP_REST_Response(esc_html__('You are not authorized to perform this action.', 'pantheon-content-publisher-for-wordpress'), 401);
 		}
-		// Check access token is set
+		// Check management token is set
 		if (!get_option(PCC_ACCESS_TOKEN_OPTION_KEY)) {
-			return new WP_REST_Response(esc_html__('Access token is not set yet', 'pantheon-content-publisher-for-wordpress'), 401);
+			return new WP_REST_Response(esc_html__('Management token is not set yet', 'pantheon-content-publisher-for-wordpress'), 401);
 		}
 
 		$siteManager = new PccSiteManager();
@@ -209,9 +209,9 @@ class RestController
 	 */
 	public function registerWebhook(): WP_REST_Response
 	{
-		// Check access token is set
+		// Check management token is set
 		if (!get_option(PCC_ACCESS_TOKEN_OPTION_KEY)) {
-			return new WP_REST_Response(esc_html__('Access token is not set yet', 'pantheon-content-publisher-for-wordpress'), 400);
+			return new WP_REST_Response(esc_html__('Management token is not set yet', 'pantheon-content-publisher-for-wordpress'), 400);
 		}
 
 		// Check site id is set
@@ -299,14 +299,14 @@ class RestController
 		// Validate input field
 		if (empty($accessToken)) {
 			return new WP_REST_Response(
-				esc_html__('Access Token cannot be empty.', 'pantheon-content-publisher-for-wordpress'),
+				esc_html__('Management token cannot be empty.', 'pantheon-content-publisher-for-wordpress'),
 				400
 			);
 		}
 
 		update_option(PCC_ACCESS_TOKEN_OPTION_KEY, $accessToken);
 		return new WP_REST_Response(
-			esc_html__('Access Token saved.', 'pantheon-content-publisher-for-wordpress'),
+			esc_html__('Management token saved.', 'pantheon-content-publisher-for-wordpress'),
 			200
 		);
 	}

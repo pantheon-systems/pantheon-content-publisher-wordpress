@@ -29,7 +29,7 @@ if (!\defined('ABSPATH')) {
 							</p>
 							<div class="mt-8 mb-0.5">
 							<span class="font-semibold text-[0.83rem]">
-								<?php esc_html_e('Access token', 'pantheon-content-publisher-for-wordpress') ?>
+								<?php esc_html_e('Management token', 'pantheon-content-publisher-for-wordpress') ?>
 							</span>
 								<img class="scale-110 ms-1 pb-2.5 inline"
 									 src="<?php echo esc_url(PCC_PLUGIN_DIR_URL . 'assets/images/red-dot.svg') ?>"
@@ -41,8 +41,8 @@ if (!\defined('ABSPATH')) {
 										 alt="Circle Info">
 									<span class="tooltip-text">
 									<?php
-									esc_html_e('Enter the digit access token generated from
-                                    the Pantheon Content Publisher authentication dashboard', 'pantheon-content-publisher-for-wordpress') ?>
+									esc_html_e('Enter the management token obtained from
+                                    the Pantheon Content Publisher dashboard', 'pantheon-content-publisher-for-wordpress') ?>
 								</span>
 								</div>
 
@@ -58,15 +58,18 @@ if (!\defined('ABSPATH')) {
 						<p class="text-base mt-8 mb-10">
 							<?php
 							echo wp_kses_post(
-								__(
-									'Don’t have a token yet? Go to the
-                                        <a class="pantheon-link  hover:text-secondary"
-                                        target="_blank" href="https://pcc.pantheon.io/auth">
-                                            Pantheon Content Publisher dashboard
-                                        </a>to generate one.',
-									'pantheon-content-publisher-for-wordpress'
+								sprintf(
+									// Translators: %s is the contents of the a tag
+									// making it link to the Pantheon Content Publisher dashboard.
+									__(
+										"Don't have a token yet? Go to the " .
+										"<a %s>Pantheon Content Publisher dashboard</a> to generate one.",
+										'pantheon-content-publisher-for-wordpress'
+									),
+									'class="pantheon-link  hover:text-secondary" target="_blank" ' .
+									'href="https://content.pantheon.io/dashboard/settings/tokens?tab=1"'
 								)
-							);
+							)
 							?>
 						</p>
 					</div>

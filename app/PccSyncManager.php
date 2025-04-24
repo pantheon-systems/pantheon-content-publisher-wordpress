@@ -349,9 +349,10 @@ class PccSyncManager
 	 * Get preview link.
 	 * @param string $documentId
 	 * @param $postId
+	 * @param $pccGrant
 	 * @return string
 	 */
-	public function preparePreviewingURL(string $documentId, $postId = null): string
+	public function preparePreviewingURL(string $documentId, $postId = null, $pccGrant = null): string
 	{
 		$postId = $postId ?: $this->findExistingConnectedPost($documentId);
 		return add_query_arg(
@@ -359,6 +360,7 @@ class PccSyncManager
 				'preview' => 'google_document',
 				'publishing_level' => PublishingLevel::REALTIME->value,
 				'document_id' => $documentId,
+				'pccGrant' => $pccGrant,
 			],
 			get_permalink($postId)
 		);

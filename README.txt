@@ -43,7 +43,8 @@ Set up your connection to Pantheon Content Publisher and Google Drive via the se
 == Frequently Asked Questions ==
 
 = How do I connect Pantheon Content Publisher to Google Drive? =
-You can generate an access token at https://pcc.pantheon.io/auth.
+Create a management token at https://content.pantheon.io/dashboard. Proceed to the Pantheon Content Publisher settings page in your WordPress admin dashboard and paste the token into the "Management token" field.
+The connection will be established automatically.
 
 = What happens if I disconnect Pantheon Content Publisher from my Google Drive? =
 All posts/pages created with Pantheon Content Publisher will remain on your WordPress site. However, you will no longer be able to edit them from Google Docs.

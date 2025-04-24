@@ -11,7 +11,7 @@ if (document.getElementById('pcc-app-authenticate') != undefined) {
 			await authenticate();
 			redirectToMainPage();
 		} catch (error) {
-			showErrorMessage(`Error while saving access token: ${error.message}`)
+			showErrorMessage(`Error while saving management token: ${error.message}`)
 			hideSpinner();
 		}
 	});
