@@ -20,8 +20,8 @@ if (!\defined('ABSPATH')) {
 						<h1 class="page-header">
 							<?php echo esc_url(site_url()) ?>
 						</h1>
-						<p class="font-bold text-sm">
-							<span class="font-normal">Collection ID:</span>
+						<p class="font-bold text-sm mt-2">
+							<span class="text-grey font-normal">COLLECTION ID:</span>
 							<?php echo esc_html(get_option(PCC_SITE_ID_OPTION_KEY)) ?>
 						</p>
 					</div>
