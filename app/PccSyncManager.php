@@ -105,7 +105,7 @@ class PccSyncManager
 		if ($postStatus) {
 			$args['post_status'] = $postStatus;
 		}
-		
+
 		$posts = get_posts($args);
 		return !empty($posts) ? (int) $posts[0] : null;
 	}

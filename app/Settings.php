@@ -239,7 +239,10 @@ class Settings
 
 				// Check if required parameters are present
 				if (empty($documentId) || empty($pccGrant)) {
-					wp_die(esc_html__('Content Publisher: Missing parameters for preview', 'pantheon-content-publisher-for-wordpress'));
+					wp_die(esc_html__(
+						'Content Publisher: Missing parameters for preview',
+						'pantheon-content-publisher-for-wordpress'
+					));
 					exit;
 				}
 
@@ -248,7 +251,7 @@ class Settings
 
 				// Find the post associated with the document ID
 				$postId = $PCCManager->findExistingConnectedPost(
-					$documentId, 
+					$documentId,
 					'any' // Consider even draft posts
 				);
 
@@ -256,7 +259,7 @@ class Settings
 				if (!$postId) {
 					try {
 						// Fetch and store the document with the grant based client
-						// if the grant is invalid, the document will not be fetched 
+						// if the grant is invalid, the document will not be fetched
 						// and the post will not be created
 						$postId = $PCCManager->fetchAndStoreDocument(
 							$documentId,
@@ -265,13 +268,21 @@ class Settings
 							$pccClient
 						);
 					} catch (Exception $ex) {
-						wp_die(esc_html__('Content Publisher: Failed to preview this document. Your preview link may have expired. Try previewing this document again from Content Publisher.', 'pantheon-content-publisher-for-wordpress'));
+						wp_die(esc_html__(
+							'Content Publisher: Failed to preview this document. Your preview link may have expired. ' .
+							'Try previewing this document again from Content Publisher.',
+							'pantheon-content-publisher-for-wordpress'
+						));
 						$postId = 0;
 					}
 				}
 
 				if (empty($postId) || !is_numeric($postId) || $postId <= 0) {
-					wp_die(esc_html__('Content Publisher: Failed to preview this document. Confirm that this document is connected to your collection. Reach out to support if the issue persists.', 'pantheon-content-publisher-for-wordpress'));
+					wp_die(esc_html__(
+						'Content Publisher: Failed to preview this document. Confirm that this document is connected to your collection. ' .
+						'Reach out to support if the issue persists.',
+						'pantheon-content-publisher-for-wordpress'
+					));
 					exit;
 				}
 
@@ -325,7 +336,7 @@ class Settings
 	 */
 	public function handlePreviewPostResults($query)
 	{
-		if ( 
+		if (
 			$query->is_main_query() // Main page data query
 			&& $query->is_singular() // Single post/page
 			&& $this->isPreviewRequest() // Preview request
@@ -334,7 +345,7 @@ class Settings
 			// This is crucial so temporaryPreview receives the post object even if it's a draft.
 			$query->set('post_status', 'any');
 
-			add_filter( 'posts_results', [$this, 'temporaryPreview'], 10, 2 );
+			add_filter('posts_results', [$this, 'temporaryPreview'], 10, 2);
 		}
 	}
 
@@ -347,9 +358,10 @@ class Settings
 	 * @param WP_Query $query
 	 * @return array
 	 */
+	// phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found - $query is required by the WordPress hook signature
 	public function temporaryPreview($posts, $query)
 	{
-		remove_filter( 'posts_results', [$this, 'temporaryPreview'], 10, 2 );
+		remove_filter('posts_results', [$this, 'temporaryPreview'], 10, 2);
 
 		if (empty($posts)) {
 			return $posts;
@@ -405,11 +417,10 @@ class Settings
 
 			// Disable comments/pings for preview display
 			add_filter('comments_open', '__return_false');
-			add_filter('pings_open',    '__return_false');
+			add_filter('pings_open', '__return_false');
 
 			// Return the array containing the modified post object
 			return $posts;
-
 		} catch (Exception $e) {
 			error_log('PCC Preview Error: Failed to fetch article ' . $documentId . ' - ' . $e->getMessage());
 			return $posts;
