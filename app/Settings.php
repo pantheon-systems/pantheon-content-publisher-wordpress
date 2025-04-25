@@ -9,6 +9,8 @@ namespace Pantheon\ContentPublisher;
 
 use Exception;
 use PccPhpSdk\api\Query\Enums\PublishingLevel;
+use PccPhpSdk\api\ArticlesApi;
+use PccPhpSdk\api\Query\Enums\ContentType;
 
 use function add_action;
 use function filemtime;
@@ -73,6 +75,7 @@ class Settings
 		add_action('template_redirect', [$this, 'publishDocuments']);
 		add_action('template_redirect', [$this, 'setPreviewHeaders']);
 		add_action('admin_menu', [$this, 'addMenu']);
+		add_action('pre_get_posts', [$this, 'handlePreviewPostResults']);
 		add_action(
 			'admin_enqueue_scripts',
 			[$this, 'enqueueAdminAssets']
@@ -165,7 +168,6 @@ class Settings
 	{
 		// Check if required parameters exist
 		if (
-				!filter_has_var(INPUT_GET, 'preview') ||
 				!filter_has_var(INPUT_GET, 'document_id') ||
 				!filter_has_var(INPUT_GET, 'publishing_level') ||
 				!filter_has_var(INPUT_GET, 'pccGrant')
@@ -173,11 +175,11 @@ class Settings
 			return false;
 		}
 
-		// Check the values of the parameters
-		$preview = sanitize_text_field(filter_input(INPUT_GET, 'preview'));
+
+		// Confirm the publishing level is realtime
 		$publishingLevel = sanitize_text_field(filter_input(INPUT_GET, 'publishing_level'));
 
-		return $preview === 'google_document' && $publishingLevel === PublishingLevel::REALTIME->value;
+		return $publishingLevel === PublishingLevel::REALTIME->value;
 	}
 
 	/**
@@ -209,8 +211,8 @@ class Settings
 
 		try {
 			$PCCManager = new PccSyncManager();
-			// Publish document
 
+			// Publish document
 			$publishingLevelParam = sanitize_text_field(filter_input(INPUT_GET, 'publishingLevel'));
 			if (
 				$publishingLevelParam &&
@@ -219,8 +221,7 @@ class Settings
 			) {
 				$parts = explode('/', $wp->request);
 				$documentId = sanitize_text_field(wp_unslash(end($parts)));
-				$pcc = new PccSyncManager();
-				$postId = $pcc->fetchAndStoreDocument($documentId, PublishingLevel::PRODUCTION);
+				$postId = $PCCManager->fetchAndStoreDocument($documentId, PublishingLevel::PRODUCTION);
 
 				wp_redirect(add_query_arg('nocache', 'true', get_permalink($postId) ?: site_url()));
 				exit;
@@ -228,29 +229,67 @@ class Settings
 
 			// Preview document
 			if (
-				$this->isPreviewRequest() &&
+				$publishingLevelParam &&
+				PublishingLevel::REALTIME->value === $publishingLevelParam &&
 				$PCCManager->isPCCConfigured()
 			) {
 				$parts = explode('/', $wp->request);
 				$documentId = sanitize_text_field(wp_unslash(end($parts)));
 				$pccGrant = sanitize_text_field(filter_input(INPUT_GET, 'pccGrant'));
-				$pcc = new PccSyncManager();
 
-				if (!$pcc->findExistingConnectedPost($documentId)) {
-					$pcc->fetchAndStoreDocument($documentId, PublishingLevel::REALTIME, true);
+				// Check if required parameters are present
+				if (empty($documentId) || empty($pccGrant)) {
+					wp_die(esc_html__(
+						'Content Publisher: Missing parameters for preview',
+						'pantheon-content-publisher-for-wordpress'
+					));
+					exit;
 				}
 
-				// Find a published post to use as a container for the preview
-				$query = get_posts([
-					'post_type' => get_option(PCC_INTEGRATION_POST_TYPE_OPTION_KEY, 'post'),
-					'post_status' => 'publish',
-					'posts_per_page' => 1,
-					'orderby' => 'date',
-					'order' => 'ASC',
-					'fields' => 'ids'
-				]);
+				// Create a new PCC client with the provided grant
+				$pccClient = (new PccSyncManager())->pccClient($pccGrant);
 
-				$url = $pcc->preparePreviewingURL($documentId, $query[0] ?? 0, $pccGrant);
+				// Find the post associated with the document ID
+				$postId = $PCCManager->findExistingConnectedPost(
+					$documentId,
+					'any' // Consider even draft posts
+				);
+
+				// If no post exists, create it
+				if (!$postId) {
+					try {
+						// Fetch and store the document with the grant based client
+						// if the grant is invalid, the document will not be fetched
+						// and the post will not be created
+						$postId = $PCCManager->fetchAndStoreDocument(
+							$documentId,
+							PublishingLevel::REALTIME,
+							true,
+							$pccClient
+						);
+					} catch (Exception $ex) {
+						wp_die(esc_html__(
+							'Content Publisher: Failed to preview this document. Your preview link may have expired. ' .
+							'Try previewing this document again from Content Publisher.',
+							'pantheon-content-publisher-for-wordpress'
+						));
+						$postId = 0;
+					}
+				}
+
+				if (empty($postId) || !is_numeric($postId) || $postId <= 0) {
+					wp_die(esc_html__(
+						'Content Publisher: Failed to preview this document. ' .
+						'Confirm that this document is connected to your collection. ' .
+						'Reach out to support if the issue persists.',
+						'pantheon-content-publisher-for-wordpress'
+					));
+					exit;
+				}
+
+
+				// Generate the preview URL using the specific post ID found or created
+				$url = $PCCManager->preparePreviewingURL($documentId, $postId, $pccGrant);
 
 				wp_redirect($url);
 				exit;
@@ -290,6 +329,105 @@ class Settings
 	}
 
 	/**
+	 * Hook for pre_get_posts that allows us to extend the
+	 * results with custom logic.
+	 *
+	 * @param WP_Query $query
+	 * @return void
+	 */
+	public function handlePreviewPostResults($query)
+	{
+		if (
+			$query->is_main_query() // Main page data query
+			&& $query->is_singular() // Single post/page
+			&& $this->isPreviewRequest() // Preview request
+		) {
+			// Allow the main query to find posts regardless of status (publish, draft, etc.)
+			// This is crucial so temporaryPreview receives the post object even if it's a draft.
+			$query->set('post_status', 'any');
+
+			add_filter('posts_results', [$this, 'temporaryPreview'], 10, 2);
+		}
+	}
+
+	/**
+	 * Filter for posts_results that allows us to temporarily
+	 * make a post object for a Content Publisher document
+	 * available for viewing regardless of its publishing status.
+	 *
+	 * @param array $posts
+	 * @param WP_Query $query
+	 * @return array
+	 */
+	public function temporaryPreview($posts)
+	{
+		remove_filter('posts_results', [$this, 'temporaryPreview'], 10, 2);
+
+		if (empty($posts)) {
+			return $posts;
+		}
+
+		$post = $posts[0];
+		$pccGrant = sanitize_text_field(filter_input(INPUT_GET, 'pccGrant'));
+		$documentId = sanitize_text_field(filter_input(INPUT_GET, 'document_id'));
+
+		if (empty($pccGrant) || empty($documentId)) {
+			// Return original posts if params are missing. WP might show draft/404.
+			return $posts;
+		}
+
+		try {
+			// Initialize PCC client with the grant
+			$pccClient = (new PccSyncManager())->pccClient($pccGrant);
+			$articlesApi = new ArticlesApi($pccClient);
+			$publishingLevel = PublishingLevel::REALTIME;
+
+			// Fetch the article data needed for prerendering the
+			// preview page. This also serves as a guard to ensure
+			// the document is valid and the grant is valid.
+			$article = $articlesApi->getArticleById(
+				$documentId,
+				[
+					'id',
+					'title',
+					'content',
+					'metadata',
+				],
+				$publishingLevel,
+				ContentType::TREE_PANTHEON_V2
+			);
+
+			// If fetching the article fails (invalid grant, network error, document deleted),
+			// return the original posts array. WP will handle it (e.g., show draft, 404).
+			if (!$article) {
+				return $posts;
+			}
+
+			// Apply updates to the in-memory post object
+			// Set Status to Publish
+			$post->post_status = 'publish';
+
+			// Update Title, Content, and Excerpt
+			$PCCManager = new PccSyncManager();
+			$preparedData = $PCCManager->preparePostDataFromArticle($article);
+
+			$post->post_title = $preparedData['post_title'];
+			$post->post_content = $preparedData['post_content'];
+			$post->post_excerpt = $preparedData['post_excerpt'];
+
+			// Disable comments/pings for preview display
+			add_filter('comments_open', '__return_false');
+			add_filter('pings_open', '__return_false');
+
+			// Return the array containing the modified post object
+			return $posts;
+		} catch (Exception $e) {
+			error_log('PCC Preview Error: Failed to fetch article ' . $documentId . ' - ' . $e->getMessage());
+			return $posts;
+		}
+	}
+
+	/**
 	 * Build the Google Docs edit URL.
 	 *
 	 * @param string $documentId
@@ -314,7 +452,9 @@ class Settings
 	public function addPreviewContainer(string $content): string
 	{
 		if ($this->isPreviewRequest()) {
-			return '<div id="pcc-content-preview"></div>';
+			// Wrap the original content with the preview container div.
+			// This will then be hydrated by the frontend JS.
+			return '<div id="pcc-content-preview">' . $content . '</div>';
 		}
 
 		return $content;

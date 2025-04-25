@@ -38,8 +38,9 @@ class PccSyncManager
 		$documentId,
 		PublishingLevel $publishingLevel,
 		bool $isDraft = false,
+		PccClient $pccClient = null
 	): int {
-		$articlesApi = new ArticlesApi($this->pccClient());
+		$articlesApi = new ArticlesApi($pccClient ?? $this->pccClient());
 		$article = $articlesApi->getArticleById(
 			$documentId,
 			[
@@ -91,7 +92,7 @@ class PccSyncManager
 	 * @param $value
 	 * @return int|null
 	 */
-	public function findExistingConnectedPost($value)
+	public function findExistingConnectedPost($value, $postStatus = null)
 	{
 		$args = [
 			'post_type'   => 'any',
@@ -100,6 +101,11 @@ class PccSyncManager
 			'fields'      => 'ids',
 			'numberposts' => 1,
 		];
+
+		if ($postStatus) {
+			$args['post_status'] = $postStatus;
+		}
+
 		$posts = get_posts($args);
 		return !empty($posts) ? (int) $posts[0] : null;
 	}
@@ -114,31 +120,16 @@ class PccSyncManager
 	 */
 	private function createOrUpdatePost($postId, Article $article, bool $isDraft = false)
 	{
-		// Original content
-		$content = $article->content;
-
-		// Pattern to match all <style> blocks
-		$stylePattern = '/<style.*?>.*?<\/style>/is';
-
-		// Remove all <style> blocks from the content
-		$content = preg_replace($stylePattern, '', $content);
+		$preparedData = $this->preparePostDataFromArticle($article);
 
 		$data = [
-			'post_title' => $article->title,
-			'post_content' => $content,
+			'post_title' => $preparedData['post_title'],
+			'post_content' => $preparedData['post_content'],
+			'post_excerpt' => $preparedData['post_excerpt'],
 			'post_status' => $isDraft ? 'draft' : 'publish',
 			'post_name' => $article->slug,
 			'post_type' => $this->getIntegrationPostType(),
 		];
-		// Set post excerpt if description is available.
-		if (isset($article->metadata['description'])) {
-			$data['post_excerpt'] = $article->metadata['description'];
-		}
-
-		// Set post title if available.
-		if (isset($article->metadata['title']) && $article->metadata['title']) {
-			$data['post_title'] = $article->metadata['title'];
-		}
 
 		if (!$postId) {
 			$postId = wp_insert_post($data);
@@ -357,7 +348,6 @@ class PccSyncManager
 		$postId = $postId ?: $this->findExistingConnectedPost($documentId);
 		return add_query_arg(
 			[
-				'preview' => 'google_document',
 				'publishing_level' => PublishingLevel::REALTIME->value,
 				'document_id' => $documentId,
 				'pccGrant' => $pccGrant,
@@ -414,5 +404,41 @@ class PccSyncManager
 		}
 
 		return false;
+	}
+
+	/**
+	 * Prepare core post data fields from a PCC Article object.
+	 *
+	 * @param Article $article The PCC Article object.
+	 * @return array Associative array with keys 'post_title', 'post_content', 'post_excerpt'.
+	 */
+	public function preparePostDataFromArticle(Article $article): array
+	{
+		// Original content
+		$content = $article->content;
+
+		// Pattern to match all <style> blocks
+		$stylePattern = '/<style.*?>.*?<\/style>/is';
+
+		// Remove all <style> blocks from the content
+		$content = preg_replace($stylePattern, '', $content);
+
+		$data = [
+			'post_content' => $content,
+			'post_title' => $article->title, // Default title
+			'post_excerpt' => '', // Default empty excerpt
+		];
+
+		// Set post excerpt if description is available.
+		if (isset($article->metadata['description'])) {
+			$data['post_excerpt'] = $article->metadata['description'];
+		}
+
+		// Set post title if override is available.
+		if (isset($article->metadata['title']) && $article->metadata['title']) {
+			$data['post_title'] = $article->metadata['title'];
+		}
+
+		return $data;
 	}
 }
