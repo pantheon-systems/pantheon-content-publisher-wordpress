@@ -1,0 +1,68 @@
+#!/bin/bash
+
+# Exit immediately if a command exits with a non-zero status.
+set -e
+
+# Define files and directories to include in the zip archive.
+INCLUDES=(
+    "README.txt"
+    "admin"
+    "app"
+    "assets"
+    "dist"
+    "pantheon-content-publisher-for-wordpress.php"
+    "vendor"
+)
+
+# Determine repository name from the current directory.
+REPO=$(basename "$(pwd)")
+DIR="$REPO"
+ZIP="${REPO}.zip"
+
+echo "Starting build process for $REPO..."
+
+echo "Installing PHP dependencies (production)..."
+composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+echo "Installing NPM dependencies..."
+npm install
+
+echo "Building production assets..."
+npm run prod
+
+echo "Creating release artifact: $ZIP..."
+
+# Create a temporary directory for the release files in the same directory
+
+echo "Creating temporary directory for release files at: $REPO"
+mkdir -p "$REPO"
+
+# Copy all included files/directories to the temporary directory
+for item in "${INCLUDES[@]}"; do
+    if [[ -e "$item" ]]; then
+        echo "Copying $item to temp directory..."
+        cp -r "$item" "$REPO/"
+    else
+        echo "Warning: $item does not exist, skipping..."
+    fi
+done
+
+# Create the zip archive from the temporary directory
+echo "Creating zip archive..."
+
+# Remove existing zip file if it exists
+if [[ -f "$ZIP" ]]; then
+    echo "Removing existing zip file..."
+    rm "$ZIP"
+fi
+
+zip -r "$ZIP" "$REPO"/*
+
+# Clean up the temporary directory
+echo "Cleaning up temporary directory..."
+rm -rf "$REPO"
+
+echo "Build complete!"
+echo "Artifact created at: $ZIP"
+
+exit 0
