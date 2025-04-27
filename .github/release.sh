@@ -16,7 +16,6 @@ INCLUDES=(
 
 # Determine repository name from the current directory.
 REPO=$(basename "$(pwd)")
-DIR="$REPO"
 ZIP="${REPO}.zip"
 
 echo "Starting build process for $REPO..."
@@ -32,8 +31,6 @@ npm run prod
 
 echo "Creating release artifact: $ZIP..."
 
-# Create a temporary directory for the release files in the same directory
-
 echo "Creating temporary directory for release files at: $REPO"
 mkdir -p "$REPO"
 
@@ -47,7 +44,6 @@ for item in "${INCLUDES[@]}"; do
     fi
 done
 
-# Create the zip archive from the temporary directory
 echo "Creating zip archive..."
 
 # Remove existing zip file if it exists
@@ -58,7 +54,6 @@ fi
 
 zip -r "$ZIP" "$REPO"/*
 
-# Clean up the temporary directory
 echo "Cleaning up temporary directory..."
 rm -rf "$REPO"
 
