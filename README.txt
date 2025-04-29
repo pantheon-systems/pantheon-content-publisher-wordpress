@@ -52,6 +52,7 @@ All posts/pages created with Pantheon Content Publisher will remain on your Word
 == Changelog ==
 = 1.2.4 =
 * Feature: Add support for article.publish webhook event
+* Fix: Adds support for linking between documents intra-site
 
 = 1.2.3 =
 * Feature: Display collection ID on Connected Content Collection page.
