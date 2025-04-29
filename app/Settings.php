@@ -209,11 +209,11 @@ class Settings
 			return;
 		}
 
+		$publishingLevelParam = sanitize_text_field(filter_input(INPUT_GET, 'publishingLevel'));
+
 		// Default to production if no publishing level is provided
 		if (empty($publishingLevelParam)) {
 			$publishingLevelParam = PublishingLevel::PRODUCTION->value;
-		} else {
-			$publishingLevelParam = sanitize_text_field(filter_input(INPUT_GET, 'publishingLevel'));
 		}
 
 
