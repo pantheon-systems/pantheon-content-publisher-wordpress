@@ -89,7 +89,8 @@ class Settings
 		add_filter('page_row_actions', [$this, 'addRowActions'], 10, 2);
 		add_filter('wp_list_table_class_name', [$this, 'overrideAdminWPPostsTable']);
 		add_filter('the_content', [$this, 'addPreviewContainer']);
-		add_filter('admin_init', [$this, 'verifyCollectionUrl']);
+		// TODO: Decide if we need to verify the collection URL given a site can have multiple domains
+		// add_filter('admin_init', [$this, 'verifyCollectionUrl']);
 		add_filter('wp_kses_allowed_html', [$this, 'allowStyleTags'], PHP_INT_MAX);
 		add_filter('get_the_excerpt', [$this, 'stripExcerptTags'], -PHP_INT_MAX);
 	}
@@ -125,11 +126,12 @@ class Settings
 			return;
 		}
 
-		$currentHashedSiteURL = md5(wp_parse_url(site_url())['host']);
-		// if both are not equal then disconnect
-		if ($encodedSiteURL !== $currentHashedSiteURL) {
-			(new PccSyncManager())->disconnect();
-		}
+		// TODO: Decide if we need to check the encoded site URL given a site can have multiple domains
+		// $currentHashedSiteURL = md5(wp_parse_url(site_url())['host']);
+		// // if both are not equal then disconnect
+		// if ($encodedSiteURL !== $currentHashedSiteURL) {
+		// 	(new PccSyncManager())->disconnect();
+		// }
 	}
 
 	/**
