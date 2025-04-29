@@ -8,7 +8,7 @@
  * Plugin URI: https://github.com/pantheon-systems/pantheon-content-publisher-for-wordpress/
  * Author: Pantheon
  * Author URI: https://pantheon.io
- * Version: 1.2.3
+ * Version: 1.2.4
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */

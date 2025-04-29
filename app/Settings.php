@@ -209,13 +209,19 @@ class Settings
 			return;
 		}
 
+		$publishingLevelParam = sanitize_text_field(filter_input(INPUT_GET, 'publishingLevel'));
+
+		// Default to production if no publishing level is provided
+		if (empty($publishingLevelParam)) {
+			$publishingLevelParam = PublishingLevel::PRODUCTION->value;
+		}
+
+
 		try {
 			$PCCManager = new PccSyncManager();
 
 			// Publish document
-			$publishingLevelParam = sanitize_text_field(filter_input(INPUT_GET, 'publishingLevel'));
 			if (
-				$publishingLevelParam &&
 				PublishingLevel::PRODUCTION->value === $publishingLevelParam &&
 				$PCCManager->isPCCConfigured()
 			) {
@@ -229,7 +235,6 @@ class Settings
 
 			// Preview document
 			if (
-				$publishingLevelParam &&
 				PublishingLevel::REALTIME->value === $publishingLevelParam &&
 				$PCCManager->isPCCConfigured()
 			) {
