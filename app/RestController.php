@@ -8,6 +8,7 @@ namespace Pantheon\ContentPublisher;
 
 use WP_REST_Request;
 use WP_REST_Response;
+use PccPhpSdk\api\Query\Enums\PublishingLevel;
 
 use function esc_html__;
 
