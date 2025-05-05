@@ -398,12 +398,13 @@ class PccSyncManager
 			return false;
 		}
 
-		$currentHashedSiteURL = md5(wp_parse_url(site_url())['host']);
-		if ($encodedSiteURL === $currentHashedSiteURL) {
-			return true;
-		}
+		// TODO: Decide if we need to check the encoded site URL given a site can have multiple domains
+		// $currentHashedSiteURL = md5(wp_parse_url(site_url())['host']);
+		// if ($encodedSiteURL === $currentHashedSiteURL) {
+		// 	return true;
+		// }
 
-		return false;
+		return true;
 	}
 
 	/**

@@ -3,7 +3,7 @@ Contributors: getpantheon
 Tags: pantheon
 Requires at least: 5.7
 Tested up to: 6.6.2
-Stable tag: 1.2.4
+Stable tag: 1.2.5
 Requires PHP: 8.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -50,8 +50,12 @@ The connection will be established automatically.
 All posts/pages created with Pantheon Content Publisher will remain on your WordPress site. However, you will no longer be able to edit them from Google Docs.
 
 == Changelog ==
+= 1.2.5 =
+* Fix: Disables the plugin disconnecting itself when the site URL changes
+* Fix: Resolves import issue with webhook handling
+
 = 1.2.4 =
-* Feature: Add support for article.publish webhook event
+* Feature: Adds support for article.publish webhook event
 * Fix: Adds support for linking between documents intra-site
 
 = 1.2.3 =
