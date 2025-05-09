@@ -175,6 +175,23 @@ class PccSyncManager
 				update_post_meta($postId, '_yoast_wpseo_metadesc', $article->metadata['description']);
 			}
 		}
+
+		if (in_array('advanced-custom-fields/acf.php', $activePlugins)) {
+			foreach (get_option(PCC_INTEGRATION_METADATA_MAP, []) as $key => $value) {
+				if (!empty($value) && isset($article->metadata[$value]))
+				{
+					$acfField = get_field_object($key, $postId);
+					if ($acfField['type'] == 'user')
+					{
+						$user_obj = get_user_by(get_option(PCC_INTEGRATION_METADATA_USER_MAP, 'login'), $article->metadata[$value]);
+						if ($user_obj != null)
+							update_post_meta($postId, $key, $user_obj->ID);
+					}
+					else
+						update_post_meta($postId, $key, $article->metadata[$value]);
+				}
+			}
+		}
 	}
 
 	/**

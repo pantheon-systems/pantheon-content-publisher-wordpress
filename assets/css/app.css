@@ -274,3 +274,13 @@
 
     @apply ms-[1rem];
 }
+
+/** Settings tabs **/
+.pcc-content .nav-tab-wrapper {
+    max-width: 1280px;
+    margin: auto;    
+    padding-left: 24px;
+}
+.pcc-content .nav-tab-wrapper .nav-tab-active {
+    background-color: #FFF;
+}

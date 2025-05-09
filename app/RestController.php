@@ -80,6 +80,11 @@ class RestController
 				'method' => 'GET',
 				'callback' => [$this, 'pantheonCloudStatusCheck'],
 			],
+			[
+				'route' => '/integrations/metadata',
+				'method' => 'PUT',
+				'callback' => [$this, 'updateMetadataMapping'],
+			],
 		];
 
 		foreach ($endpoints as $endpoint) {
@@ -332,6 +337,23 @@ class RestController
 
 		return new WP_REST_Response(
 			esc_html__('Saved Data deleted.', 'pantheon-content-publisher-for-wordpress'),
+			200
+		);
+	}
+
+	/**
+	 * Update metadata settings
+	 *
+	 * @param WP_REST_Request $request
+	 * @return WP_REST_Response
+	 */
+	public function updateMetadataMapping(WP_REST_Request $request): WP_REST_Response
+	{
+		update_option(PCC_INTEGRATION_METADATA_MAP, json_decode(sanitize_text_field($request->get_param('metadataMap')), true) ?: []);
+		update_option(PCC_INTEGRATION_METADATA_USER_MAP, sanitize_text_field($request->get_param('userMap')));
+
+		return new WP_REST_Response(
+			esc_html__('Metadata mapping saved.', 'pantheon-content-publisher-for-wordpress'),
 			200
 		);
 	}
