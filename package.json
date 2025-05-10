@@ -28,6 +28,7 @@
     "@pantheon-systems/pcc-sdk-core": "3.11.3",
     "axios": "^1.7.2",
     "google-auth-library": "^9.10.0",
+    "morphdom": "^2.7.5",
     "postcss-prefix-selector": "^1.16.1"
   }
 }
