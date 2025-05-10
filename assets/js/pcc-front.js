@@ -1,4 +1,7 @@
 import {ARTICLE_UPDATE_SUBSCRIPTION, PantheonClient, PublishingLevel} from "@pantheon-systems/pcc-sdk-core";
+import morphdom from "morphdom";
+
+import ContentEnhancer from "./contentEnhancer.js";
 
 const url = new URL(window.location.href);
 const params = new URLSearchParams(url.search);
@@ -33,9 +36,12 @@ observable.subscribe({
         const entryTitle = document.querySelector('h1');
         entryTitle.innerHTML = article.title;
 
-        var previewContentContainer = document.getElementById('pcc-content-preview');
-        previewContentContainer.innerHTML = '';
-        previewContentContainer.appendChild(generateHTMLFromJSON(JSON.parse(update.data.article.content)));
+        const previewContentContainer = document.getElementById('pcc-content-preview');
+        const newContent = generateHTMLFromJSON(JSON.parse(article.content));
+
+        morphdom(previewContentContainer, newContent, {
+            childrenOnly: true,
+        });
     },
 });
 
@@ -105,6 +111,10 @@ function generateHTMLFromJSON(json, parentElement = null) {
     container.classList.add(uniqueClass);
 
     processNode(json, container, uniqueClass);
+
+    // Apply advanced transformations
+    const contentEnhancer = new ContentEnhancer();
+    contentEnhancer.enhanceContent(container);
 
     return container;
 }
