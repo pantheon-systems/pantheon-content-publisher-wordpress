@@ -73,18 +73,12 @@ export default class ContentEnhancer {
      * If it does not, we consider the table a layout table
      */
     #isLayoutTable(table) {
-        const tableBorderProperties = ['border-top-width', 'border-bottom-width', 'border-left-width', 'border-right-width'];
         const cells = table.querySelectorAll('td');
+
         for (const cell of cells) {
-            const borderWidth = cell.style['border-width'] ?? cell.style['border-width-top'] ?? cell.style['border-width-bottom'] ?? cell.style['border-width-left'] ?? cell.style['border-width-right'];
+            const borderWidth = cell.style.borderWidth ?? cell.style.borderWidthTop ?? cell.style.borderWidthBottom ?? cell.style.borderWidthLeft ?? cell.style.borderWidthRight;
             if (borderWidth && parseFloat(borderWidth) > 0) {
                 return false;
-            }
-
-            for (const property of tableBorderProperties) {
-                if (cell.style[property] && parseFloat(cell.style[property]) > 0) {
-                    return false;
-                }
             }
         }
 
