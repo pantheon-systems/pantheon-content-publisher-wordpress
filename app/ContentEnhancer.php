@@ -47,7 +47,9 @@ class ContentEnhancer
 				$rowStyle['align-items'] = 'center';
 
 				// Remove fixed height if set
-				if (isset($rowStyle['height'])) unset($rowStyle['height']);
+				if (isset($rowStyle['height'])) {
+					unset($rowStyle['height']);
+				}
 
 				$row->setAttribute('style', $this->arrayToCss($rowStyle));
 				$row->setAttribute('data-keep-style', 'true');
@@ -93,11 +95,11 @@ class ContentEnhancer
 	 */
 	private function isLayoutTable(Element $table): bool
 	{
-		$tableBorderProperties = ['border-top-width', 'border-bottom-width', 'border-left-width', 'border-right-width'];
+		$borderProps = ['border-top-width', 'border-bottom-width', 'border-left-width', 'border-right-width'];
 		foreach ($table->find('td') as $td) {
 			$style = $this->cssToArray($td->attr('style'));
 
-			foreach ($tableBorderProperties as $property) {
+			foreach ($borderProps as $property) {
 				if (isset($style[$property]) && floatval($style[$property]) > 0) {
 					return false;
 				}
@@ -128,7 +130,7 @@ class ContentEnhancer
 		$preserveStylesFor = ['img'];
 
 		// Find all elements with style attributes that are not in our preserve list
-		$excludeSelectors = array_map(function($tagName) {
+		$excludeSelectors = array_map(function ($tagName) {
 			return "self::{$tagName}";
 		}, $preserveStylesFor);
 
@@ -171,8 +173,10 @@ class ContentEnhancer
 		$out = [];
 		foreach (explode(';', $style ?? '') as $decl) {
 			if (str_contains($decl, ':')) {
-				[$k, $v] = array_map('trim', explode(':', $decl, 2));
-				if ($k !== '') $out[strtolower($k)] = $v;
+				[$propKey, $propVal] = array_map('trim', explode(':', $decl, 2));
+				if ($propKey !== '') {
+					$out[strtolower($propKey)] = $propVal;
+				}
 			}
 		}
 		return $out;
@@ -184,7 +188,9 @@ class ContentEnhancer
 	private function arrayToCss(array $rules): string
 	{
 		$parts = [];
-		foreach ($rules as $k => $v) $parts[] = "$k:$v";
+		foreach ($rules as $propKey => $propVal) {
+			$parts[] = "$propKey:$propVal";
+		}
 		return implode(';', $parts);
 	}
 }
