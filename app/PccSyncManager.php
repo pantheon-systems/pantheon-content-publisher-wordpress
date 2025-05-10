@@ -415,14 +415,13 @@ class PccSyncManager
 	 */
 	public function preparePostDataFromArticle(Article $article): array
 	{
+		$contentEnhancer = new ContentEnhancer();
+
 		// Original content
 		$content = $article->content;
 
-		// Pattern to match all <style> blocks
-		$stylePattern = '/<style.*?>.*?<\/style>/is';
-
-		// Remove all <style> blocks from the content
-		$content = preg_replace($stylePattern, '', $content);
+		// Enhance content
+		$content = $contentEnhancer->enhanceContent($content);
 
 		$data = [
 			'post_content' => $content,
