@@ -41,12 +41,11 @@ export default class ContentEnhancer {
 
                 const cells = row.querySelectorAll('td');
                 cells.forEach(cell => {
-                    if (cell.hasAttribute('width')) {
-                        // Convert width to flex basis
-                        let basis = cell.getAttribute('width');
-                        basis = /^\d+$/.test(basis) ? basis + 'px' : basis;
-                        cell.style.flex = `1 1 ${basis}`;
-                    }
+                    // Convert width to flex basis
+                    let basis = cell.getAttribute('width') ?? (100 / cells.length) + '%';
+                    basis = /^\d+$/.test(basis) ? basis + 'px' : basis;
+                    cell.style.flex = `1 1 ${basis}`;
+                    
                     cell.style.boxSizing = 'border-box';
                     cell.style.minWidth = 'min-content';
                     cell.style.marginBlockEnd = '16px';

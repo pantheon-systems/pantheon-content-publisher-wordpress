@@ -58,12 +58,14 @@ class ContentEnhancer
 				foreach ($cells as $cell) {
 					$cellStyle = $this->cssToArray($cell->attr('style'));
 
-					if ($cell->hasAttribute('width')) {
-						// Convert width to flex basis
-						$basis = $cell->attr('width');
-						$basis = ctype_digit($basis) ? $basis . 'px' : $basis;
-						$cellStyle['flex'] = "1 1 $basis";
-					}
+					// Convert width to flex basis
+					$basis = $cell->hasAttribute('width') ? 
+						$cell->attr('width') : 
+						// If no width is set, default to equal width columns
+						(100 / count($cells)) . '%';
+					$basis = ctype_digit($basis) ? $basis . 'px' : $basis;
+					$cellStyle['flex'] = "1 1 $basis";
+					
 					$cellStyle['box-sizing']        = 'border-box';
 					$cellStyle['min-width']         = 'min-content';
 					$cellStyle['margin-block-end']  = '16px';
