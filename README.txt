@@ -50,6 +50,9 @@ The connection will be established automatically.
 All posts/pages created with Pantheon Content Publisher will remain on your WordPress site. However, you will no longer be able to edit them from Google Docs.
 
 == Changelog ==
+= 1.2.6-dev =
+* Compatibility: Supports PHP 8.4 
+
 = 1.2.5 =
 * Fix: Disables the plugin disconnecting itself when the site URL changes
 * Fix: Resolves import issue with webhook handling
