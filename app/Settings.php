@@ -236,7 +236,8 @@ class Settings
 
 			// Preview document
 			if (
-				(PublishingLevel::REALTIME->value === $publishingLevelParam || PublishingLevel::DRAFT->value === $publishingLevelParam) &&
+				(PublishingLevel::REALTIME->value === $publishingLevelParam ||
+					PublishingLevel::DRAFT->value === $publishingLevelParam) &&
 				$PCCManager->isPCCConfigured()
 			) {
 				$parts = explode('/', $wp->request);
@@ -244,7 +245,9 @@ class Settings
 				$pccGrant = sanitize_text_field(filter_input(INPUT_GET, 'pccGrant'));
 				$versionId = sanitize_text_field(filter_input(INPUT_GET, 'versionId'));
 
-				$publishingLevel = $publishingLevelParam === PublishingLevel::DRAFT->value ? PublishingLevel::DRAFT : PublishingLevel::REALTIME;
+				$publishingLevel = $publishingLevelParam === PublishingLevel::DRAFT->value
+					? PublishingLevel::DRAFT
+					: PublishingLevel::REALTIME;
 
 				// Check if required parameters are present
 				if (empty($documentId) || empty($pccGrant)) {
@@ -300,7 +303,13 @@ class Settings
 
 
 				// Generate the preview URL using the specific post ID found or created
-				$url = $PCCManager->preparePreviewingURL($documentId, $postId, $pccGrant, $publishingLevel, $versionId ?: null);
+				$url = $PCCManager->preparePreviewingURL(
+					$documentId,
+					$postId,
+					$pccGrant,
+					$publishingLevel,
+					$versionId ?: null
+				);
 
 				wp_redirect($url);
 				exit;

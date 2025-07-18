@@ -41,7 +41,7 @@ class PccSyncManager
 		PublishingLevel $publishingLevel,
 		bool $isDraft = false,
 		PccClient $pccClient = null,
-		?string $versionId = null 
+		?string $versionId = null
 	): int {
 		$articlesApi = new ArticlesApi($pccClient ?? $this->pccClient());
 		$article = $articlesApi->getArticleById(
@@ -349,7 +349,13 @@ class PccSyncManager
 	 * @param PublishingLevel|null $publishingLevel
 	 * @return string
 	 */
-	public function preparePreviewingURL(string $documentId, $postId = null, $pccGrant = null, ?PublishingLevel $publishingLevel = null, ?string $versionId = null): string
+	public function preparePreviewingURL(
+		string $documentId,
+		$postId = null,
+		$pccGrant = null,
+		?PublishingLevel $publishingLevel = null,
+		?string $versionId = null
+	): string
 	{
 		$postId = $postId ?: $this->findExistingConnectedPost($documentId);
 		$queryArgs = [
@@ -357,7 +363,6 @@ class PccSyncManager
 			'document_id' => $documentId,
 			'pccGrant' => $pccGrant,
 		];
-		
 		if ($versionId) {
 			$queryArgs['versionId'] = $versionId;
 		}
