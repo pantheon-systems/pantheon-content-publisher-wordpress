@@ -177,11 +177,10 @@ class Settings
 			return false;
 		}
 
-
-		// Confirm the publishing level is realtime
+		// Confirm the publishing level is realtime or draft
 		$publishingLevel = sanitize_text_field(filter_input(INPUT_GET, 'publishing_level'));
 
-		return $publishingLevel === PublishingLevel::REALTIME->value;
+		return in_array($publishingLevel, [PublishingLevel::REALTIME->value, PublishingLevel::DRAFT->value], true);
 	}
 
 	/**
@@ -244,6 +243,8 @@ class Settings
 				$documentId = sanitize_text_field(wp_unslash(end($parts)));
 				$pccGrant = sanitize_text_field(filter_input(INPUT_GET, 'pccGrant'));
 				$versionId = sanitize_text_field(filter_input(INPUT_GET, 'versionId'));
+
+				$publishingLevel = $publishingLevelParam === PublishingLevel::DRAFT->value ? PublishingLevel::DRAFT : PublishingLevel::REALTIME;
 
 				// Check if required parameters are present
 				if (empty($documentId) || empty($pccGrant)) {
