@@ -5,19 +5,27 @@ const params = new URLSearchParams(url.search);
 const siteId = params.get('site_id') || window.PCCFront.site_id;
 const documentId = params.get('document_id');
 const pccGrant = params.get('pccGrant');
+const versionId = params.get('versionId');
+const publishingLevel = params.get('publishing_level') || PublishingLevel.REALTIME;
 
 const pantheonClient = new PantheonClient({
     siteId: siteId,
     pccGrant: pccGrant,
 });
 
+const subscriptionVariables = {
+    id: documentId,
+    contentType: "TREE_PANTHEON_V2",
+    publishingLevel,
+};
+
+if (versionId) {
+    subscriptionVariables.versionId = versionId;
+}
+
 const observable = pantheonClient.apolloClient.subscribe({
     query: ARTICLE_UPDATE_SUBSCRIPTION,
-    variables: {
-        id: documentId,
-        contentType: "TREE_PANTHEON_V2",
-        publishingLevel: PublishingLevel.REALTIME,
-    },
+    variables: subscriptionVariables,
 });
 
 observable.subscribe({
