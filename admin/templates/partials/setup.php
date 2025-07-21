@@ -33,7 +33,7 @@ if (!\defined('ABSPATH')) {
 							</span>
 								<img class="scale-110 ms-1 pb-2.5 inline"
 									 src="<?php
-									 echo esc_url(CONTENT_PUB_PLUGIN_DIR_URL . 'assets/images/red-dot.svg') ?>"
+										echo esc_url(CONTENT_PUB_PLUGIN_DIR_URL . 'assets/images/red-dot.svg') ?>"
 									 alt="Red Dot Icon">
 								<div class="tooltip inline">
 									<img class="scale-110 ms-2 pb-1 inline"
