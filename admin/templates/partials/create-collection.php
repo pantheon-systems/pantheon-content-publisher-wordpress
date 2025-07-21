@@ -70,8 +70,9 @@ if (!\defined('ABSPATH')) {
 						</div>
 					</div>
 					<div class="col-span-5 justify-self-end">
-						<img src="<?php echo esc_url(CONTENT_PUB_PLUGIN_DIR_URL . 'assets/images/collection-image.png') ?>"
-							 alt="collection-image"
+						<img src="<?php
+								echo esc_url(CONTENT_PUB_PLUGIN_DIR_URL . 'assets/images/collection-image.png') ?>"
+							alt="collection-image"
 						>
 					</div>
 				</div>
