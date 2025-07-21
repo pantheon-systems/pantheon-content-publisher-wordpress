@@ -9,10 +9,10 @@ if (!\defined('ABSPATH')) {
 	require 'header.php';
 	?>
 	<div class="page-content">
-		<?php require PCC_PLUGIN_DIR . 'admin/templates/partials/spinner.php'; ?>
+		<?php require CONTENT_PUB_PLUGIN_DIR . 'admin/templates/partials/spinner.php'; ?>
 		<div id="pcc-content">
 			<div class="disconnect-confirm-page">
-				<?php require PCC_PLUGIN_DIR . 'admin/templates/partials/error-message.php'; ?>
+				<?php require CONTENT_PUB_PLUGIN_DIR . 'admin/templates/partials/error-message.php'; ?>
 				<div class="page-grid">
 					<div class="col-span-7">
 						<h1 class="page-header">
@@ -49,7 +49,7 @@ if (!\defined('ABSPATH')) {
 						</div>
 					</div>
 					<div class="col-span-5 justify-self-end">
-						<img src="<?php echo esc_url(PCC_PLUGIN_DIR_URL . 'assets/images/Inspection.png') ?>"
+						<img src="<?php echo esc_url(CONTENT_PUB_PLUGIN_DIR_URL . 'assets/images/Inspection.png') ?>"
 							 alt="Inspection images"
 						>
 					</div>

@@ -9,10 +9,10 @@ if (!\defined('ABSPATH')) {
 	require 'header.php';
 	?>
 	<div class="page-content">
-		<?php require PCC_PLUGIN_DIR . 'admin/templates/partials/spinner.php'; ?>
+		<?php require CONTENT_PUB_PLUGIN_DIR . 'admin/templates/partials/spinner.php'; ?>
 		<div id="pcc-content">
 			<div class="welcome-page">
-				<?php require PCC_PLUGIN_DIR . 'admin/templates/partials/error-message.php'; ?>
+				<?php require CONTENT_PUB_PLUGIN_DIR . 'admin/templates/partials/error-message.php'; ?>
 				<div class="page-grid mt-6">
 					<div class="col-span-8">
 						<div class="w-[80%]">
@@ -32,12 +32,12 @@ if (!\defined('ABSPATH')) {
 								<?php esc_html_e('Management token', 'pantheon-content-publisher-for-wordpress') ?>
 							</span>
 								<img class="scale-110 ms-1 pb-2.5 inline"
-									 src="<?php echo esc_url(PCC_PLUGIN_DIR_URL . 'assets/images/red-dot.svg') ?>"
+									 src="<?php echo esc_url(CONTENT_PUB_PLUGIN_DIR_URL . 'assets/images/red-dot.svg') ?>"
 									 alt="Red Dot Icon">
 								<div class="tooltip inline">
 									<img class="scale-110 ms-2 pb-1 inline"
 										 src="<?php echo
-											esc_url(PCC_PLUGIN_DIR_URL . 'assets/images/circle-info.svg') ?>"
+											esc_url(CONTENT_PUB_PLUGIN_DIR_URL . 'assets/images/circle-info.svg') ?>"
 										 alt="Circle Info">
 									<span class="tooltip-text">
 									<?php
@@ -74,7 +74,7 @@ if (!\defined('ABSPATH')) {
 						</p>
 					</div>
 					<div class="col-span-4 self-start justify-self-end">
-						<img src="<?php echo esc_url(PCC_PLUGIN_DIR_URL . 'assets/images/multi-icons.png') ?>"
+						<img src="<?php echo esc_url(CONTENT_PUB_PLUGIN_DIR_URL . 'assets/images/multi-icons.png') ?>"
 							 alt="Pantheon Logo">
 					</div>
 				</div>

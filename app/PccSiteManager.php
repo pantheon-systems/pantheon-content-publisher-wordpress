@@ -8,9 +8,9 @@ use WP_HTTP_Requests_Response;
 class PccSiteManager
 {
 	private $endpoints = [
-		'create_site' => PCC_ENDPOINT . '/sites',
-		'site' => PCC_ENDPOINT . '/sites/%s',
-		'api_key' => PCC_ENDPOINT . '/api-key',
+		'create_site' => CONTENT_PUB_ENDPOINT . '/sites',
+		'site' => CONTENT_PUB_ENDPOINT . '/sites/%s',
+		'api_key' => CONTENT_PUB_ENDPOINT . '/api-key',
 	];
 
 	/**
@@ -19,7 +19,7 @@ class PccSiteManager
 	 */
 	public function registerWebhook()
 	{
-		$endpoint = sprintf($this->endpoints['site'], get_option(PCC_SITE_ID_OPTION_KEY));
+		$endpoint = sprintf($this->endpoints['site'], get_option(CONTENT_PUB_SITE_ID_OPTION_KEY));
 		$webhookSecret = $this->generateWebhookSecret();
 		$args = [
 			'method' => 'PATCH',
@@ -35,7 +35,7 @@ class PccSiteManager
 		/** @var WP_HTTP_Requests_Response $response */
 		$statusCode = $response['http_response']->get_status();
 		if (204 === intval($statusCode)) {
-			update_option(PCC_WEBHOOK_SECRET_OPTION_KEY, $webhookSecret);
+			update_option(CONTENT_PUB_WEBHOOK_SECRET_OPTION_KEY, $webhookSecret);
 			return true;
 		}
 
@@ -66,7 +66,7 @@ class PccSiteManager
 	 */
 	private function getAccessToken()
 	{
-		return trim(get_option(PCC_ACCESS_TOKEN_OPTION_KEY));
+		return trim(get_option(CONTENT_PUB_ACCESS_TOKEN_OPTION_KEY));
 	}
 
 	/**
@@ -74,7 +74,7 @@ class PccSiteManager
 	 */
 	private function getWebhookEndpoint()
 	{
-		return rest_url(PCC_API_NAMESPACE . '/webhook');
+		return rest_url(CONTENT_PUB_API_NAMESPACE . '/webhook');
 	}
 
 	/**
@@ -134,7 +134,7 @@ class PccSiteManager
 		$args = [
 			'headers' => $this->getHeaders(),
 			'body' => wp_json_encode([
-				'siteId' => get_option(PCC_SITE_ID_OPTION_KEY),
+				'siteId' => get_option(CONTENT_PUB_SITE_ID_OPTION_KEY),
 				'isManagementKey' => false,
 			]),
 		];

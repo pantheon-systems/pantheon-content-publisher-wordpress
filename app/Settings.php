@@ -18,10 +18,10 @@ use function get_post_meta;
 use function wp_enqueue_script;
 use function wp_strip_all_tags;
 
-use const PCC_CONTENT_META_KEY;
-use const PCC_INTEGRATION_POST_TYPE_OPTION_KEY;
-use const PCC_PLUGIN_DIR;
-use const PCC_PLUGIN_DIR_URL;
+use const CONTENT_PUB_CONTENT_META_KEY;
+use const CONTENT_PUB_INTEGRATION_POST_TYPE_OPTION_KEY;
+use const CONTENT_PUB_PLUGIN_DIR;
+use const CONTENT_PUB_PLUGIN_DIR_URL;
 
 // phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
 
@@ -35,28 +35,28 @@ class Settings
 	 * Pantheon menu icon in base64
 	 */
 	// phpcs:ignore Generic.Files.LineLength.TooLong
-	private const PCC_ICON_BASE64 = 'PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik00LjcxNjkxIDFMNi4xNTA3MSA0LjQ1NDE4SDQuMzI1ODdMNC45MTI0MiA1Ljk1MzE2SDguNjI3MjlMNC43MTY5MSAxWiIgZmlsbD0id2hpdGUiLz4KICAgIDxwYXRoIGQ9Ik05LjU3MjI5IDEzLjU0NThMOC45NTMxNCAxMi4wNDY5SDguMTA1ODlMNi4zNDYyMiA3Ljc3ODAySDUuNTk2NzNMNy4zNTY0IDEyLjA0NjlINS4yMDU2OUw5LjE4MTI1IDE3TDcuNzQ3NDQgMTMuNTQ1OEg5LjU3MjI5WiIKICAgICAgICAgIGZpbGw9IndoaXRlIi8+CiAgICA8cGF0aCBkPSJNMTAuMDYxMSAxMC41MTUzSDcuNzQ3NDRMOC4yMzYyNCAxMS42ODg0SDEwLjA2MTFDMTAuMDkzNyAxMS42ODg0IDEwLjIyNCAxMS42MjMyIDEwLjIyNCAxMS4xMDE4QzEwLjE5MTQgMTAuNTgwNCAxMC4wOTM3IDEwLjUxNTMgMTAuMDYxMSAxMC41MTUzWiIKICAgICAgICAgIGZpbGw9IndoaXRlIi8+CiAgICA8cGF0aCBkPSJNMTAuMjg5MiA5LjExNDA0SDcuMTkzNDhMNy42ODIyOCAxMC4yODcySDEwLjI4OTJDMTAuMzIxOCAxMC4yODcyIDEwLjQ1MjEgMTAuMjIyIDEwLjQ1MjEgOS43MDA2QzEwLjQxOTYgOS4xNzkyMiAxMC4zMjE4IDkuMTE0MDQgMTAuMjg5MiA5LjExNDA0WiIKICAgICAgICAgIGZpbGw9IndoaXRlIi8+CiAgICA8cGF0aCBkPSJNMTAuMDYxMSA3LjQ4NDczQzEwLjA5MzcgNy40ODQ3MyAxMC4yMjQgNy40MTk1NiAxMC4yMjQgNi44OTgxN0MxMC4yMjQgNi4zNzY3OSAxMC4xMjYzIDYuMzExNjEgMTAuMDYxMSA2LjMxMTYxSDcuNTE5MzVMOC4wMDgxNSA3LjQ4NDczSDEwLjA2MTFaIgogICAgICAgICAgZmlsbD0id2hpdGUiLz4KICAgIDxwYXRoIGQ9Ik04LjU2MjEgOC44ODU5NUgxMC4yNTY2QzEwLjI4OTIgOC44ODU5NSAxMC40MTk1IDguODIwNzcgMTAuNDE5NSA4LjI5OTM5QzEwLjQxOTUgNy43NzggMTAuMzIxOCA3LjcxMjgzIDEwLjI1NjYgNy43MTI4M0g4LjA3MzNMOC41NjIxIDguODg1OTVaIgogICAgICAgICAgZmlsbD0id2hpdGUiLz4KICAgIDxwYXRoIGQ9Ik01Ljc1OTY3IDguODg1OTVMNS4yMDU3IDcuNDg0NzNINi40NzY1OEw3LjA2MzE0IDguODg1OTVIOC4yNjg4NEw3LjE5MzQ4IDYuMzExNjFINC41NTM5N0M0LjM1ODQ1IDYuMzExNjEgNC4yMjgxMSA2LjMxMTYxIDQuMTMwMzUgNi42MDQ4OUM0LjAzMjU5IDYuOTYzMzUgNCA3LjY0NzY2IDQgOC45ODM3MUM0IDEwLjMxOTggNCAxMS4wMDQxIDQuMTMwMzUgMTEuMzYyNUM0LjIyODExIDExLjY1NTggNC4zMjU4NyAxMS42NTU4IDQuNTUzOTcgMTEuNjU1OEg2Ljg2NzYyTDUuNzU5NjcgOC44ODU5NVoiCiAgICAgICAgICBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4=';
+	private const CONTENT_PUB_ICON_BASE64 = 'PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik00LjcxNjkxIDFMNi4xNTA3MSA0LjQ1NDE4SDQuMzI1ODdMNC45MTI0MiA1Ljk1MzE2SDguNjI3MjlMNC43MTY5MSAxWiIgZmlsbD0id2hpdGUiLz4KICAgIDxwYXRoIGQ9Ik05LjU3MjI5IDEzLjU0NThMOC45NTMxNCAxMi4wNDY5SDguMTA1ODlMNi4zNDYyMiA3Ljc3ODAySDUuNTk2NzNMNy4zNTY0IDEyLjA0NjlINS4yMDU2OUw5LjE4MTI1IDE3TDcuNzQ3NDQgMTMuNTQ1OEg5LjU3MjI5WiIKICAgICAgICAgIGZpbGw9IndoaXRlIi8+CiAgICA8cGF0aCBkPSJNMTAuMDYxMSAxMC41MTUzSDcuNzQ3NDRMOC4yMzYyNCAxMS42ODg0SDEwLjA2MTFDMTAuMDkzNyAxMS42ODg0IDEwLjIyNCAxMS42MjMyIDEwLjIyNCAxMS4xMDE4QzEwLjE5MTQgMTAuNTgwNCAxMC4wOTM3IDEwLjUxNTMgMTAuMDYxMSAxMC41MTUzWiIKICAgICAgICAgIGZpbGw9IndoaXRlIi8+CiAgICA8cGF0aCBkPSJNMTAuMjg5MiA5LjExNDA0SDcuMTkzNDhMNy42ODIyOCAxMC4yODcySDEwLjI4OTJDMTAuMzIxOCAxMC4yODcyIDEwLjQ1MjEgMTAuMjIyIDEwLjQ1MjEgOS43MDA2QzEwLjQxOTYgOS4xNzkyMiAxMC4zMjE4IDkuMTE0MDQgMTAuMjg5MiA5LjExNDA0WiIKICAgICAgICAgIGZpbGw9IndoaXRlIi8+CiAgICA8cGF0aCBkPSJNMTAuMDYxMSA3LjQ4NDczQzEwLjA5MzcgNy40ODQ3MyAxMC4yMjQgNy40MTk1NiAxMC4yMjQgNi44OTgxN0MxMC4yMjQgNi4zNzY3OSAxMC4xMjYzIDYuMzExNjEgMTAuMDYxMSA2LjMxMTYxSDcuNTE5MzVMOC4wMDgxNSA3LjQ4NDczSDEwLjA2MTFaIgogICAgICAgICAgZmlsbD0id2hpdGUiLz4KICAgIDxwYXRoIGQ9Ik04LjU2MjEgOC44ODU5NUgxMC4yNTY2QzEwLjI4OTIgOC44ODU5NSAxMC40MTk1IDguODIwNzcgMTAuNDE5NSA4LjI5OTM5QzEwLjQxOTUgNy43NzggMTAuMzIxOCA3LjcxMjgzIDEwLjI1NjYgNy43MTI4M0g4LjA3MzNMOC41NjIxIDguODg1OTVaIgogICAgICAgICAgZmlsbD0id2hpdGUiLz4KICAgIDxwYXRoIGQ9Ik01Ljc1OTY3IDguODg1OTVMNS4yMDU3IDcuNDg0NzNINi40NzY1OEw3LjA2MzE0IDguODg1OTVIOC4yNjg4NEw3LjE5MzQ4IDYuMzExNjFINC41NTM5N0M0LjM1ODQ1IDYuMzExNjEgNC4yMjgxMSA2LjMxMTYxIDQuMTMwMzUgNi42MDQ4OUM0LjAzMjU5IDYuOTYzMzUgNCA3LjY0NzY2IDQgOC45ODM3MUM0IDEwLjMxOTggNCAxMS4wMDQxIDQuMTMwMzUgMTEuMzYyNUM0LjIyODExIDExLjY1NTggNC4zMjU4NyAxMS42NTU4IDQuNTUzOTcgMTEuNjU1OEg2Ljg2NzYyTDUuNzU5NjcgOC44ODU5NVoiCiAgICAgICAgICBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4=';
 
 	/**
 	 * Pantheon Cloud Status endpoint required by PCC
 	 */
-	private const PCC_STATUS_ENDPOINT = 'api/pantheoncloud/status';
+	private const CONTENT_PUB_STATUS_ENDPOINT = 'api/pantheoncloud/status';
 
 	/**
 	 * Publish document endpoint required by PCC
 	 */
-	private const PCC_PUBLISH_DOCUMENT_ENDPOINT = 'api/pantheoncloud/document/';
+	private const CONTENT_PUB_PUBLISH_DOCUMENT_ENDPOINT = 'api/pantheoncloud/document/';
 
 	/**
 	 * Google Docs edit URL.
 	 */
-	private const PCC_DOCUMENT_EDIT_URL = 'https://docs.google.com/document/d/%s/edit';
+	private const CONTENT_PUB_DOCUMENT_EDIT_URL = 'https://docs.google.com/document/d/%s/edit';
 
 	private $pages = [
-		'connected-collection' => PCC_PLUGIN_DIR . 'admin/templates/partials/connected-collection.php',
-		'create-collection' => PCC_PLUGIN_DIR . 'admin/templates/partials/create-collection.php',
-		'disconnect-confirmation' => PCC_PLUGIN_DIR . 'admin/templates/partials/disconnect-confirmation.php',
-		'setup' => PCC_PLUGIN_DIR . 'admin/templates/partials/setup.php',
+		'connected-collection' => CONTENT_PUB_PLUGIN_DIR . 'admin/templates/partials/connected-collection.php',
+		'create-collection' => CONTENT_PUB_PLUGIN_DIR . 'admin/templates/partials/create-collection.php',
+		'disconnect-confirmation' => CONTENT_PUB_PLUGIN_DIR . 'admin/templates/partials/disconnect-confirmation.php',
+		'setup' => CONTENT_PUB_PLUGIN_DIR . 'admin/templates/partials/setup.php',
 	];
 
 	public function __construct()
@@ -103,7 +103,7 @@ class Settings
 	 */
 	public function stripExcerptTags(string $content): string
 	{
-		if (get_post_meta(get_the_ID(), PCC_CONTENT_META_KEY, true)) {
+		if (get_post_meta(get_the_ID(), CONTENT_PUB_CONTENT_META_KEY, true)) {
 			return wp_strip_all_tags($content);
 		}
 
@@ -119,7 +119,7 @@ class Settings
 	{
 		$accessToken = $this->getAccessToken();
 		$siteId = $this->getSiteId();
-		$encodedSiteURL = get_option(PCC_ENCODED_SITE_URL_OPTION_KEY);
+		$encodedSiteURL = get_option(CONTENT_PUB_ENCODED_SITE_URL_OPTION_KEY);
 		$apiKey = $this->getAPIAccessKey();
 
 		if (!$accessToken || !$siteId || !$apiKey || !$encodedSiteURL) {
@@ -141,7 +141,7 @@ class Settings
 	 */
 	private function getAccessToken(): mixed
 	{
-		$pccToken = get_option(PCC_ACCESS_TOKEN_OPTION_KEY);
+		$pccToken = get_option(CONTENT_PUB_ACCESS_TOKEN_OPTION_KEY);
 
 		return $pccToken ?: [];
 	}
@@ -151,7 +151,7 @@ class Settings
 	 */
 	private function getSiteId(): mixed
 	{
-		return get_option(PCC_SITE_ID_OPTION_KEY);
+		return get_option(CONTENT_PUB_SITE_ID_OPTION_KEY);
 	}
 
 	/**
@@ -161,7 +161,7 @@ class Settings
 	 */
 	private function getAPIAccessKey(): mixed
 	{
-		$apiKey = get_option(PCC_API_KEY_OPTION_KEY);
+		$apiKey = get_option(CONTENT_PUB_API_KEY_OPTION_KEY);
 
 		return $apiKey ?: [];
 	}
@@ -192,7 +192,7 @@ class Settings
 	 */
 	public function allowStyleTags($allowedTags)
 	{
-		if (get_post_meta(get_the_ID(), PCC_CONTENT_META_KEY, true)) {
+		if (get_post_meta(get_the_ID(), CONTENT_PUB_CONTENT_META_KEY, true)) {
 				$allowedTags['style'] = [];
 		}
 
@@ -207,7 +207,7 @@ class Settings
 	public function publishDocuments(): void
 	{
 		global $wp;
-		if (!str_starts_with($wp->request, static::PCC_PUBLISH_DOCUMENT_ENDPOINT)) {
+		if (!str_starts_with($wp->request, static::CONTENT_PUB_PUBLISH_DOCUMENT_ENDPOINT)) {
 			return;
 		}
 
@@ -328,8 +328,8 @@ class Settings
 	public function registerPantheonCloudStatusEndpoint()
 	{
 		global $wp;
-		if (static::PCC_STATUS_ENDPOINT === $wp->request) {
-			$url = rest_url(PCC_API_NAMESPACE . '/' . static::PCC_STATUS_ENDPOINT);
+		if (static::CONTENT_PUB_STATUS_ENDPOINT === $wp->request) {
+			$url = rest_url(CONTENT_PUB_API_NAMESPACE . '/' . static::CONTENT_PUB_STATUS_ENDPOINT);
 
 			return wp_redirect($url);
 		}
@@ -442,7 +442,7 @@ class Settings
 	 */
 	private function buildEditDocumentURL(string $documentId): string
 	{
-		return sprintf(self::PCC_DOCUMENT_EDIT_URL, $documentId);
+		return sprintf(self::CONTENT_PUB_DOCUMENT_EDIT_URL, $documentId);
 	}
 
 	/**
@@ -476,7 +476,7 @@ class Settings
 	 */
 	public function addRowActions($actions, $post): mixed
 	{
-		$documentId = get_post_meta($post->ID, PCC_CONTENT_META_KEY, true);
+		$documentId = get_post_meta($post->ID, CONTENT_PUB_CONTENT_META_KEY, true);
 		if (!$documentId) {
 			return $actions;
 		}
@@ -529,7 +529,7 @@ class Settings
 	 */
 	public function pccMenuIcon(): string
 	{
-		return 'data:image/svg+xml;base64,' . self::PCC_ICON_BASE64;
+		return 'data:image/svg+xml;base64,' . self::CONTENT_PUB_ICON_BASE64;
 	}
 
 	/**
@@ -570,24 +570,24 @@ class Settings
 	{
 		wp_enqueue_script(
 			'pantheon-content-publisher-for-wordpress',
-			PCC_PLUGIN_DIR_URL . 'dist/app.js',
+			CONTENT_PUB_PLUGIN_DIR_URL . 'dist/app.js',
 			[],
-			filemtime(PCC_PLUGIN_DIR . 'dist/app.js'),
+			filemtime(CONTENT_PUB_PLUGIN_DIR . 'dist/app.js'),
 			true
 		);
 
 		wp_enqueue_style(
 			'pantheon-content-publisher-for-wordpress',
-			PCC_PLUGIN_DIR_URL . 'dist/app.css',
+			CONTENT_PUB_PLUGIN_DIR_URL . 'dist/app.css',
 			[],
-			filemtime(PCC_PLUGIN_DIR . 'dist/app.css')
+			filemtime(CONTENT_PUB_PLUGIN_DIR . 'dist/app.css')
 		);
 
 		wp_localize_script(
 			'pantheon-content-publisher-for-wordpress',
 			'PCCAdmin',
 			[
-				'rest_url' => get_rest_url(get_current_blog_id(), PCC_API_NAMESPACE),
+				'rest_url' => get_rest_url(get_current_blog_id(), CONTENT_PUB_API_NAMESPACE),
 				'nonce' => wp_create_nonce('wp_rest'),
 				'plugin_main_page' => menu_page_url('pantheon-content-publisher-for-wordpress', false),
 				'site_url' => site_url(),
@@ -611,9 +611,9 @@ class Settings
 
 		wp_enqueue_script(
 			'pantheon-content-publisher-for-wordpress',
-			PCC_PLUGIN_DIR_URL . 'dist/pcc-front.js',
+			CONTENT_PUB_PLUGIN_DIR_URL . 'dist/pcc-front.js',
 			[],
-			filemtime(PCC_PLUGIN_DIR . 'dist/pcc-front.js'),
+			filemtime(CONTENT_PUB_PLUGIN_DIR . 'dist/pcc-front.js'),
 			true
 		);
 
@@ -647,7 +647,7 @@ class Settings
 	 */
 	public function pluginNotification()
 	{
-		require PCC_PLUGIN_DIR . 'admin/templates/partials/plugin-notification.php';
+		require CONTENT_PUB_PLUGIN_DIR . 'admin/templates/partials/plugin-notification.php';
 	}
 
 	/**
@@ -671,6 +671,6 @@ class Settings
 	 */
 	private function getEncodedSiteURL(): mixed
 	{
-		return get_option(PCC_ENCODED_SITE_URL_OPTION_KEY);
+		return get_option(CONTENT_PUB_ENCODED_SITE_URL_OPTION_KEY);
 	}
 }

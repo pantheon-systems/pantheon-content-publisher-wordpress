@@ -20,19 +20,19 @@ if (!\defined('ABSPATH')) {
 	exit;
 }
 
-define('PCC_PLUGIN_FILE', __FILE__);
-define('PCC_PLUGIN_DIR', plugin_dir_path(PCC_PLUGIN_FILE));
-define('PCC_BASENAME', plugin_basename(PCC_PLUGIN_FILE));
-define('PCC_PLUGIN_DIR_URL', plugin_dir_url(PCC_PLUGIN_FILE));
-define('PCC_ACCESS_TOKEN_OPTION_KEY', 'pcc_access_token');
-define('PCC_SITE_ID_OPTION_KEY', 'pcc_site_id');
-define('PCC_ENCODED_SITE_URL_OPTION_KEY', 'pcc_encoded_site_url');
-define('PCC_API_KEY_OPTION_KEY', 'pcc_api_key');
-define('PCC_INTEGRATION_POST_TYPE_OPTION_KEY', 'pcc_integration_post_type');
-define('PCC_API_NAMESPACE', 'pcc/v1');
-define('PCC_CONTENT_META_KEY', 'pcc_id');
-define('PCC_ENDPOINT', 'https://addonapi-gfttxsojwq-uc.a.run.app');
-define('PCC_WEBHOOK_SECRET_OPTION_KEY', 'pcc_webhook_secret');
+define('CONTENT_PUB_PLUGIN_FILE', __FILE__);
+define('CONTENT_PUB_PLUGIN_DIR', plugin_dir_path(CONTENT_PUB_PLUGIN_FILE));
+define('CONTENT_PUB_BASENAME', plugin_basename(CONTENT_PUB_PLUGIN_FILE));
+define('CONTENT_PUB_PLUGIN_DIR_URL', plugin_dir_url(CONTENT_PUB_PLUGIN_FILE));
+define('CONTENT_PUB_ACCESS_TOKEN_OPTION_KEY', 'content_pub_access_token');
+define('CONTENT_PUB_SITE_ID_OPTION_KEY', 'content_pub_site_id');
+define('CONTENT_PUB_ENCODED_SITE_URL_OPTION_KEY', 'content_pub_encoded_site_url');
+define('CONTENT_PUB_API_KEY_OPTION_KEY', 'content_pub_api_key');
+define('CONTENT_PUB_INTEGRATION_POST_TYPE_OPTION_KEY', 'content_pub_integration_post_type');
+define('CONTENT_PUB_API_NAMESPACE', 'pcc/v1');
+define('CONTENT_PUB_CONTENT_META_KEY', 'content_pub_id');
+define('CONTENT_PUB_ENDPOINT', 'https://addonapi-gfttxsojwq-uc.a.run.app');
+define('CONTENT_PUB_WEBHOOK_SECRET_OPTION_KEY', 'content_pub_webhook_secret');
 
 call_user_func(static function ($rootPath) {
 	$autoload = "{$rootPath}vendor/autoload.php";
@@ -40,4 +40,4 @@ call_user_func(static function ($rootPath) {
 		require_once $autoload;
 	}
 	add_action('plugins_loaded', [Plugin::class, 'getInstance'], -10);
-}, PCC_PLUGIN_DIR);
+}, CONTENT_PUB_PLUGIN_DIR);

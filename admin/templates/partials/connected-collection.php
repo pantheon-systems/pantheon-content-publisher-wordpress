@@ -10,7 +10,7 @@ if (!\defined('ABSPATH')) {
 	?>
 	<div class="page-content">
 		<div class="connected-collection-page">
-			<?php require PCC_PLUGIN_DIR . 'admin/templates/partials/error-message.php'; ?>
+			<?php require CONTENT_PUB_PLUGIN_DIR . 'admin/templates/partials/error-message.php'; ?>
 			<div class="py-2.5">
 				<h3 class="text-grey font-bold text-sm mb-[0.5rem]">
 					<?php esc_html_e('Connected content collection', 'pantheon-content-publisher-for-wordpress') ?>
@@ -22,7 +22,7 @@ if (!\defined('ABSPATH')) {
 						</h1>
 						<p class="font-bold text-sm mt-2">
 							<span class="text-grey font-normal">COLLECTION ID:</span>
-							<?php echo esc_html(get_option(PCC_SITE_ID_OPTION_KEY)) ?>
+							<?php echo esc_html(get_option(CONTENT_PUB_SITE_ID_OPTION_KEY)) ?>
 						</p>
 					</div>
 					<a class="secondary-button self-start col-span-4 justify-self-end" 
@@ -43,7 +43,7 @@ if (!\defined('ABSPATH')) {
 					<div class="inputs-container">
 						<div class='input-wrapper'>
 							<input class='radio-input' name='post_type' type='radio' value='post' id='radio-post' <?php
-							checked(get_option(PCC_INTEGRATION_POST_TYPE_OPTION_KEY), 'post');
+							checked(get_option(CONTENT_PUB_INTEGRATION_POST_TYPE_OPTION_KEY), 'post');
 							?>>
 							<label class="text-base" for="radio-post">
 								<?php
@@ -54,7 +54,7 @@ if (!\defined('ABSPATH')) {
 						</div>
 						<div class='input-wrapper'>
 							<input class='radio-input' name='post_type' type='radio' value='page' id='radio-page' <?php
-							checked(get_option(PCC_INTEGRATION_POST_TYPE_OPTION_KEY), 'page');
+							checked(get_option(CONTENT_PUB_INTEGRATION_POST_TYPE_OPTION_KEY), 'page');
 							?>>
 							<label class="text-base" for="radio-page">
 								<?php
