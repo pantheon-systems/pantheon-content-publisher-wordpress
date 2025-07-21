@@ -23,7 +23,7 @@
   },
   "require": {
     "php": ">=8",
-    "pantheon-systems/pcc-php-sdk": "dev-main"
+    "pantheon-systems/pcc-php-sdk": "1.0.0"
   },
   "require-dev": {
     "wp-coding-standards/wpcs": "^3.1",
