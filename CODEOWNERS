@@ -2,4 +2,4 @@
 # Ref : https://github.com/dotnet/samples/blob/main/.github/CODEOWNERS
 
 # PCX development team.
-* @pantheon-systems/pcc
+* @pantheon-systems/pcc @pantheon-systems/site-experience
