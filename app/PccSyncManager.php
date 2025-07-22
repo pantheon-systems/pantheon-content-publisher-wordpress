@@ -366,7 +366,7 @@ class PccSyncManager
 		if ($versionId) {
 			$queryArgs['versionId'] = $versionId;
 		}
-		
+
 		return add_query_arg($queryArgs, get_permalink($postId));
 	}
 

@@ -273,7 +273,9 @@ class Settings
 						// Fetch and store the document with the grant based client
 						// if the grant is invalid, the document will not be fetched
 						// and the post will not be created
-						$publishingLevel = $publishingLevelParam === PublishingLevel::DRAFT->value ? PublishingLevel::DRAFT : PublishingLevel::REALTIME;
+						$publishingLevel = $publishingLevelParam === PublishingLevel::DRAFT->value
+							? PublishingLevel::DRAFT
+							: PublishingLevel::REALTIME;
 						$postId = $PCCManager->fetchAndStoreDocument(
 							$documentId,
 							$publishingLevel,
