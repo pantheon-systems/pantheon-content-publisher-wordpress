@@ -404,7 +404,9 @@ class Settings
 			// Initialize PCC client with the grant
 			$pccClient = (new PccSyncManager())->pccClient($pccGrant);
 			$articlesApi = new ArticlesApi($pccClient);
-			$publishingLevel = $publishingLevelParam === PublishingLevel::DRAFT->value ? PublishingLevel::DRAFT : PublishingLevel::REALTIME;
+			$publishingLevel = $publishingLevelParam === PublishingLevel::DRAFT->value
+				? PublishingLevel::DRAFT
+				: PublishingLevel::REALTIME;
 
 			// Fetch the article data needed for prerendering the
 			// preview page. This also serves as a guard to ensure
