@@ -32,13 +32,16 @@ class PccSyncManager
 	 * @param $documentId
 	 * @param PublishingLevel $publishingLevel
 	 * @param bool $isDraft
+	 * @param PccClient|null $pccClient
+	 * @param string|null $versionId
 	 * @return int
 	 */
 	public function fetchAndStoreDocument(
 		$documentId,
 		PublishingLevel $publishingLevel,
 		bool $isDraft = false,
-		PccClient $pccClient = null
+		PccClient $pccClient = null,
+		?string $versionId = null
 	): int {
 		$articlesApi = new ArticlesApi($pccClient ?? $this->pccClient());
 		$article = $articlesApi->getArticleById(
@@ -52,7 +55,8 @@ class PccSyncManager
 				'metadata',
 			],
 			$publishingLevel,
-			ContentType::TREE_PANTHEON_V2
+			ContentType::TREE_PANTHEON_V2,
+			$versionId
 		);
 
 		return $article ? $this->storeArticle($article, $isDraft) : 0;
@@ -341,19 +345,29 @@ class PccSyncManager
 	 * @param string $documentId
 	 * @param $postId
 	 * @param $pccGrant
+	 * @param string|null $versionId
+	 * @param PublishingLevel|null $publishingLevel
 	 * @return string
 	 */
-	public function preparePreviewingURL(string $documentId, $postId = null, $pccGrant = null): string
+	public function preparePreviewingURL(
+		string $documentId,
+		$postId = null,
+		$pccGrant = null,
+		?PublishingLevel $publishingLevel = null,
+		?string $versionId = null
+	): string
 	{
 		$postId = $postId ?: $this->findExistingConnectedPost($documentId);
-		return add_query_arg(
-			[
-				'publishing_level' => PublishingLevel::REALTIME->value,
-				'document_id' => $documentId,
-				'pccGrant' => $pccGrant,
-			],
-			get_permalink($postId)
-		);
+		$queryArgs = [
+			'publishing_level' => ($publishingLevel ?? PublishingLevel::REALTIME)->value,
+			'document_id' => $documentId,
+			'pccGrant' => $pccGrant,
+		];
+		if ($versionId) {
+			$queryArgs['versionId'] = $versionId;
+		}
+
+		return add_query_arg($queryArgs, get_permalink($postId));
 	}
 
 	/**

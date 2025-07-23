@@ -177,11 +177,10 @@ class Settings
 			return false;
 		}
 
-
-		// Confirm the publishing level is realtime
+		// Confirm the publishing level is realtime or draft
 		$publishingLevel = sanitize_text_field(filter_input(INPUT_GET, 'publishing_level'));
 
-		return $publishingLevel === PublishingLevel::REALTIME->value;
+		return in_array($publishingLevel, [PublishingLevel::REALTIME->value, PublishingLevel::DRAFT->value], true);
 	}
 
 	/**
@@ -237,12 +236,18 @@ class Settings
 
 			// Preview document
 			if (
-				PublishingLevel::REALTIME->value === $publishingLevelParam &&
+				(PublishingLevel::REALTIME->value === $publishingLevelParam ||
+					PublishingLevel::DRAFT->value === $publishingLevelParam) &&
 				$PCCManager->isPCCConfigured()
 			) {
 				$parts = explode('/', $wp->request);
 				$documentId = sanitize_text_field(wp_unslash(end($parts)));
 				$pccGrant = sanitize_text_field(filter_input(INPUT_GET, 'pccGrant'));
+				$versionId = sanitize_text_field(filter_input(INPUT_GET, 'versionId'));
+
+				$publishingLevel = $publishingLevelParam === PublishingLevel::DRAFT->value
+					? PublishingLevel::DRAFT
+					: PublishingLevel::REALTIME;
 
 				// Check if required parameters are present
 				if (empty($documentId) || empty($pccGrant)) {
@@ -268,11 +273,15 @@ class Settings
 						// Fetch and store the document with the grant based client
 						// if the grant is invalid, the document will not be fetched
 						// and the post will not be created
+						$publishingLevel = $publishingLevelParam === PublishingLevel::DRAFT->value
+							? PublishingLevel::DRAFT
+							: PublishingLevel::REALTIME;
 						$postId = $PCCManager->fetchAndStoreDocument(
 							$documentId,
-							PublishingLevel::REALTIME,
+							$publishingLevel,
 							true,
-							$pccClient
+							$pccClient,
+							$versionId ?: null
 						);
 					} catch (Exception $ex) {
 						wp_die(esc_html__(
@@ -296,7 +305,13 @@ class Settings
 
 
 				// Generate the preview URL using the specific post ID found or created
-				$url = $PCCManager->preparePreviewingURL($documentId, $postId, $pccGrant);
+				$url = $PCCManager->preparePreviewingURL(
+					$documentId,
+					$postId,
+					$pccGrant,
+					$publishingLevel,
+					$versionId ?: null
+				);
 
 				wp_redirect($url);
 				exit;
@@ -377,6 +392,8 @@ class Settings
 		$post = $posts[0];
 		$pccGrant = sanitize_text_field(filter_input(INPUT_GET, 'pccGrant'));
 		$documentId = sanitize_text_field(filter_input(INPUT_GET, 'document_id'));
+		$versionId = sanitize_text_field(filter_input(INPUT_GET, 'versionId'));
+		$publishingLevelParam = sanitize_text_field(filter_input(INPUT_GET, 'publishing_level'));
 
 		if (empty($pccGrant) || empty($documentId)) {
 			// Return original posts if params are missing. WP might show draft/404.
@@ -387,7 +404,9 @@ class Settings
 			// Initialize PCC client with the grant
 			$pccClient = (new PccSyncManager())->pccClient($pccGrant);
 			$articlesApi = new ArticlesApi($pccClient);
-			$publishingLevel = PublishingLevel::REALTIME;
+			$publishingLevel = $publishingLevelParam === PublishingLevel::DRAFT->value
+				? PublishingLevel::DRAFT
+				: PublishingLevel::REALTIME;
 
 			// Fetch the article data needed for prerendering the
 			// preview page. This also serves as a guard to ensure
@@ -401,7 +420,8 @@ class Settings
 					'metadata',
 				],
 				$publishingLevel,
-				ContentType::TREE_PANTHEON_V2
+				ContentType::TREE_PANTHEON_V2,
+				$versionId ?: null
 			);
 
 			// If fetching the article fails (invalid grant, network error, document deleted),
