@@ -15,7 +15,7 @@ Perfect for editorial teams who collaborate on content within Google Docs, this 
 ## Integration with Third-Party Services
 **Important Disclosure**
 This plugin integrates with Google Drive and Google Docs to facilitate document publishing to WordPress.
-When enabled, it will access documents from these services for the purposes of rendering previews and enabling publishing functionality via the [Pantheon Content Publisher addon](https://pcc.pantheon.io/docs).
+When enabled, it will access documents from these services for the purposes of rendering previews and enabling publishing functionality via the [Pantheon Content Publisher addon](https://docs.content.pantheon.io).
 
 **Data Handling**
 User documents from Google Drive are accessed and processed to generate content on WordPress.
@@ -30,6 +30,8 @@ Enable direct publishing from Google Docs to WordPress, simplifying content mana
 
 **Post or Page Support**
 Choose to publish as either a WordPress post or page, adapting to your site's content structure.
+
+For more information, please check [Pantheon Content Publisher documentation](https://docs.content.pantheon.io).
 
 ## Installation
 Download the Content Publisher WordPress plugin zip file.
