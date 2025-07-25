@@ -40,7 +40,7 @@ class PccSyncManager
 		$documentId,
 		PublishingLevel $publishingLevel,
 		bool $isDraft = false,
-		PccClient $pccClient = null,
+		?PccClient $pccClient = null,
 		?string $versionId = null
 	): int {
 		$articlesApi = new ArticlesApi($pccClient ?? $this->pccClient());
@@ -68,7 +68,7 @@ class PccSyncManager
 	 * @param string|null $pccGrant
 	 * @return PccClient
 	 */
-	public function pccClient(string $pccGrant = null): PccClient
+	public function pccClient(?string $pccGrant = null): PccClient
 	{
 		$args = [$this->siteId, $this->apiKey];
 		if ($pccGrant) {
