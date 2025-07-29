@@ -36,8 +36,9 @@ Set up your connection to Pantheon Content Publisher and Google Drive via the se
 ## Integration with Third-Party Services
 **Important Disclosure**
 This plugin integrates with Google Drive and Google Docs to facilitate document publishing to WordPress.
-When enabled, it will access documents from these services for the purposes of rendering previews and enabling publishing functionality via the [Pantheon Content Publisher addon](https://docs.content.pantheon.io).
-No other third-party services is used to process data. 
+When enabled, it will access documents from these services for the purposes of rendering previews and enabling publishing functionality via the [Pantheon Content Publisher service](https://docs.content.pantheon.io). These services are not processing any data or content originating from WordPress or the plugin itself and
+no other third-party service is used to process data. 
+Pantheon Content Publisher policies and terms are available at [https://legal.pantheon.io/](https://legal.pantheon.io/) 
 
 This plugin makes use of the Apollo open-source GraphQL Client library and references its [Chrome extension](https://chromewebstore.google.com/detail/apollo-client-devtools/jdkknkkbebbapilgoeccciglkfbmbnfm). 
 This library only suggest the use of this tool to developers. Users don't interact with it and no data is exchanged with this service.
