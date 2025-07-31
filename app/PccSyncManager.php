@@ -208,9 +208,8 @@ class PccSyncManager
 
 		// Ensure media_sideload_image function is available.
 		if (!function_exists('media_sideload_image')) {
-			require_once(ABSPATH . 'wp-admin/includes/media.php');
-			require_once(ABSPATH . 'wp-admin/includes/file.php');
-			require_once(ABSPATH . 'wp-admin/includes/image.php');
+			// has to fail silently
+			return;
 		}
 
 		// Download and attach the new image.
@@ -253,6 +252,8 @@ class PccSyncManager
 	 */
 	private function findArticleCategories(Article $article): array
 	{
+		// TODO: actually get the categories from the Google Doc Form
+		// Right now, it's empty
 		$categories = $article->metadata['Categories'] ? explode(',', (string) $article->metadata['Categories']) : [];
 		$categories = array_filter($categories);
 		if (!$categories) {
@@ -274,7 +275,8 @@ class PccSyncManager
 	{
 		$ids = [];
 		if (!function_exists('wp_insert_category')) {
-			require_once(ABSPATH . 'wp-admin/includes/taxonomy.php');
+			// has to fail silently
+			return $ids;
 		}
 
 		foreach ($categories as $category) {
