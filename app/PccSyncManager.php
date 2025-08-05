@@ -22,8 +22,8 @@ class PccSyncManager
 
 	public function __construct()
 	{
-		$this->siteId = get_option(PCC_SITE_ID_OPTION_KEY);
-		$this->apiKey = get_option(PCC_API_KEY_OPTION_KEY);
+		$this->siteId = get_option(CONTENT_PUB_SITE_ID_OPTION_KEY);
+		$this->apiKey = get_option(CONTENT_PUB_API_KEY_OPTION_KEY);
 	}
 
 	/**
@@ -100,7 +100,7 @@ class PccSyncManager
 	{
 		$args = [
 			'post_type'   => 'any',
-			'meta_key'    => PCC_CONTENT_META_KEY,
+			'meta_key'    => CONTENT_PUB_CONTENT_META_KEY,
 			'meta_value'  => $value,
 			'fields'      => 'ids',
 			'numberposts' => 1,
@@ -137,7 +137,7 @@ class PccSyncManager
 
 		if (!$postId) {
 			$postId = wp_insert_post($data);
-			update_post_meta($postId, PCC_CONTENT_META_KEY, $article->id);
+			update_post_meta($postId, CONTENT_PUB_CONTENT_META_KEY, $article->id);
 			$this->syncPostMetaAndTags($postId, $article);
 			return $postId;
 		}
@@ -216,7 +216,7 @@ class PccSyncManager
 		$imageId = media_sideload_image($featuredImageURL, $postId, null, 'id');
 
 		if (is_int($imageId)) {
-			update_post_meta($imageId, 'pcc_feature_image_url', $featuredImageURL);
+			update_post_meta($imageId, 'content_pub_feature_image_url', $featuredImageURL);
 			// Set as the featured image.
 			set_post_thumbnail($postId, $imageId);
 		}
@@ -232,7 +232,7 @@ class PccSyncManager
 	{
 		$args = [
 			'post_type'  => 'attachment', // Ensure we're looking for attachments.
-			'meta_key'   => 'pcc_feature_image_url',
+			'meta_key'   => 'content_pub_feature_image_url',
 			'meta_value' => $imageUrl,
 			'fields'     => 'ids', // Return only the IDs.
 			'numberposts' => 1,    // Limit to 1 post.
@@ -304,7 +304,7 @@ class PccSyncManager
 	 */
 	private function getIntegrationPostType()
 	{
-		return get_option(PCC_INTEGRATION_POST_TYPE_OPTION_KEY);
+		return get_option(CONTENT_PUB_INTEGRATION_POST_TYPE_OPTION_KEY);
 	}
 
 	/**
@@ -377,12 +377,12 @@ class PccSyncManager
 	 */
 	public function disconnect()
 	{
-		delete_option(PCC_ACCESS_TOKEN_OPTION_KEY);
-		delete_option(PCC_SITE_ID_OPTION_KEY);
-		delete_option(PCC_ENCODED_SITE_URL_OPTION_KEY);
-		delete_option(PCC_INTEGRATION_POST_TYPE_OPTION_KEY);
-		delete_option(PCC_WEBHOOK_SECRET_OPTION_KEY);
-		delete_option(PCC_API_KEY_OPTION_KEY);
+		delete_option(CONTENT_PUB_ACCESS_TOKEN_OPTION_KEY);
+		delete_option(CONTENT_PUB_SITE_ID_OPTION_KEY);
+		delete_option(CONTENT_PUB_ENCODED_SITE_URL_OPTION_KEY);
+		delete_option(CONTENT_PUB_INTEGRATION_POST_TYPE_OPTION_KEY);
+		delete_option(CONTENT_PUB_WEBHOOK_SECRET_OPTION_KEY);
+		delete_option(CONTENT_PUB_API_KEY_OPTION_KEY);
 
 		$this->removeMetaDataFromPosts();
 	}
@@ -395,7 +395,7 @@ class PccSyncManager
 	private function removeMetaDataFromPosts()
 	{
 		// Delete all post meta entries with the key 'terminate'
-		delete_post_meta_by_key(PCC_CONTENT_META_KEY);
+		delete_post_meta_by_key(CONTENT_PUB_CONTENT_META_KEY);
 	}
 
 	/**
@@ -405,10 +405,10 @@ class PccSyncManager
 	 */
 	public function isPCCConfigured(): bool
 	{
-		$accessToken = get_option(PCC_ACCESS_TOKEN_OPTION_KEY);
-		$siteId = get_option(PCC_SITE_ID_OPTION_KEY);
-		$encodedSiteURL = get_option(PCC_ENCODED_SITE_URL_OPTION_KEY);
-		$apiKey = get_option(PCC_API_KEY_OPTION_KEY);
+		$accessToken = get_option(CONTENT_PUB_ACCESS_TOKEN_OPTION_KEY);
+		$siteId = get_option(CONTENT_PUB_SITE_ID_OPTION_KEY);
+		$encodedSiteURL = get_option(CONTENT_PUB_ENCODED_SITE_URL_OPTION_KEY);
+		$apiKey = get_option(CONTENT_PUB_API_KEY_OPTION_KEY);
 
 		if (!$accessToken || !$siteId || !$apiKey || !$encodedSiteURL) {
 			return false;

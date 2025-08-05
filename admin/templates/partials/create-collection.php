@@ -9,10 +9,10 @@ if (!defined('ABSPATH')) {
 	require 'header.php';
 	?>
 	<div class="page-content">
-		<?php require PCC_PLUGIN_DIR . 'admin/templates/partials/spinner.php'; ?>
+		<?php require CONTENT_PUB_PLUGIN_DIR . 'admin/templates/partials/spinner.php'; ?>
 		<div id="pcc-content">
 			<div class="create-collection-page">
-				<?php require PCC_PLUGIN_DIR . 'admin/templates/partials/error-message.php'; ?>
+				<?php require CONTENT_PUB_PLUGIN_DIR . 'admin/templates/partials/error-message.php'; ?>
 				<div class="page-grid">
 					<div class="col-span-7 justify-self-start">
 						<h1 class="page-header mt-[1.875rem]">
@@ -34,7 +34,7 @@ if (!defined('ABSPATH')) {
 									   value="post"
 									   id="radio-post"
 									<?php
-									checked(get_option(PCC_INTEGRATION_POST_TYPE_OPTION_KEY), 'post');
+									checked(get_option(CONTENT_PUB_INTEGRATION_POST_TYPE_OPTION_KEY), 'post');
 									?>
 								>
 								<label class="text-base" for="radio-post">
@@ -49,7 +49,7 @@ if (!defined('ABSPATH')) {
 									   value='page'
 									   id='radio-page'
 									<?php
-									checked(get_option(PCC_INTEGRATION_POST_TYPE_OPTION_KEY), 'page');
+									checked(get_option(CONTENT_PUB_INTEGRATION_POST_TYPE_OPTION_KEY), 'page');
 									?>
 								>
 								<label class="text-base" for="radio-page">
@@ -70,8 +70,9 @@ if (!defined('ABSPATH')) {
 						</div>
 					</div>
 					<div class="col-span-5 justify-self-end">
-						<img src="<?php echo esc_url(PCC_PLUGIN_DIR_URL . 'assets/images/collection-image.png') ?>"
-							 alt="collection-image"
+						<img src="<?php
+								echo esc_url(CONTENT_PUB_PLUGIN_DIR_URL . 'assets/images/collection-image.png') ?>"
+							alt="collection-image"
 						>
 					</div>
 				</div>
