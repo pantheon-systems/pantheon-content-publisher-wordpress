@@ -16,7 +16,7 @@
 namespace Pantheon\ContentPublisher;
 
 // Exit if accessed directly.
-if (!\defined('ABSPATH')) {
+if (!defined('ABSPATH')) {
 	exit;
 }
 
