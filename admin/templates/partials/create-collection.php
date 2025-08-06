@@ -66,7 +66,8 @@ if (!defined('ABSPATH')) {
 						<div class="mb-10">
 							<a class="secondary-button self-start justify-self-end" id="pcc-disconnect" href="#">
 								<?php esc_html_e('Reset your Google Workspace authentication',
-							'pantheon-content-publisher') ?>
+							    'pantheon-content-publisher')
+							    ?>
 							</a>
 						</div>
 					</div>
