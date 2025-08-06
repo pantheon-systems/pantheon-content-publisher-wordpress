@@ -1,4 +1,4 @@
-# PCC Wordpress Publisher
+# Pantheon Content Publisher for WordPress
 
 <p align="center">
   <a target="_blank" href="https://pcc.pantheon.io/">
@@ -12,17 +12,17 @@
 <p align="center">
   <i>Publish WordPress content from Google Docs with Pantheon Content Cloud.</i>
   <br>
-  <a href="https://github.com/pantheon-systems/pantheon-content-publisher-for-wordpress/issues/new?template=bug_report.md&labels=bug">Report bug</a>
+  <a href="https://github.com/pantheon-systems/pantheon-content-publisher/issues/new?template=bug_report.md&labels=bug">Report bug</a>
   ·
-  <a href="https://github.com/pantheon-systems/pantheon-content-publisher-for-wordpress/issues/new?template=feature_request.md&labels=feature">Request feature</a>
+  <a href="https://github.com/pantheon-systems/pantheon-content-publisher/issues/new?template=feature_request.md&labels=feature">Request feature</a>
   ·
   <a href="https://pcc.pantheon.io/docs" target="_blank">Check out PCC Docs</a>
 </p>
 
 <div align="center">
 
-[![Style Lint](https://github.com/pantheon-systems/pantheon-content-publisher-for-wordpress/actions/workflows/php-style-lint.yml/badge.svg)](https://github.com/pantheon-systems/pantheon-content-publisher-for-wordpress/actions/workflows/php-style-lint.yml)
-[![PHP Compatibility 8.x](https://github.com/pantheon-systems/pantheon-content-publisher-for-wordpress/actions/workflows/php-version-compatibility.yml/badge.svg)](https://github.com/pantheon-systems/pantheon-content-publisher-for-wordpress/actions/workflows/php-version-compatibility.yml)
+[![Style Lint](https://github.com/pantheon-systems/pantheon-content-publisher/actions/workflows/php-style-lint.yml/badge.svg)](https://github.com/pantheon-systems/pantheon-content-publisher/actions/workflows/php-style-lint.yml)
+[![PHP Compatibility 8.x](https://github.com/pantheon-systems/pantheon-content-publisher/actions/workflows/php-version-compatibility.yml/badge.svg)](https://github.com/pantheon-systems/pantheon-content-publisher/actions/workflows/php-version-compatibility.yml)
 
 </div>
 
@@ -42,17 +42,17 @@
 
 This is a WordPress plugin. It can be installed via the usual WordPress Dashboard workflow.
 
-- [Download the latest release.](https://github.com/pantheon-systems/pantheon-content-publisher-for-wordpress/releases/)
+- [Download the latest release.](https://github.com/pantheon-systems/pantheon-content-publisher/releases/)
 
 or
 
-- Clone the repo: `git clone https://github.com/pantheon-systems/pantheon-content-publisher-for-wordpress.git` in
+- Clone the repo: `git clone https://github.com/pantheon-systems/pantheon-content-publishers.git` in
   your `wp-content/plugins`
   folder
 
 or
 
-- Install via Composer: `composer require pantheon-systems/pantheon-content-publisher-for-wordpress`
+- Install via Composer: `composer require pantheon-systems/pantheon-content-publisher`
 
 **_If installing from source, make sure to follow the build instructions in the [Development](#development) section
 below_**
@@ -62,7 +62,7 @@ below_**
 1. `composer i && npm i` to install dependencies.
 2. `npm run watch` / `npm run dev` / `npm run prod` to build assets.
 3. Read through
-   our [contributing guidelines](https://github.com/pantheon-systems/pantheon-content-publisher-for-wordpress/blob/primary/.github/CONTRIBUTING.md)
+   our [contributing guidelines](https://github.com/pantheon-systems/pantheon-content-publisher/blob/primary/.github/CONTRIBUTING.md)
    for additional information. Included are directions for opening issues, coding standards and miscellaneous notes.
 
 ## Repository Actions
