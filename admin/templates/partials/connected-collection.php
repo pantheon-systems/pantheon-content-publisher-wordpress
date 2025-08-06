@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 			<?php require CONTENT_PUB_PLUGIN_DIR . 'admin/templates/partials/error-message.php'; ?>
 			<div class="py-2.5">
 				<h3 class="text-grey font-bold text-sm mb-[0.5rem]">
-					<?php esc_html_e('Connected content collection', 'pantheon-content-publisher-for-wordpress') ?>
+					<?php esc_html_e('Connected content collection', 'pantheon-content-publisher') ?>
 				</h3>
 				<div class="page-grid mb-9">
 					<div class="col-span-8 justify-self-start break-all">
@@ -27,18 +27,18 @@ if (!defined('ABSPATH')) {
 					</div>
 					<a class="secondary-button self-start col-span-4 justify-self-end" 
 						href="<?php echo esc_url(add_query_arg([
-						'page' => 'pantheon-content-publisher-for-wordpress',
+						'page' => 'pantheon-content-publisher',
 						'view' => 'disconnect-confirmation'
 					], admin_url('admin.php'))) ?>">
 						<span>
-							<?php esc_html_e('Disconnect collection', 'pantheon-content-publisher-for-wordpress') ?>
+							<?php esc_html_e('Disconnect collection', 'pantheon-content-publisher') ?>
 						</span>
 					</a>
 				</div>
 				<div>
 					<div class="divider-border"></div>
 					<p class="text-lg font-bold mt-10 mb-[1.25rem]">
-						<?php esc_html_e('Publish your document as:', 'pantheon-content-publisher-for-wordpress') ?>
+						<?php esc_html_e('Publish your document as:', 'pantheon-content-publisher') ?>
 					</p>
 					<div class="inputs-container">
 						<div class='input-wrapper'>
@@ -65,7 +65,7 @@ if (!defined('ABSPATH')) {
 						</div>
 					</div>
 					<a class="primary-button" id="pcc-update-collection" href="#">
-						<?php esc_html_e('Save configuration', 'pantheon-content-publisher-for-wordpress') ?>
+						<?php esc_html_e('Save configuration', 'pantheon-content-publisher') ?>
 					</a>
 				</div>
 			</div>

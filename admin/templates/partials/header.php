@@ -8,5 +8,5 @@ if (!defined('ABSPATH')) {
 	<img src="<?php
 	echo esc_url(CONTENT_PUB_PLUGIN_DIR_URL . 'assets/images/pantheon-logo.svg') ?>" alt="Pantheon Logo">
 	<span class="header-title"><?php
-		esc_html_e('Content Publisher', 'pantheon-content-publisher-for-wordpress') ?></span>
+		esc_html_e('Content Publisher', 'pantheon-content-publisher') ?></span>
 </div>

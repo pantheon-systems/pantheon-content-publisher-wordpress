@@ -253,7 +253,7 @@ class Settings
 				if (empty($documentId) || empty($pccGrant)) {
 					wp_die(esc_html__(
 						'Content Publisher: Missing parameters for preview',
-						'pantheon-content-publisher-for-wordpress'
+						'pantheon-content-publisher'
 					));
 					exit;
 				}
@@ -287,7 +287,7 @@ class Settings
 						wp_die(esc_html__(
 							'Content Publisher: Failed to preview this document. Your preview link may have expired. ' .
 							'Try previewing this document again from Content Publisher.',
-							'pantheon-content-publisher-for-wordpress'
+							'pantheon-content-publisher'
 						));
 						$postId = 0;
 					}
@@ -298,7 +298,7 @@ class Settings
 						'Content Publisher: Failed to preview this document. ' .
 						'Confirm that this document is connected to your collection. ' .
 						'Reach out to support if the issue persists.',
-						'pantheon-content-publisher-for-wordpress'
+						'pantheon-content-publisher'
 					));
 					exit;
 				}
@@ -508,7 +508,7 @@ class Settings
 				$post->ID,
 				esc_html__(
 					'Edit in Google Docs',
-					'pantheon-content-publisher-for-wordpress'
+					'pantheon-content-publisher'
 				) . '<svg width="12px" height="12px" viewBox="0 0 24 24" style="display:inline">
                     <g stroke-width="2.1" stroke="#666" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="17 13.5 17 19.5 5 19.5 5 7.5 11 7.5"></polyline>
@@ -533,10 +533,10 @@ class Settings
 	public function addMenu(): void
 	{
 		add_menu_page(
-			esc_html__('Pantheon Content Publisher', 'pantheon-content-publisher-for-wordpress'),
-			esc_html__('Pantheon Content Publisher', 'pantheon-content-publisher-for-wordpress'),
+			esc_html__('Pantheon Content Publisher', 'pantheon-content-publisher'),
+			esc_html__('Pantheon Content Publisher', 'pantheon-content-publisher'),
 			'manage_options',
-			'pantheon-content-publisher-for-wordpress',
+			'pantheon-content-publisher',
 			[$this, 'renderSettingsPage'],
 			$this->pccMenuIcon(),
 			20
@@ -589,7 +589,7 @@ class Settings
 	public function enqueueAdminAssets(): void
 	{
 		wp_enqueue_script(
-			'pantheon-content-publisher-for-wordpress',
+			'pantheon-content-publisher',
 			CONTENT_PUB_PLUGIN_DIR_URL . 'dist/app.js',
 			[],
 			filemtime(CONTENT_PUB_PLUGIN_DIR . 'dist/app.js'),
@@ -597,19 +597,19 @@ class Settings
 		);
 
 		wp_enqueue_style(
-			'pantheon-content-publisher-for-wordpress',
+			'pantheon-content-publisher',
 			CONTENT_PUB_PLUGIN_DIR_URL . 'dist/app.css',
 			[],
 			filemtime(CONTENT_PUB_PLUGIN_DIR . 'dist/app.css')
 		);
 
 		wp_localize_script(
-			'pantheon-content-publisher-for-wordpress',
+			'pantheon-content-publisher',
 			'PCCAdmin',
 			[
 				'rest_url' => get_rest_url(get_current_blog_id(), CONTENT_PUB_API_NAMESPACE),
 				'nonce' => wp_create_nonce('wp_rest'),
-				'plugin_main_page' => menu_page_url('pantheon-content-publisher-for-wordpress', false),
+				'plugin_main_page' => menu_page_url('pantheon-content-publisher', false),
 				'site_url' => site_url(),
 			]
 		);
@@ -630,7 +630,7 @@ class Settings
 		}
 
 		wp_enqueue_script(
-			'pantheon-content-publisher-for-wordpress',
+			'pantheon-content-publisher',
 			CONTENT_PUB_PLUGIN_DIR_URL . 'dist/pcc-front.js',
 			[],
 			filemtime(CONTENT_PUB_PLUGIN_DIR . 'dist/pcc-front.js'),
@@ -638,7 +638,7 @@ class Settings
 		);
 
 		wp_localize_script(
-			'pantheon-content-publisher-for-wordpress',
+			'pantheon-content-publisher',
 			'PCCFront',
 			[
 				'site_id' => sanitize_text_field(wp_unslash($this->getSiteId())),
