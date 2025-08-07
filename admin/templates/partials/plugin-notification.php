@@ -9,8 +9,8 @@ if (!defined('ABSPATH')) {
 		<div class="continue-setup">
 			<div class="header">
 				<img src="<?php
-				echo esc_url(PCC_PLUGIN_DIR_URL . 'assets/images/pantheon-logo.svg') ?>"
-					 alt="Pantheon Logo">
+									echo esc_url(PCC_PLUGIN_DIR_URL . 'assets/images/pantheon-logo.svg') ?>"
+					alt="Pantheon Logo">
 				<span class="header-title">
 					<?php
 					esc_html_e('Content Publisher', 'pantheon-content-publisher-for-wordpress') ?>
@@ -26,8 +26,11 @@ if (!defined('ABSPATH')) {
 					) ?>
 				</p>
 				<a href="<?php
-				echo esc_url(add_query_arg(['page' => 'pantheon-content-publisher-for-wordpress'], admin_url('admin.php'))) ?>"
-				   class="primary-button me-auto"><?php
+									echo esc_url(add_query_arg(
+										['page' => 'pantheon-content-publisher-for-wordpress'],
+										admin_url('admin.php')
+									)) ?>"
+					class="primary-button me-auto"><?php
 					esc_html_e('Complete setup', 'pantheon-content-publisher-for-wordpress') ?>
 				</a>
 			</div>

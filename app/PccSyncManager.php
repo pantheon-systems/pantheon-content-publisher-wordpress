@@ -357,8 +357,7 @@ class PccSyncManager
 		$pccGrant = null,
 		?PublishingLevel $publishingLevel = null,
 		?string $versionId = null
-	): string
-	{
+	): string {
 		$postId = $postId ?: $this->findExistingConnectedPost($documentId);
 		$queryArgs = [
 			'publishing_level' => ($publishingLevel ?? PublishingLevel::REALTIME)->value,

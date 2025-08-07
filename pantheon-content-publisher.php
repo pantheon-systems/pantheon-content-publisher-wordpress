@@ -1,6 +1,6 @@
 <?php
 
-//phpcs:disable Files.SideEffects.FoundWithSymbols
+//phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
 
 /**
  * Plugin Name: Pantheon Content Publisher
