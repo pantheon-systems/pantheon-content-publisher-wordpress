@@ -10,7 +10,7 @@ INCLUDES=(
     "app"
     "assets"
     "dist"
-    "pantheon-content-publisher-for-wordpress.php"
+    "pantheon-content-publisher.php"
     "vendor"
 )
 

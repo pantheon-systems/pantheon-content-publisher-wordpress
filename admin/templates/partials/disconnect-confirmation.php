@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 							<?php
 							esc_html_e(
 								'Are you sure you want to disconnect the content collection?',
-								'pantheon-content-publisher-for-wordpress'
+								'pantheon-content-publisher'
 							)
 							?>
 						</h1>
@@ -27,24 +27,24 @@ if (!defined('ABSPATH')) {
 							<?php esc_html_e(
 								'All Google Docs in the collection will be disconnected from your site
                             , and you wont be able to update site content in Google Docs anymore.',
-								'pantheon-content-publisher-for-wordpress'
+								'pantheon-content-publisher'
 							) ?>
 						</p>
 						<p class="page-description">
 							<?php esc_html_e(
 								'The content will remain on the site, manageable using the WordPress admin interface.',
-								'pantheon-content-publisher-for-wordpress'
+								'pantheon-content-publisher'
 							) ?>
 						</p>
 						<div class="flex gap-4 mt-[1.875rem]">
 							<a class="secondary-button"
 							   href="<?php echo esc_url(add_query_arg([
-								   'page' => 'pantheon-content-publisher-for-wordpress',
+								   'page' => 'pantheon-content-publisher',
 								   'view' => 'connected-collection'], admin_url('admin.php'))) ?>">
-								<?php esc_html_e('Stay connected', 'pantheon-content-publisher-for-wordpress') ?>
+								<?php esc_html_e('Stay connected', 'pantheon-content-publisher') ?>
 							</a>
 							<a class="danger-button" id="pcc-disconnect" href="#">
-								<?php esc_html_e('Disconnect', 'pantheon-content-publisher-for-wordpress') ?>
+								<?php esc_html_e('Disconnect', 'pantheon-content-publisher') ?>
 							</a>
 						</div>
 					</div>

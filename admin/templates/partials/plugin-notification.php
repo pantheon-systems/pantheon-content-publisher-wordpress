@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 					 alt="Pantheon Logo">
 				<span class="header-title">
 					<?php
-					esc_html_e('Content Publisher', 'pantheon-content-publisher-for-wordpress') ?>
+					esc_html_e('Content Publisher', 'pantheon-content-publisher') ?>
 				</span>
 			</div>
 			<div class="">
@@ -22,13 +22,13 @@ if (!defined('ABSPATH')) {
 					esc_html_e(
 						'Plugin installed! To create and publish content,
 					complete the setup by connecting Google Workspace to your WordPress site.',
-						'pantheon-content-publisher-for-wordpress'
+						'pantheon-content-publisher'
 					) ?>
 				</p>
 				<a href="<?php
-				echo esc_url(add_query_arg(['page' => 'pantheon-content-publisher-for-wordpress'], admin_url('admin.php'))) ?>"
+				echo esc_url(add_query_arg(['page' => 'pantheon-content-publisher'], admin_url('admin.php'))) ?>"
 				   class="primary-button me-auto"><?php
-					esc_html_e('Complete setup', 'pantheon-content-publisher-for-wordpress') ?>
+					esc_html_e('Complete setup', 'pantheon-content-publisher') ?>
 				</a>
 			</div>
 		</div>

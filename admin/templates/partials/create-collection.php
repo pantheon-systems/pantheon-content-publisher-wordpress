@@ -16,17 +16,17 @@ if (!defined('ABSPATH')) {
 				<div class="page-grid">
 					<div class="col-span-7 justify-self-start">
 						<h1 class="page-header mt-[1.875rem]">
-							<?php esc_html_e('Create your first content collection', 'pantheon-content-publisher-for-wordpress') ?>
+							<?php esc_html_e('Create your first content collection', 'pantheon-content-publisher') ?>
 						</h1>
 						<p class="page-description mb-8">
 							<?php esc_html_e('Just one more step!
 						A content collection is a set of content for your WordPress site.
 						Connected to Google Workspace,
-						it helps you organize and manage your site content in Google Docs.', 'pantheon-content-publisher-for-wordpress') ?>
+						it helps you organize and manage your site content in Google Docs.', 'pantheon-content-publisher') ?>
 						</p>
 						<p class="text-with-border mb-[1.875rem]"><?php echo esc_url(site_url()) ?></p>
 						<p class="text-lg font-bold mb-[1.25rem]" >
-							<?php esc_html_e('Publish your document as:', 'pantheon-content-publisher-for-wordpress') ?>
+							<?php esc_html_e('Publish your document as:', 'pantheon-content-publisher') ?>
 						</p>
 						<div class="inputs-container">
 							<div class='input-wrapper'>
@@ -61,11 +61,12 @@ if (!defined('ABSPATH')) {
 							</div>
 						</div>
 						<a class="primary-button" id="pcc-create-site" href="#">
-							<?php esc_html_e('Create collection', 'pantheon-content-publisher-for-wordpress') ?>
+							<?php esc_html_e('Create collection', 'pantheon-content-publisher') ?>
 						</a>
 						<div class="mb-10">
 							<a class="secondary-button self-start justify-self-end" id="pcc-disconnect" href="#">
-								<?php esc_html_e('Reset your Google Workspace authentication', 'pantheon-content-publisher-for-wordpress') ?>
+								<?php esc_html_e('Reset your Google Workspace authentication', 'pantheon-content-publisher')
+								?>
 							</a>
 						</div>
 					</div>

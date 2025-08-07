@@ -1,5 +1,5 @@
 {
-  "name": "pantheon-content-publisher-for-wordpress",
+  "name": "pantheon-content-publisher",
   "version": "1.2.6",
   "description": "Publish WordPress content from Google Docs with Pantheon Content Cloud.",
   "scripts": {
