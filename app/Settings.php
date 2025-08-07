@@ -285,7 +285,8 @@ class Settings
 						);
 					} catch (Exception $ex) {
 						wp_die(esc_html__(
-							'Content Publisher: Failed to preview this document. Your preview link may have expired. ' . 'Try previewing this document again from Content Publisher.',
+							'Content Publisher: Failed to preview this document.
+							Your preview link may have expired. ' . 'Try previewing this document again from Content Publisher.',
 							'pantheon-content-publisher'
 						));
 						$postId = 0;
@@ -294,7 +295,9 @@ class Settings
 
 				if (empty($postId) || !is_numeric($postId) || $postId <= 0) {
 					wp_die(esc_html__(
-						'Content Publisher: Failed to preview this document. ' . 'Confirm that this document is connected to your collection. ' . 'Reach out to support if the issue persists.',
+						'Content Publisher: Failed to preview this document. ' .
+						'Confirm that this document is connected to your collection. ' .
+						'Reach out to support if the issue persists.',
 						'pantheon-content-publisher'
 					));
 					exit;
