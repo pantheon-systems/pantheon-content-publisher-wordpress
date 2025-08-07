@@ -31,7 +31,7 @@ if (!defined('ABSPATH')) {
 										admin_url('admin.php')
 									)) ?>"
 					class="primary-button me-auto"><?php
-					esc_html_e('Complete setup', 'pantheon-content-publisher-for-wordpress') ?>
+																					esc_html_e('Complete setup', 'pantheon-content-publisher-for-wordpress') ?>
 				</a>
 			</div>
 		</div>
