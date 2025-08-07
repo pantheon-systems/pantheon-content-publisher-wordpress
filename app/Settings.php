@@ -286,7 +286,8 @@ class Settings
 					} catch (Exception $ex) {
 						wp_die(esc_html__(
 							'Content Publisher: Failed to preview this document.
-							Your preview link may have expired. ' . 'Try previewing this document again from Content Publisher.',
+							Your preview link may have expired. ' . 
+							'Try previewing this document again from Content Publisher.',
 							'pantheon-content-publisher'
 						));
 						$postId = 0;
