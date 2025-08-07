@@ -2,7 +2,7 @@
 Contributors: getpantheon
 Tags: pantheon
 Requires at least: 5.7
-Tested up to: 6.8.1
+Tested up to: 6.8
 Stable tag: 1.2.6
 Requires PHP: 8.0.0
 License: GPLv2 or later
