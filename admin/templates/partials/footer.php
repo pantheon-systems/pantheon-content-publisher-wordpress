@@ -17,8 +17,8 @@ if (!defined('ABSPATH')) {
 		</span>
 		<a href="https://pcc.pantheon.io/docs" class="documentation-link" target="_blank">
 			<span class="text-base"><?php
-			esc_html_e('please refer to our documentation', 'pantheon-content-publisher-for-wordpress')
-			?></span>
+															esc_html_e('please refer to our documentation', 'pantheon-content-publisher-for-wordpress')
+															?></span>
 			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
 				version="1.1" x="0px" y="0px"
 				viewBox="0 0 100 125" xml:space="preserve">
