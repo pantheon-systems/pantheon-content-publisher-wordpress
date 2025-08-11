@@ -85,7 +85,7 @@ class PccSyncManager
 	 * @param bool $isDraft
 	 * @return int
 	 */
-	private function storeArticle(Article $article, bool $isDraft = false)
+	public function storeArticle(Article $article, bool $isDraft = false)
 	{
 		$postId = $this->findExistingConnectedPost($article->id);
 

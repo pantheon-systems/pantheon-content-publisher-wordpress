@@ -5,3 +5,4 @@ dist/
 *.code-workspace
 .idea
 pantheon-content-publisher-for-wordpress.zip
+.phpunit.result.cache
