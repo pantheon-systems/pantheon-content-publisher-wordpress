@@ -25,7 +25,7 @@ jobs:
         with:
           php-version: "8.4"
           extensions: mysqli
-          tools: phpunit-polyfills
+          tools: phpunit-polyfills,wp-cli
 
       - name: Setup test
         run: bash bin/install-wp-tests.sh --dbname=content_publisher_tests --dbuser=root --dbpass=root --dbhost=127.0.0.1 --version=latest --tmpdir=/tmp --skip-db=true
