@@ -100,6 +100,7 @@ class PccSyncManager
 	{
 		$args = [
 			'post_type'   => 'any',
+			'post_status' => 'any',
 			'meta_key'    => PCC_CONTENT_META_KEY,
 			'meta_value'  => $value,
 			'fields'      => 'ids',
