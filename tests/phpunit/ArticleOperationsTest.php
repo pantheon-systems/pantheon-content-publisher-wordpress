@@ -39,18 +39,18 @@ class ArticleOperationsTest extends WP_UnitTestCase
    */
 	private function makeArticle(array $overrides = []): Article
 	{
-		$a = new Article();
-		$a->id = $overrides['id'] ?? 'doc-1';
-		$a->slug = $overrides['slug'] ?? 'hello-world';
-		$a->title = $overrides['title'] ?? 'Original Title';
-		$a->content = $overrides['content'] ?? '<p>Body</p>';
-		$a->tags = $overrides['tags'] ?? ['tag-one', 'tag-two'];
-		$a->metadata = $overrides['metadata'] ?? [
+		$article = new Article();
+		$article->id = $overrides['id'] ?? 'doc-1';
+		$article->slug = $overrides['slug'] ?? 'hello-world';
+		$article->title = $overrides['title'] ?? 'Original Title';
+		$article->content = $overrides['content'] ?? '<p>Body</p>';
+		$article->tags = $overrides['tags'] ?? ['tag-one', 'tag-two'];
+		$article->metadata = $overrides['metadata'] ?? [
 		'title' => 'Custom Title',
 		'description' => 'Desc',
 		'Categories' => 'Cat A,Cat B',
 		];
-		return $a;
+		return $article;
 	}
 
   /**

@@ -3,7 +3,11 @@
 /**
  * PHPUnit bootstrap file
  *
+ * This file intentionally mixes declarations and side effects as it needs to
+ * configure the testing environment before defining any symbols.
+ *
  * @package Pantheon\ContentPublisher
+ * @phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
  */
 
 $_tests_dir = getenv('WP_TESTS_DIR');
@@ -12,6 +16,7 @@ if (! $_tests_dir) {
 }
 
 if (!file_exists($_tests_dir . '/includes/functions.php')) {
+  // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- Writing to STDERR in bootstrap before WP is loaded
 	fwrite(STDERR, "Could not find WordPress tests bootstrap in " . $_tests_dir . "\n");
 	exit(1);
 }
