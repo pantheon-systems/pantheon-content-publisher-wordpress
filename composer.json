@@ -1,5 +1,5 @@
 {
-  "name": "pantheon-systems/pantheon-content-publisher-for-wordpress",
+  "name": "pantheon-systems/pantheon-content-publisher-wordpress",
   "type": "wordpress-plugin",
   "description": "Publish WordPress content from Google Docs with Pantheon Content Cloud.",
   "keywords": [

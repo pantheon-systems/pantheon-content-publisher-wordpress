@@ -4,4 +4,6 @@ dist/
 .DS_Store
 *.code-workspace
 .idea
+pantheon-content-publisher.zip
+pantheon-content-publisher-wordpress.zip
 pantheon-content-publisher-for-wordpress.zip
