@@ -28,7 +28,20 @@ jobs:
         with:
           php-version: "8.4"
           extensions: mysqli
-          tools: composer,phpunit-polyfills,wp-cli
+          tools: composer,wp-cli
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809
+        with:
+          path: |
+            ~/.composer/cache
+            vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist --no-scripts --no-ansi
 
       - name: Generate Composer autoloader
         run: composer dump-autoload -o
@@ -37,4 +50,4 @@ jobs:
         run: bash bin/install-wp-tests.sh --dbname=content_publisher_tests --dbuser=root --dbpass=root --dbhost=127.0.0.1 --version=latest --tmpdir=/tmp --skip-db=true
 
       - name: Run tests
-        run: phpunit
+        run: vendor/bin/phpunit
