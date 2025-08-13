@@ -4,8 +4,8 @@
 
 /**
  * Plugin Name: Pantheon Content Publisher
- * Description: Publish WordPress content from Google Docs with Pantheon Content Cloud.
- * Plugin URI: https://github.com/pantheon-systems/pantheon-content-publisher-for-wordpress/
+ * Description: Publish WordPress content from Google Docs with Pantheon Content Publisher.
+ * Plugin URI: https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/
  * Author: Pantheon
  * Author URI: https://pantheon.io
  * Version: 1.2.6
