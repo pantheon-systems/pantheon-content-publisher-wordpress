@@ -40,6 +40,16 @@ Click “Upload Plugin,” select the downloaded zip file, then “Install Now�
 
 Set up your connection to Pantheon Content Publisher and Google Drive via the settings page in the WordPress admin dashboard.
 
+## Prefix Migration
+If you have been using the Pantheon Content Publisher plugin before the v1.3, you are encouraged to run the wp_cli command to update the post meta keys. 
+You are invited to run the WP_CLI command to update the value in your databse.
+'wp pantheon-content-publisher metakey-prefix-migration'
+
+or
+
+'terminus wp <site>.<env> -- pantheon-content-publisher metakey-prefix-migration'
+
+
 == Frequently Asked Questions ==
 
 = How do I connect Pantheon Content Publisher to Google Drive? =
@@ -50,10 +60,13 @@ The connection will be established automatically.
 All posts/pages created with Pantheon Content Publisher will remain on your WordPress site. However, you will no longer be able to edit them from Google Docs.
 
 == Changelog ==
+= 1.3.0-dev =
+* Update: post metakey from pcc_id to content_pub_id
+* Fix: Duplicated draft posts issue
+* Compatibility: Ensure adherence to WP Plugin guidelines
+
 = 1.2.6 =
 * Feature: Add support for draft publishing level and versioning
-
-= 1.2.6-dev =
 * Compatibility: Supports PHP 8.4 
 
 = 1.2.5 =
