@@ -85,7 +85,7 @@ class PccSyncManager
 	 * @param bool $isDraft
 	 * @return int
 	 */
-	private function storeArticle(Article $article, bool $isDraft = false)
+	public function storeArticle(Article $article, bool $isDraft = false)
 	{
 		$postId = $this->findExistingConnectedPost($article->id);
 
@@ -100,6 +100,7 @@ class PccSyncManager
 	{
 		$args = [
 			'post_type'   => 'any',
+			'post_status' => 'any',
 			'meta_key'    => PCC_CONTENT_META_KEY,
 			'meta_value'  => $value,
 			'fields'      => 'ids',
@@ -357,8 +358,7 @@ class PccSyncManager
 		$pccGrant = null,
 		?PublishingLevel $publishingLevel = null,
 		?string $versionId = null
-	): string
-	{
+	): string {
 		$postId = $postId ?: $this->findExistingConnectedPost($documentId);
 		$queryArgs = [
 			'publishing_level' => ($publishingLevel ?? PublishingLevel::REALTIME)->value,

@@ -1,7 +1,9 @@
 node_modules/
 vendor/
 dist/
+bin/
 .DS_Store
 *.code-workspace
 .idea
 pantheon-content-publisher-for-wordpress.zip
+.phpunit.result.cache

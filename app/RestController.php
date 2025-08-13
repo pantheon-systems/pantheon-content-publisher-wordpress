@@ -127,7 +127,10 @@ class RestController
 		}
 
 		if (!is_array($payload) || !isset($payload['articleId']) || empty($payload['articleId'])) {
-			return new WP_REST_Response(esc_html__('Invalid article ID in payload', 'pantheon-content-publisher-for-wordpress'), 400);
+			return new WP_REST_Response(
+				esc_html__('Invalid article ID in payload', 'pantheon-content-publisher-for-wordpress'),
+				400
+			);
 		}
 
 		$articleId = sanitize_text_field($payload['articleId']);
@@ -187,11 +190,20 @@ class RestController
 	{
 		// Check if you are authorized
 		if (!current_user_can('manage_options')) {
-			return new WP_REST_Response(esc_html__('You are not authorized to perform this action.', 'pantheon-content-publisher-for-wordpress'), 401);
+			return new WP_REST_Response(
+				esc_html__(
+					'You are not authorized to perform this action.',
+					'pantheon-content-publisher-for-wordpress'
+				),
+				401
+			);
 		}
 		// Check management token is set
 		if (!get_option(PCC_ACCESS_TOKEN_OPTION_KEY)) {
-			return new WP_REST_Response(esc_html__('Management token is not set yet', 'pantheon-content-publisher-for-wordpress'), 401);
+			return new WP_REST_Response(
+				esc_html__('Management token is not set yet', 'pantheon-content-publisher-for-wordpress'),
+				401
+			);
 		}
 
 		$siteManager = new PccSiteManager();
@@ -215,25 +227,42 @@ class RestController
 	{
 		// Check management token is set
 		if (!get_option(PCC_ACCESS_TOKEN_OPTION_KEY)) {
-			return new WP_REST_Response(esc_html__('Management token is not set yet', 'pantheon-content-publisher-for-wordpress'), 400);
+			return new WP_REST_Response(
+				esc_html__('Management token is not set yet', 'pantheon-content-publisher-for-wordpress'),
+				400
+			);
 		}
 
 		// Check site id is set
 		if (!get_option(PCC_SITE_ID_OPTION_KEY)) {
-			return new WP_REST_Response(esc_html__('Site is not created yet', 'pantheon-content-publisher-for-wordpress'), 400);
+			return new WP_REST_Response(
+				esc_html__('Site is not created yet', 'pantheon-content-publisher-for-wordpress'),
+				400
+			);
 		}
 
 		// Check if you are authorized
 		if (!current_user_can('manage_options')) {
-			return new WP_REST_Response(esc_html__('You are not authorized to perform this action.', 'pantheon-content-publisher-for-wordpress'), 401);
+			return new WP_REST_Response(
+				esc_html__(
+					'You are not authorized to perform this action.',
+					'pantheon-content-publisher-for-wordpress'
+				),
+				401
+			);
 		}
 
 		$siteManager = new PccSiteManager();
 		if ($siteManager->registerWebhook()) {
-			return new WP_REST_Response(esc_html__('Webhook registered', 'pantheon-content-publisher-for-wordpress'));
+			return new WP_REST_Response(
+				esc_html__('Webhook registered', 'pantheon-content-publisher-for-wordpress')
+			);
 		}
 
-		return new WP_REST_Response(esc_html__('Error while register webhook', 'pantheon-content-publisher-for-wordpress'), 400);
+		return new WP_REST_Response(
+			esc_html__('Error while register webhook', 'pantheon-content-publisher-for-wordpress'),
+			400
+		);
 	}
 
 	/**
@@ -246,12 +275,21 @@ class RestController
 	{
 		// Check site id is set
 		if (!get_option(PCC_SITE_ID_OPTION_KEY)) {
-			return new WP_REST_Response(esc_html__('Site is not created yet', 'pantheon-content-publisher-for-wordpress'), 400);
+			return new WP_REST_Response(
+				esc_html__('Site is not created yet', 'pantheon-content-publisher-for-wordpress'),
+				400
+			);
 		}
 
 		// Check if you are authorized
 		if (!current_user_can('manage_options')) {
-			return new WP_REST_Response(esc_html__('You are not authorized to perform this action.', 'pantheon-content-publisher-for-wordpress'), 401);
+			return new WP_REST_Response(
+				esc_html__(
+					'You are not authorized to perform this action.',
+					'pantheon-content-publisher-for-wordpress'
+				),
+				401
+			);
 		}
 
 		$siteManager = new PccSiteManager();
@@ -261,7 +299,10 @@ class RestController
 			return new WP_REST_Response(esc_html__('API created', 'pantheon-content-publisher-for-wordpress'));
 		}
 
-		return new WP_REST_Response(esc_html__('Error while creating API key', 'pantheon-content-publisher-for-wordpress'), 400);
+		return new WP_REST_Response(
+			esc_html__('Error while creating API key', 'pantheon-content-publisher-for-wordpress'),
+			400
+		);
 	}
 
 	/**
@@ -295,7 +336,13 @@ class RestController
 	public function saveAccessToken(WP_REST_Request $request): WP_REST_Response
 	{
 		if (!current_user_can('manage_options')) {
-			return new WP_REST_Response(esc_html__('You are not authorized to perform this action.', 'pantheon-content-publisher-for-wordpress'), 401);
+			return new WP_REST_Response(
+				esc_html__(
+					'You are not authorized to perform this action.',
+					'pantheon-content-publisher-for-wordpress'
+				),
+				401
+			);
 		}
 
 		$accessToken = sanitize_text_field($request->get_param('access_token'));
@@ -323,7 +370,13 @@ class RestController
 	public function disconnect()
 	{
 		if (!current_user_can('manage_options')) {
-			return new WP_REST_Response(esc_html__('You are not authorized to perform this action.', 'pantheon-content-publisher-for-wordpress'), 401);
+			return new WP_REST_Response(
+				esc_html__(
+					'You are not authorized to perform this action.',
+					'pantheon-content-publisher-for-wordpress'
+				),
+				401
+			);
 		}
 
 		// Disconnect the site
