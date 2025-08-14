@@ -3,6 +3,7 @@ import createSite from "./createSite";
 import {hideErrorMessage, hideSpinner, showErrorMessage, showSpinner, updateSpinnerText} from "./helper";
 import updatePostType from "./updatePostType";
 import authenticate from "./authenticate";
+import updateMetadataMapping from "./integrations";
 
 if (document.getElementById('pcc-app-authenticate') != undefined) {
 	document.getElementById('pcc-app-authenticate').addEventListener('click', async function () {
@@ -52,5 +53,17 @@ if (document.getElementById('pcc-disconnect') != undefined) {
 if (document.getElementById('pcc-error-close-button') != undefined) {
 	document.getElementById('pcc-error-close-button').addEventListener('click', function () {
 		hideErrorMessage();
+	});
+}
+
+if (document.getElementById('pcc-app-integration-acf') != undefined) {
+	document.getElementById('pcc-app-integration-acf').addEventListener('click', async function () {
+		try {
+			showSpinner();
+			await updateMetadataMapping();
+		} catch (error) {
+			showErrorMessage(`Error while saving acf mapping: ${error.message}`)
+			hideSpinner();
+		}
 	});
 }
