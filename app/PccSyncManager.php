@@ -137,7 +137,9 @@ class PccSyncManager
 		];
 
 		if (!$postId) {
-			$postId = wp_insert_post($data);
+			$insertData = $data;
+			$insertData['post_author'] = $this->getDefaultAuthorId();
+			$postId = wp_insert_post($insertData);
 			update_post_meta($postId, PCC_CONTENT_META_KEY, $article->id);
 			$this->syncPostMetaAndTags($postId, $article);
 			return $postId;
@@ -306,6 +308,33 @@ class PccSyncManager
 	private function getIntegrationPostType()
 	{
 		return get_option(PCC_INTEGRATION_POST_TYPE_OPTION_KEY);
+	}
+
+	/**
+	 * Get the default author ID for content created by Content Publisher.
+	 * Currently, we're using the first admin user as the default author. If no
+	 * admin user exists, we return 0.
+	 *
+	 * In the future, we may allow users to select a default author. Or create a
+	 * mapping between Content Publisher users and WordPress users.
+	 *
+	 * @return int
+	 */
+	public function getDefaultAuthorId(): int
+	{
+		$adminIds = get_users([
+			'role' => 'administrator',
+			'orderby' => 'ID',
+			'order' => 'ASC',
+			'number' => 1,
+			'fields' => 'ID',
+		]);
+
+		if (!empty($adminIds)) {
+			return (int) $adminIds[0];
+		}
+
+		return 0;
 	}
 
 	/**

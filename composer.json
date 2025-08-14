@@ -30,7 +30,8 @@
     "phpcompatibility/php-compatibility": "^9.3",
     "pantheon-systems/wpunit-helpers": "^2.0",
     "phpunit/phpunit": "^9.6",
-    "yoast/phpunit-polyfills": "^3.1"
+    "yoast/phpunit-polyfills": "^3.1",
+    "php-stubs/wordpress-tests-stubs": "^6.8"
   },
   "repositories": [
     {
