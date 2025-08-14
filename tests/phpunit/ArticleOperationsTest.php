@@ -388,8 +388,10 @@ class ArticleOperationsTest extends WP_UnitTestCase
 		$userA = static::factory()->user->create(['role' => 'subscriber']);
 		$userB = static::factory()->user->create(['role' => 'subscriber']);
 
-		// phpcs:disable -- Ignore unused parameter.
-		add_filter('pcc_default_author_id', function ($_defaultAuthorId, $article) use ($userA, $userB) {
+		add_filter('pcc_default_author_id', function ($defaultAuthorId, $article) use ($userA, $userB) {
+			// Get around the unused parameter warning
+			$defaultAuthorId = (int) $defaultAuthorId;
+
 			return $article instanceof Article && $article->slug === 'by-a'
 				? (int) $userA
 				: (int) $userB;
