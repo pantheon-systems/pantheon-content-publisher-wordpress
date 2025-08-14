@@ -312,14 +312,10 @@ class PccSyncManager
 
 	/**
 	 * Get the default author ID for content created by Content Publisher.
-	 * Currently, we're using the first admin user as the default author. If no
-	 * admin user exists, we return 0.
-	 *
-	 * In the future, we may allow users to select a default author. Or create a
-	 * mapping between Content Publisher users and WordPress users.
 	 *
 	 * Allows filtering via 'pcc_default_author_id'. The filter receives the
-	 * computed default ID and the Article (if available).
+	 * computed default ID and the Article (if available). The filter can be
+	 * used to override the default author ID for a given article.
 	 *
 	 * @param Article|null $article
 	 * @return int
