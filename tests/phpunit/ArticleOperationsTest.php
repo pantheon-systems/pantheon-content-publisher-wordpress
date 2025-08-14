@@ -367,9 +367,9 @@ class ArticleOperationsTest extends WP_UnitTestCase
 	{
 		$userId = static::factory()->user->create(['role' => 'subscriber']);
 
-		add_filter('pcc_default_author_id', function ($defaultId, $article) use ($userId) {
+		add_filter('pcc_default_author_id', function () use ($userId) {
 			return (int) $userId;
-		}, 10, 2);
+		}, 10, 0);
 
 		try {
 			$article = $this->makeArticle(['id' => 'doc-auth-filter-1', 'slug' => 'filter-one']);
@@ -388,15 +388,27 @@ class ArticleOperationsTest extends WP_UnitTestCase
 		$userA = static::factory()->user->create(['role' => 'subscriber']);
 		$userB = static::factory()->user->create(['role' => 'subscriber']);
 
-		add_filter('pcc_default_author_id', function ($defaultId, $article) use ($userA, $userB) {
+		add_filter('pcc_default_author_id', function ($_, $article) use ($userA, $userB) {
 			return $article instanceof Article && $article->slug === 'by-a' ? (int) $userA : (int) $userB;
 		}, 10, 2);
 
 		try {
-			$postIdA = $this->manager->storeArticle($this->makeArticle(['id' => 'doc-auth-filter-2a', 'slug' => 'by-a']), false);
+			$postIdA = $this->manager->storeArticle(
+				$this->makeArticle([
+					'id' => 'doc-auth-filter-2a',
+					'slug' => 'by-a',
+				]),
+				false
+			);
 			$this->assertSame((int) $userA, (int) get_post($postIdA)->post_author);
 
-			$postIdB = $this->manager->storeArticle($this->makeArticle(['id' => 'doc-auth-filter-2b', 'slug' => 'by-b']), false);
+			$postIdB = $this->manager->storeArticle(
+				$this->makeArticle([
+					'id' => 'doc-auth-filter-2b',
+					'slug' => 'by-b',
+				]),
+				false
+			);
 			$this->assertSame((int) $userB, (int) get_post($postIdB)->post_author);
 		} finally {
 			remove_all_filters('pcc_default_author_id');
@@ -404,16 +416,17 @@ class ArticleOperationsTest extends WP_UnitTestCase
 	}
 
 	/**
-	 * Updating an existing connected post should not change its author even if the filter would now return a different ID.
+	 * Updating an existing connected post should not change its author
+	 * even if the filter would now return a different ID.
 	 */
 	public function testFilterDoesNotChangeAuthorOnUpdate(): void
 	{
 		$userA = static::factory()->user->create(['role' => 'subscriber']);
 		$userB = static::factory()->user->create(['role' => 'subscriber']);
 
-		add_filter('pcc_default_author_id', function ($defaultId, $article) use ($userA) {
+		add_filter('pcc_default_author_id', function () use ($userA) {
 			return (int) $userA;
-		}, 10, 2);
+		}, 10, 0);
 
 		$article = $this->makeArticle(['id' => 'doc-auth-filter-3', 'slug' => 'first']);
 		$postId = $this->manager->storeArticle($article, false);
@@ -422,9 +435,9 @@ class ArticleOperationsTest extends WP_UnitTestCase
 		// Change the filter to return a different user and update the same document
 		remove_all_filters('pcc_default_author_id');
 
-		add_filter('pcc_default_author_id', function ($defaultId, $article) use ($userB) {
+		add_filter('pcc_default_author_id', function () use ($userB) {
 			return (int) $userB;
-		}, 10, 2);
+		}, 10, 0);
 
 		$articleUpdated = $this->makeArticle(['id' => 'doc-auth-filter-3', 'slug' => 'updated']);
 		$postId2 = $this->manager->storeArticle($articleUpdated, false);
