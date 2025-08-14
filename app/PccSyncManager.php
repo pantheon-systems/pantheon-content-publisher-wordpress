@@ -138,7 +138,7 @@ class PccSyncManager
 
 		if (!$postId) {
 			$insertData = $data;
-			$insertData['post_author'] = $this->getDefaultAuthorId();
+			$insertData['post_author'] = $this->getDefaultAuthorId($article);
 			$postId = wp_insert_post($insertData);
 			update_post_meta($postId, PCC_CONTENT_META_KEY, $article->id);
 			$this->syncPostMetaAndTags($postId, $article);
@@ -318,9 +318,13 @@ class PccSyncManager
 	 * In the future, we may allow users to select a default author. Or create a
 	 * mapping between Content Publisher users and WordPress users.
 	 *
+	 * Allows filtering via 'pcc_default_author_id'. The filter receives the
+	 * computed default ID and the Article (if available).
+	 *
+	 * @param Article|null $article
 	 * @return int
 	 */
-	public function getDefaultAuthorId(): int
+	public function getDefaultAuthorId(?Article $article = null): int
 	{
 		$adminIds = get_users([
 			'role' => 'administrator',
@@ -330,11 +334,9 @@ class PccSyncManager
 			'fields' => 'ID',
 		]);
 
-		if (!empty($adminIds)) {
-			return (int) $adminIds[0];
-		}
+		$defaultId = !empty($adminIds) ? (int) $adminIds[0] : 0;
 
-		return 0;
+		return (int) apply_filters('pcc_default_author_id', $defaultId, $article);
 	}
 
 	/**

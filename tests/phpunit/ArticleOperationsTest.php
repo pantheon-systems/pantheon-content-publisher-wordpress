@@ -358,4 +358,84 @@ class ArticleOperationsTest extends WP_UnitTestCase
 		$this->assertSame($draftId, $publishedId);
 		$this->assertSame($originalAuthor, (int) get_post($publishedId)->post_author);
 	}
+
+	/**
+	 * When the 'pcc_default_author_id' filter is present, it should override the
+	 * computed default author for new inserts.
+	 */
+	public function testFilterOverridesDefaultAuthorOnInsert(): void
+	{
+		$userId = static::factory()->user->create(['role' => 'subscriber']);
+
+		add_filter('pcc_default_author_id', function ($defaultId, $article) use ($userId) {
+			return (int) $userId;
+		}, 10, 2);
+
+		try {
+			$article = $this->makeArticle(['id' => 'doc-auth-filter-1', 'slug' => 'filter-one']);
+			$postId = $this->manager->storeArticle($article, false);
+			$this->assertSame((int) $userId, (int) get_post($postId)->post_author);
+		} finally {
+			remove_all_filters('pcc_default_author_id');
+		}
+	}
+
+	/**
+	 * The filter receives the Article and can route to different authors based on its data.
+	 */
+	public function testFilterReceivesArticleAndCanSelectBySlug(): void
+	{
+		$userA = static::factory()->user->create(['role' => 'subscriber']);
+		$userB = static::factory()->user->create(['role' => 'subscriber']);
+
+		add_filter('pcc_default_author_id', function ($defaultId, $article) use ($userA, $userB) {
+			return $article instanceof Article && $article->slug === 'by-a' ? (int) $userA : (int) $userB;
+		}, 10, 2);
+
+		try {
+			$postIdA = $this->manager->storeArticle($this->makeArticle(['id' => 'doc-auth-filter-2a', 'slug' => 'by-a']), false);
+			$this->assertSame((int) $userA, (int) get_post($postIdA)->post_author);
+
+			$postIdB = $this->manager->storeArticle($this->makeArticle(['id' => 'doc-auth-filter-2b', 'slug' => 'by-b']), false);
+			$this->assertSame((int) $userB, (int) get_post($postIdB)->post_author);
+		} finally {
+			remove_all_filters('pcc_default_author_id');
+		}
+	}
+
+	/**
+	 * Updating an existing connected post should not change its author even if the filter would now return a different ID.
+	 */
+	public function testFilterDoesNotChangeAuthorOnUpdate(): void
+	{
+		$userA = static::factory()->user->create(['role' => 'subscriber']);
+		$userB = static::factory()->user->create(['role' => 'subscriber']);
+
+		add_filter('pcc_default_author_id', function ($defaultId, $article) use ($userA) {
+			return (int) $userA;
+		}, 10, 2);
+
+		$article = $this->makeArticle(['id' => 'doc-auth-filter-3', 'slug' => 'first']);
+		$postId = $this->manager->storeArticle($article, false);
+		$originalAuthor = (int) get_post($postId)->post_author;
+
+		// Change the filter to return a different user and update the same document
+		remove_all_filters('pcc_default_author_id');
+
+		add_filter('pcc_default_author_id', function ($defaultId, $article) use ($userB) {
+			return (int) $userB;
+		}, 10, 2);
+
+		$articleUpdated = $this->makeArticle(['id' => 'doc-auth-filter-3', 'slug' => 'updated']);
+		$postId2 = $this->manager->storeArticle($articleUpdated, false);
+
+		// The slug should be updated.
+		$this->assertSame('updated', get_post($postId2)->post_name);
+
+		// The post should be updated in place.
+		$this->assertSame($postId, $postId2);
+		$this->assertSame($originalAuthor, (int) get_post($postId2)->post_author);
+
+		remove_all_filters('pcc_default_author_id');
+	}
 }
