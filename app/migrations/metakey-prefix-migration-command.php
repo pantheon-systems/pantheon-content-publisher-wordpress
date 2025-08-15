@@ -9,11 +9,10 @@ class MetakeyPrefixMigrationCommand
 	/**
 	 * @param array $args
 	 * @param array $assoc_args
-	 * @phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+	 * @phpcs:ignore
 	 */
 	public function __invoke($args, $assoc_args)
 	{
-		// Ignore $args and $assoc_args
 		global $wpdb;
 
 		$old_metakey = 'pcc_id';
@@ -69,13 +68,15 @@ class MetakeyPrefixMigrationCommand
 		}
 	}
 
-	public function displaySuccessMessage($message)
+	private function displaySuccessMessage($message)
 	{
+		// phpcs:ignore
 		WP_CLI::success($message);
 	}
 
-	public function displayErrorMessage($message)
+	private function displayErrorMessage($message)
 	{
+		// phpcs:ignore
 		WP_CLI::error($message);
 	}
 }
