@@ -6,4 +6,6 @@ bin/
 *.code-workspace
 .idea
 pantheon-content-publisher-for-wordpress.zip
+pantheon-content-publisher-wordpress.zip
+pantheon-content-publisher.zip
 .phpunit.result.cache
