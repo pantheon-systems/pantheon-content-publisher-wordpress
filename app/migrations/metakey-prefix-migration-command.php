@@ -8,11 +8,11 @@ class MetakeyPrefixMigrationCommand
 {
 	public function __invoke($args, $assoc_args)
 	{
-		// Ignore $args and $assoc_args
+		// ignore $args and $assoc_args
 		global $wpdb;
 
-		$old_metakey = 'pcc_id';
-		$new_metakey = 'content_pub_id';
+		$old_metakey = "pcc_id";
+		$new_metakey = "content_pub_id";
 
 		// Get post_ids
 		$post_ids = $wpdb->get_col(
@@ -51,8 +51,7 @@ class MetakeyPrefixMigrationCommand
 				clean_post_cache((int) $pid);
 			}
 			WP_CLI::success("Old metakeys updated for the new one. Nothing else to do.");
-		} 
-		else {
+		} else {
 			WP_CLI::error("Something went wrong. Please try again.");
 		}
 	}

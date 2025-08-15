@@ -106,7 +106,7 @@ If you were using the Pantheon Content Publisher plugin prior to version 1.3, yo
 
 To update the post metadata, run the following WP-CLI command in your terminal:
 
-'terminus wp <site>.<env> -- pantheon-content-publisher metakey-prefix-migration'
+`terminus wp <site>.<env> -- pantheon-content-publisher metakey-prefix-migration`
 
 ## Documentation
 
