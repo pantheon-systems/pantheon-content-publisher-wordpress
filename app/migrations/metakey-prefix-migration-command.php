@@ -6,13 +6,18 @@ use WP_CLI;
 
 class MetakeyPrefixMigrationCommand
 {
+	/**
+	 * @param array $args
+	 * @param array $assoc_args
+	 * @phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+	 */
 	public function __invoke($args, $assoc_args)
 	{
-		// ignore $args and $assoc_args
+		// Ignore $args and $assoc_args
 		global $wpdb;
 
-		$old_metakey = "pcc_id";
-		$new_metakey = "content_pub_id";
+		$old_metakey = 'pcc_id';
+		$new_metakey = 'content_pub_id';
 
 		// Get post_ids
 		$post_ids = $wpdb->get_col(
@@ -28,7 +33,8 @@ class MetakeyPrefixMigrationCommand
 
 		// if none return with message
 		if (empty($post_ids)) {
-			WP_CLI::success("No old metakey found, nothing to update.");
+			$message = "No metakey to update. Nothing else to do.";
+			$this->displaySuccessMessage($message);
 			return;
 		}
 
@@ -45,14 +51,31 @@ class MetakeyPrefixMigrationCommand
 			)
 		);
 
-		// Clear cache
+		// if nothing gets updated
+		if (!$updated) {
+			$message = "Something went wrong. Please try again.";
+			$this->displayErrorMessage($message);
+			return;
+		}
+
 		if ($updated) {
+			// Clear cache
 			foreach ($post_ids as $pid) {
 				clean_post_cache((int) $pid);
 			}
-			WP_CLI::success("Old metakeys updated for the new one. Nothing else to do.");
-		} else {
-			WP_CLI::error("Something went wrong. Please try again.");
+
+			$message = "Old metakeys updated. Nothing else to do.";
+			$this->displaySuccessMessage($message);
 		}
+	}
+
+	public function displaySuccessMessage($message)
+	{
+		WP_CLI::success($message);
+	}
+
+	public function displayErrorMessage($message)
+	{
+		WP_CLI::error($message);
 	}
 }
