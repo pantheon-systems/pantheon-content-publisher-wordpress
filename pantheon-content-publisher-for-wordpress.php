@@ -20,6 +20,8 @@ if (!\defined('ABSPATH')) {
 	exit;
 }
 
+use WP_CLI;
+
 define('PCC_PLUGIN_FILE', __FILE__);
 define('PCC_PLUGIN_DIR', plugin_dir_path(PCC_PLUGIN_FILE));
 define('PCC_BASENAME', plugin_basename(PCC_PLUGIN_FILE));
@@ -41,3 +43,9 @@ call_user_func(static function ($rootPath) {
 	}
 	add_action('plugins_loaded', [Plugin::class, 'getInstance'], -10);
 }, PCC_PLUGIN_DIR);
+
+// Add command to run the prefix migration
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	require_once __DIR__ . '/app/migrations/metakey-prefix-migration-command.php';
+	WP_CLI::add_command( 'pantheon-content-publisher metakey-prefix-migration', 'metakey_Prefix_Migration_Command' );
+}

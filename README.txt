@@ -40,12 +40,10 @@ Click “Upload Plugin,” select the downloaded zip file, then “Install Now�
 
 Set up your connection to Pantheon Content Publisher and Google Drive via the settings page in the WordPress admin dashboard.
 
-## Prefix Migration
-If you have been using the Pantheon Content Publisher plugin before the v1.3, you are encouraged to run the wp_cli command to update the post meta keys. 
-You are invited to run the WP_CLI command to update the value in your databse.
-'wp pantheon-content-publisher metakey-prefix-migration'
+## Update Existing Post Metadata
+If you were using the Pantheon Content Publisher plugin prior to version 1.3, you'll need to update your post metadata. This ensures that existing posts will work correctly with the new version.
 
-or
+To update the post metadata, run the following WP-CLI command in your terminal:
 
 'terminus wp <site>.<env> -- pantheon-content-publisher metakey-prefix-migration'
 
