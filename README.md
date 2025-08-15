@@ -100,12 +100,10 @@ the [issue guidelines](https://github.com/pantheon-systems/pantheon-content-publ
 and search for existing and closed issues. If your problem or idea is not addressed
 yet, [please open a new issue](https://github.com/pantheon-systems/pantheon-content-publisher-for-wordpress/issues/new).
 
-## Prefix Migration
-If you have been using the Pantheon Content Publisher plugin before the v1.3, you are encouraged to run the wp_cli command to update the post meta keys. 
-You are invited to run the WP_CLI command to update the value in your databse.
-'wp pantheon-content-publisher metakey-prefix-migration'
+## Update Existing Post Metadata
+If you were using the Pantheon Content Publisher plugin prior to version 1.3, you'll need to update your post metadata. This ensures that existing posts will work correctly with the new version.
 
-or
+To update the post metadata, run the following WP-CLI command in your terminal:
 
 'terminus wp <site>.<env> -- pantheon-content-publisher metakey-prefix-migration'
 
