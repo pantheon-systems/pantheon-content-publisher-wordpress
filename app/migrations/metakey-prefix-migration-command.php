@@ -1,17 +1,10 @@
 <?php
-// Exit if accessed directly
-if (! defined( 'ABSPATH' ) ) {
-	exit;
-}
 
-class metakeyPrefixMigrationCommand {
+namespace Pantheon\ContentPublisher;
 
-	/**
-	 * Rename the post metakey from pcc_id to content_pub_id
-	 * 
-	 * @when after_wp_load
-	 */
-	public function __invoke( $args, $assoc_args ) {
+class MetakeyPrefixMigrationCommand
+{
+	public function __invoke($args, $assoc_args) {
 		global $wpdb;
 
 		$old_metakey = 'pcc_id';
@@ -21,42 +14,40 @@ class metakeyPrefixMigrationCommand {
 		$post_ids = $wpdb->get_col(
 			$wpdb->prepare(
 				"SELECT DISTINCT pm.post_id
-				 FROM { $wpdb->postmeta } AS pm
-				 INNER JOIN { $wpdb->posts } AS p ON p.ID = pm.post_id
-				 WHERE p.post_type IN ( 'post', 'page' )
-				 AND pm.meta_key = %s",
-				 $old_metakey
+			 	FROM {$wpdb->postmeta} AS pm
+				INNER JOIN { $wpdb->posts } AS p ON p.ID = pm.post_id
+				WHERE p.post_type IN ('post', 'page')
+				AND pm.meta_key = %s",
+				$old_metakey
 			)
 		);
 
 		// if none return with message
-		if( empty( $post_ids ) ){
-			WP_CLI::success( "No old metakey found, nothing to update" );
+		if (empty($post_ids)) {
+			WP_CLI::success("No old metakey found, nothing to update.");
 			return;
 		}
 
 		// Update the old metakey for the new one
 		$updated = $wpdb->query(
 			$wpdb->prepare(
-				"UPDATE { $wpdb->postmeta } AS pm
-				 INNER JOIN { $wpdb->posts } AS p ON p.ID = pm.post_id
-				 SET pm.meta_key = %s
-				 WHERE p.post_type IN ( 'post', 'page' )
-				 AND pm.meta_key = %s",
-				 $new_metakey, $old_metakey
+				"UPDATE {$wpdb->postmeta} AS pm
+				INNER JOIN {$wpdb->posts} AS p ON p.ID = pm.post_id
+				SET pm.meta_key = %s
+				WHERE p.post_type IN ('post', 'page')
+				AND pm.meta_key = %s",
+				$new_metakey,
+				$old_metakey
 			)
 		);
 
 		// Clear cache
-		foreach( $post_ids as $pid ){
-			clean_post_cache( (int) $pid );
+		foreach ($post_ids as $pid) {
+			clean_post_cache((int) $pid);
 		}
 
-		WP_CLI::success( "Old metakeys updated for the new one. Nothing else to do." );
+		WP_CLI::success("Old metakeys updated for the new one. Nothing else to do.");
 	}
 
+	WP_CLI::add_command("pantheon-content-publisher metakey-prefix-migration", "metakeyPrefixMigrationCommand");
 }
-
-WP_CLI::add_command('pantheon-content-publisher metakey-prefix-migration', 'metakeyPrefixMigrationCommand');
-
-?>
