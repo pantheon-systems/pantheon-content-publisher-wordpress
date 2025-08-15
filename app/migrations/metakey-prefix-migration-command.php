@@ -9,8 +9,8 @@ class MetakeyPrefixMigrationCommand
 	/**
 	 * @param array $args
 	 * @param array $assoc_args
+	 * @suppress SlevomatCodingStandard.Functions.UnusedParameter
 	 */
-	// phpcs:ignore SlevomatCodingStandard.Functions.UnusedParameter
 	public function __invoke($args, $assoc_args)
 	{
 		global $wpdb;
