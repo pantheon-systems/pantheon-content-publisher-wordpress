@@ -9,7 +9,7 @@ class MetakeyPrefixMigrationCommand
 	/**
 	 * @param array $args
 	 * @param array $assoc_args
-	 * @phpcs:ignore
+	 * @phpcs:ignore SlevomatCodingStandard.Functions.UnusedParameter
 	 */
 	public function __invoke($args, $assoc_args)
 	{
@@ -32,8 +32,8 @@ class MetakeyPrefixMigrationCommand
 
 		// if none return with message
 		if (empty($post_ids)) {
-			$message = "No metakey to update. Nothing else to do.";
-			$this->displaySuccessMessage($message);
+			// phpcs:ignore SlevomatCodingStandard.TypeHints.TypeHintDeclaration.StaticCall
+			WP_CLI::success("No metakey to update. Nothing else to do.")
 			return;
 		}
 
@@ -52,8 +52,8 @@ class MetakeyPrefixMigrationCommand
 
 		// if nothing gets updated
 		if (!$updated) {
-			$message = "Something went wrong. Please try again.";
-			$this->displayErrorMessage($message);
+			// phpcs:ignore SlevomatCodingStandard.TypeHints.TypeHintDeclaration.StaticCall
+			WP_CLI::error("Something went wrong. Please try again.");
 			return;
 		}
 
@@ -62,21 +62,8 @@ class MetakeyPrefixMigrationCommand
 			foreach ($post_ids as $pid) {
 				clean_post_cache((int) $pid);
 			}
-
-			$message = "Old metakeys updated. Nothing else to do.";
-			$this->displaySuccessMessage($message);
+			// phpcs:ignore SlevomatCodingStandard.TypeHints.TypeHintDeclaration.StaticCall
+			WP_CLI::success("Old metakeys updated. Nothing else to do.");
 		}
-	}
-
-	private function displaySuccessMessage($message)
-	{
-		// phpcs:ignore
-		WP_CLI::success($message);
-	}
-
-	private function displayErrorMessage($message)
-	{
-		// phpcs:ignore
-		WP_CLI::error($message);
 	}
 }
