@@ -25,7 +25,7 @@ jobs:
         path: |
             ~/.composer/cache
             vendor
-            key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
             ${{ runner.os }}-composer-
 
