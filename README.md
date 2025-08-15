@@ -101,12 +101,12 @@ and search for existing and closed issues. If your problem or idea is not addres
 yet, [please open a new issue](https://github.com/pantheon-systems/pantheon-content-publisher-for-wordpress/issues/new).
 
 ## Update Existing Post Metadata
+
 If you were using the Pantheon Content Publisher plugin prior to version 1.3, you'll need to update your post metadata. This ensures that existing posts will work correctly with the new version.
 
 To update the post metadata, run the following WP-CLI command in your terminal:
 
 'terminus wp <site>.<env> -- pantheon-content-publisher metakey-prefix-migration'
-
 
 ## Documentation
 

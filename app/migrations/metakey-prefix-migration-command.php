@@ -2,9 +2,13 @@
 
 namespace Pantheon\ContentPublisher;
 
+use WP_CLI;
+
 class MetakeyPrefixMigrationCommand
 {
-	public function __invoke($args, $assoc_args) {
+	public function __invoke($args, $assoc_args)
+	{
+		// Ignore $args and $assoc_args
 		global $wpdb;
 
 		$old_metakey = 'pcc_id';
@@ -15,7 +19,7 @@ class MetakeyPrefixMigrationCommand
 			$wpdb->prepare(
 				"SELECT DISTINCT pm.post_id
 			 	FROM {$wpdb->postmeta} AS pm
-				INNER JOIN { $wpdb->posts } AS p ON p.ID = pm.post_id
+				INNER JOIN {$wpdb->posts} AS p ON p.ID = pm.post_id
 				WHERE p.post_type IN ('post', 'page')
 				AND pm.meta_key = %s",
 				$old_metakey
@@ -42,12 +46,14 @@ class MetakeyPrefixMigrationCommand
 		);
 
 		// Clear cache
-		foreach ($post_ids as $pid) {
-			clean_post_cache((int) $pid);
+		if ($updated) {
+			foreach ($post_ids as $pid) {
+				clean_post_cache((int) $pid);
+			}
+			WP_CLI::success("Old metakeys updated for the new one. Nothing else to do.");
+		} 
+		else {
+			WP_CLI::error("Something went wrong. Please try again.");
 		}
-
-		WP_CLI::success("Old metakeys updated for the new one. Nothing else to do.");
 	}
-
-	WP_CLI::add_command("pantheon-content-publisher metakey-prefix-migration", "metakeyPrefixMigrationCommand");
 }
