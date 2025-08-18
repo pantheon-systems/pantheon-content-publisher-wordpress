@@ -16,7 +16,9 @@ INCLUDES=(
 
 # Determine repository name from the current directory.
 REPO=$(basename "$(pwd)")
-ZIP="${REPO}.zip"
+# Zip file to match plugin name rather then repo name
+PLUGIN_NAME="pantheon-content-publisher"
+ZIP="${PLUGIN_NAME}.zip"
 
 echo "Starting build process for $REPO..."
 
