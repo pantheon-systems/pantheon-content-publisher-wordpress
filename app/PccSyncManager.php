@@ -137,7 +137,9 @@ class PccSyncManager
 		];
 
 		if (!$postId) {
-			$postId = wp_insert_post($data);
+			$insertData = $data;
+			$insertData['post_author'] = $this->getDefaultAuthorId($article);
+			$postId = wp_insert_post($insertData);
 			update_post_meta($postId, PCC_CONTENT_META_KEY, $article->id);
 			$this->syncPostMetaAndTags($postId, $article);
 			return $postId;
@@ -306,6 +308,31 @@ class PccSyncManager
 	private function getIntegrationPostType()
 	{
 		return get_option(PCC_INTEGRATION_POST_TYPE_OPTION_KEY);
+	}
+
+	/**
+	 * Get the default author ID for content created by Content Publisher.
+	 *
+	 * Allows filtering via 'pcc_default_author_id'. The filter receives the
+	 * computed default ID and the Article (if available). The filter can be
+	 * used to override the default author ID for a given article.
+	 *
+	 * @param Article|null $article
+	 * @return int
+	 */
+	public function getDefaultAuthorId(?Article $article = null): int
+	{
+		$adminIds = get_users([
+			'role' => 'administrator',
+			'orderby' => 'ID',
+			'order' => 'ASC',
+			'number' => 1,
+			'fields' => 'ID',
+		]);
+
+		$defaultId = !empty($adminIds) ? (int) $adminIds[0] : 0;
+
+		return (int) apply_filters('pcc_default_author_id', $defaultId, $article);
 	}
 
 	/**
