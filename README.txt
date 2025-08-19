@@ -24,7 +24,7 @@ Choose to publish as either a WordPress post or page, adapting to your site's co
 
 For more information, please check [Pantheon Content Publisher documentation](https://docs.content.pantheon.io).
 
-## Installation
+== Installation ==
 Download the Content Publisher WordPress plugin zip file.
 
 Navigate to Plugins > Add New in your WordPress admin dashboard.
@@ -33,7 +33,7 @@ Click “Upload Plugin,” select the downloaded zip file, then “Install Now�
 
 Set up your connection to Pantheon Content Publisher and Google Drive via the settings page in the WordPress admin dashboard.
 
-## Integration with Third-Party Services
+== Integration with Third-Party Services ==
 **Important Disclosure**
 This plugin integrates with Google Drive and Google Docs to facilitate document publishing to WordPress.
 When enabled, it will access documents from these services for the purposes of rendering previews and enabling publishing functionality via the [Pantheon Content Publisher service](https://docs.content.pantheon.io). These services are not processing any data or content originating from WordPress or the plugin itself and no other third-party service is used to process data. 
