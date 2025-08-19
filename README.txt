@@ -40,7 +40,7 @@ When enabled, it will access documents from these services for the purposes of r
 Pantheon Content Publisher policies and terms are available at [https://legal.pantheon.io/](https://legal.pantheon.io/) 
 
 This plugin makes use of the Apollo open-source GraphQL Client library and references its [Chrome extension](https://chromewebstore.google.com/detail/apollo-client-devtools/jdkknkkbebbapilgoeccciglkfbmbnfm). 
-This library only suggests the use of this tool to developers. Users don't interact with it and no data is exchanged with this service.
+This library only suggests the use of this tool to developers. Users don't interact with it and no data is exchanged with this service. [Apollo Website](https://www.apollographql.com), [Apollo Term of Service](https://www.apollographql.com/Apollo-Terms-of-Service.pdf), [Apollo Privacy Policy](https://www.apollographql.com/Apollo-Privacy-Policy.pdf)
 
 **Data Handling**
 User documents from Google Drive are accessed and processed to generate content on WordPress.
