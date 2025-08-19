@@ -6,9 +6,9 @@ labels: feature
 
 Before opening:
 
-- [Search for duplicate or closed issues](https://github.com/pantheon-systems/pantheon-content-publisher/issues?utf8=%E2%9C%93&q=is%3Aissue)
+- [Search for duplicate or closed issues](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/issues?utf8=%E2%9C%93&q=is%3Aissue)
 - Read
-  the [contributing guidelines](https://github.com/pantheon-systems/pantheon-content-publisher/blob/master/.github/CONTRIBUTING.md)
+  the [contributing guidelines](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/master/.github/CONTRIBUTING.md)
 
 Feature requests must include:
 

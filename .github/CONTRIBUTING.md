@@ -12,7 +12,7 @@ patches and features.
 
 ## Using the issue tracker
 
-The [issue tracker](https://github.com/pantheon-systems/pantheon-content-publisher/issues) is
+The [issue tracker](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/issues) is
 the preferred channel for [bug reports](#bug-reports), [features requests](#feature-requests)
 and [submitting pull requests](#pull-requests), but please respect the following
 restrictions:
@@ -40,7 +40,7 @@ them:
 - `question` - General support/questions issue bucket.
 
 For a complete look at our labels, see
-the [project labels page](https://github.com/pantheon-systems/pantheon-content-publisher/labels).
+the [project labels page](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/labels).
 
 ## Bug reports
 
