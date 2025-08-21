@@ -434,10 +434,10 @@ class PccSyncManager
 		// Original content
 		$content = $article->content;
 
-		// Pattern to match all <style> blocks
+		// Pattern to match all style blocks
 		$stylePattern = '/<style.*?>.*?<\/style>/is';
 
-		// Remove all <style> blocks from the content
+		// Remove all style blocks from the content
 		$content = preg_replace($stylePattern, '', $content);
 
 		$data = [
