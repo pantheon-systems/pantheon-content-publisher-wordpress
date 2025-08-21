@@ -41,7 +41,7 @@ Pantheon Content Publisher policies and terms are available at [https://legal.pa
 
 This plugin makes use of the Apollo open-source GraphQL Client library and references its [Chrome extension](https://chromewebstore.google.com/detail/apollo-client-devtools/jdkknkkbebbapilgoeccciglkfbmbnfm). 
 This library only suggests the use of this tool to developers. Users don't interact with it and no data is exchanged with this service. 
-This service is provided by Apollo:[Apollo Website](https://www.apollographql.com), [Apollo Term of Service](https://www.apollographql.com/Apollo-Terms-of-Service.pdf), [Apollo Privacy Policy](https://www.apollographql.com/Apollo-Privacy-Policy.pdf)
+This service is provided by [Apollo](https://www.apollographql.com). See the [Apollo Term of Service](https://www.apollographql.com/Apollo-Terms-of-Service.pdf) and [Apollo Privacy Policy](https://www.apollographql.com/Apollo-Privacy-Policy.pdf) for details on terms.
 
 **Data Handling**
 User documents from Google Drive are accessed and processed to generate content on WordPress.
