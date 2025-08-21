@@ -12,17 +12,17 @@
 <p align="center">
   <i>Publish WordPress content from Google Docs with Pantheon Content Cloud.</i>
   <br>
-  <a href="https://github.com/pantheon-systems/pantheon-content-publisher/issues/new?template=bug_report.md&labels=bug">Report bug</a>
+  <a href="https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/issues/new?template=bug_report.md&labels=bug">Report bug</a>
   ·
-  <a href="https://github.com/pantheon-systems/pantheon-content-publisher/issues/new?template=feature_request.md&labels=feature">Request feature</a>
+  <a href="https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/issues/new?template=feature_request.md&labels=feature">Request feature</a>
   ·
   <a href="https://pcc.pantheon.io/docs" target="_blank">Check out PCC Docs</a>
 </p>
 
 <div align="center">
 
-[![Style Lint](https://github.com/pantheon-systems/pantheon-content-publisher/actions/workflows/php-style-lint.yml/badge.svg)](https://github.com/pantheon-systems/pantheon-content-publisher/actions/workflows/php-style-lint.yml)
-[![PHP Compatibility 8.x](https://github.com/pantheon-systems/pantheon-content-publisher/actions/workflows/php-version-compatibility.yml/badge.svg)](https://github.com/pantheon-systems/pantheon-content-publisher/actions/workflows/php-version-compatibility.yml)
+[![Style Lint](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/actions/workflows/php-style-lint.yml/badge.svg)](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/actions/workflows/php-style-lint.yml)
+[![PHP Compatibility 8.x](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/actions/workflows/php-version-compatibility.yml/badge.svg)](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/actions/workflows/php-version-compatibility.yml)
 
 </div>
 
@@ -42,17 +42,17 @@
 
 This is a WordPress plugin. It can be installed via the usual WordPress Dashboard workflow.
 
-- [Download the latest release.](https://github.com/pantheon-systems/pantheon-content-publisher/releases/)
+- [Download the latest release.](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/releases/)
 
 or
 
-- Clone the repo: `git clone https://github.com/pantheon-systems/pantheon-content-publisher.git` in
+- Clone the repo: `git clone https://github.com/pantheon-systems/pantheon-content-publisher-wordpress.git` in
   your `wp-content/plugins`
   folder
 
 **_or soon_**
 
-- Install via Composer: `composer require pantheon-systems/pantheon-content-publisher`
+- Install via Composer: `composer require pantheon-systems/pantheon-content-publisher-wordpress`
 
 **_If installing from source, make sure to follow the build instructions in the [Development](#development) section
 below_**
@@ -62,18 +62,18 @@ below_**
 1. `composer i && npm i` to install dependencies.
 2. `npm run watch` / `npm run dev` / `npm run prod` to build assets.
 3. Read through
-   our [contributing guidelines](https://github.com/pantheon-systems/pantheon-content-publisher/blob/primary/.github/CONTRIBUTING.md)
+   our [contributing guidelines](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/primary/.github/CONTRIBUTING.md)
    for additional information. Included are directions for opening issues, coding standards and miscellaneous notes.
 
 ## Repository Actions
 
 This repository takes advantage of the following workflows to automate the release & testing processes:
 
-- [PHPCS](https://github.com/pantheon-systems/pantheon-content-publisher/blob/primary/.github/workflows/php-style-lint.yml)
-- [PHPCompatibility](https://github.com/pantheon-systems/pantheon-content-publisher/blob/primary/.github/workflows/php-version-compatibility.yml)
+- [PHPCS](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/primary/.github/workflows/php-style-lint.yml)
+- [PHPCompatibility](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/primary/.github/workflows/php-version-compatibility.yml)
 - [Release Drafter](https://github.com/marketplace/actions/release-drafter)
 - [PR Labeler](https://github.com/marketplace/actions/pr-labeler)
-- [A custom workflow that builds release artifacts](https://github.com/pantheon-systems/pantheon-content-publisher/blob/primary/.github/workflows/release-artifact.yml)
+- [A custom workflow that builds release artifacts](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/primary/.github/workflows/release-artifact.yml)
 
 These workflows will build a release draft and keep it up-to-date as new PRs are merged. Once a release is published, a
 ready-to-install zip file will be generated and attached to the newly-published release.
@@ -96,9 +96,9 @@ Pantheon Content Publisher is dependent on:
 ## Bugs and feature requests
 
 Have a bug or a feature request? Please first read
-the [issue guidelines](https://github.com/pantheon-systems/pantheon-content-publisher/blob/primary/.github/CONTRIBUTING.md#using-the-issue-tracker)
+the [issue guidelines](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/primary/.github/CONTRIBUTING.md#using-the-issue-tracker)
 and search for existing and closed issues. If your problem or idea is not addressed
-yet, [please open a new issue](https://github.com/pantheon-systems/pantheon-content-publisher/issues/new).
+yet, [please open a new issue](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/issues/new).
 
 ## Documentation
 
@@ -113,5 +113,5 @@ adhere to those rules whenever possible.
 ## Changelog
 
 You may find changelogs for each version of Pantheon Content Publisher released
-in [the Releases section](https://github.com/pantheon-systems/pantheon-content-publisher/releases) of this
+in [the Releases section](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/releases) of this
 repository.

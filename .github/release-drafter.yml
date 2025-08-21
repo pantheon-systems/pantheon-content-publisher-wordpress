@@ -31,7 +31,7 @@ version-resolver:
       - 'patch'
   default: patch
 template: |
-  ## [v$RESOLVED_VERSION(####-##-##)](https://github.com/pantheon-systems/pantheon-content-publisher/compare/$PREVIOUS_TAG...$RESOLVED_VERSION)
+  ## [v$RESOLVED_VERSION(####-##-##)](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/compare/$PREVIOUS_TAG...$RESOLVED_VERSION)
 
   $CHANGES
 
