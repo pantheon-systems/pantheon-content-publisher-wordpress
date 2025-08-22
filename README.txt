@@ -40,7 +40,10 @@ When enabled, it will access documents from these services for the purposes of r
 Pantheon Content Publisher policies and terms are available at [https://legal.pantheon.io/](https://legal.pantheon.io/) 
 
 This plugin makes use of the Apollo open-source GraphQL Client library and references its [Chrome extension](https://chromewebstore.google.com/detail/apollo-client-devtools/jdkknkkbebbapilgoeccciglkfbmbnfm). 
+Please visit the [Chrome Store Terms of Service](https://ssl.gstatic.com/chrome/webstore/intl/en/gallery_tos.html) and [Privacy Policy](https://policies.google.com/privacy?hl=en). It also references its [Firefox Extension](https://addons.mozilla.org/en-CA/firefox/addon/apollo-developer-tools/), please read the [Firefox Privary Policy](https://www.mozilla.org/en-US/privacy/websites/) for more information.
+
 This library only suggests the use of this tool to developers. Users don't interact with it and no data is exchanged with this service. 
+
 This service is provided by [Apollo](https://www.apollographql.com). See the [Apollo Term of Service](https://www.apollographql.com/Apollo-Terms-of-Service.pdf) and [Apollo Privacy Policy](https://www.apollographql.com/Apollo-Privacy-Policy.pdf) for details on terms.
 
 **Data Handling**
