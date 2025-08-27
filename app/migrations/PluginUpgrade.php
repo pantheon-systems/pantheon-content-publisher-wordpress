@@ -1,6 +1,9 @@
 <?php
 
-class PluginUpgrade{
+namespace Pantheon\ContentPublisher\Migrations;
+
+class PluginUpgrade
+{
 
 	/**
 	 * Check if upgrade are needed
@@ -11,28 +14,29 @@ class PluginUpgrade{
 		$installer_version = get_option('CONTENT_PUB_VERSION', '0.0');
 
 		// Run if new version is higher than the current
-		if (version_compare($installer_version, CONTENT_PUB_VERSION, '<')){
+		if (version_compare($installer_version, CONTENT_PUB_VERSION, '<')) {
 			// Run if version is 1.3 (pcc metapost in db upgrade)
 			// Granted the wp-submission release will be 1.3
 			if (version_compare($installer_version, '1.3', '<') &&
-				version_compare(CONTENT_PUB_VERSION, '1.3', '>='))
-				{
-					self::upgrade_to_1_3();
-				}
+				version_compare(CONTENT_PUB_VERSION, '1.3', '>=')) 
+			{
+				self::upgradeTo13();
+			}
 			// Update stored version to prevent rerunning
 			update_option('CONTENT_PUB_VERSION', CONTENT_PUB_VERSION);
 		}
 	}
 
 	// Granted the wp-submission release will be 1.3
-	private static function upgrade_to_1_3(){
+	private static function upgradeTo13()
+	{
 
 		global $wpdb;
 		$old_metakey = 'pcc_id';
 		$new_metakey = 'content_pub_id';
 		$new_option = get_option('pcc_migration');
 
-		if ($new_option === 'no_migration_needed'){
+		if ($new_option === 'no_migration_needed') {
 			return;
 		}
 
