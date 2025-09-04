@@ -63,6 +63,22 @@ class PccSyncManager
 	}
 
 	/**
+	 * Build PccClientConfig.
+	 *
+	 * @param string|null $pccGrant
+	 * @return PccClientConfig
+	 */
+	public function getClientConfig(?string $pccGrant = null): PccClientConfig
+	{
+		$args = [$this->siteId, $this->apiKey];
+		if ($pccGrant) {
+			$args = [$this->siteId, '', null, $pccGrant];
+		}
+
+		return new PccClientConfig(...$args);
+	}
+
+	/**
 	 * Get PccClient instance.
 	 *
 	 * @param string|null $pccGrant
@@ -70,12 +86,9 @@ class PccSyncManager
 	 */
 	public function pccClient(?string $pccGrant = null): PccClient
 	{
-		$args = [$this->siteId, $this->apiKey];
-		if ($pccGrant) {
-			$args = [$this->siteId, '', null, $pccGrant];
-		}
+		$config = $this->getClientConfig($pccGrant);
 
-		return new PccClient(new PccClientConfig(...$args));
+		return new PccClient($config);
 	}
 
 	/**

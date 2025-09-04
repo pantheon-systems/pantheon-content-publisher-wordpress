@@ -170,9 +170,9 @@ class Settings
 	{
 		// Check if required parameters exist
 		if (
-				!filter_has_var(INPUT_GET, 'document_id') ||
-				!filter_has_var(INPUT_GET, 'publishing_level') ||
-				!filter_has_var(INPUT_GET, 'pccGrant')
+			!filter_has_var(INPUT_GET, 'document_id') ||
+			!filter_has_var(INPUT_GET, 'publishing_level') ||
+			!filter_has_var(INPUT_GET, 'pccGrant')
 		) {
 			return false;
 		}
@@ -192,7 +192,7 @@ class Settings
 	public function allowStyleTags($allowedTags)
 	{
 		if (get_post_meta(get_the_ID(), PCC_CONTENT_META_KEY, true)) {
-				$allowedTags['style'] = [];
+			$allowedTags['style'] = [];
 		}
 
 		return $allowedTags;
@@ -286,7 +286,7 @@ class Settings
 					} catch (Exception $ex) {
 						wp_die(esc_html__(
 							'Content Publisher: Failed to preview this document. Your preview link may have expired. ' .
-							'Try previewing this document again from Content Publisher.',
+								'Try previewing this document again from Content Publisher.',
 							'pantheon-content-publisher-for-wordpress'
 						));
 						$postId = 0;
@@ -296,8 +296,8 @@ class Settings
 				if (empty($postId) || !is_numeric($postId) || $postId <= 0) {
 					wp_die(esc_html__(
 						'Content Publisher: Failed to preview this document. ' .
-						'Confirm that this document is connected to your collection. ' .
-						'Reach out to support if the issue persists.',
+							'Confirm that this document is connected to your collection. ' .
+							'Reach out to support if the issue persists.',
 						'pantheon-content-publisher-for-wordpress'
 					));
 					exit;
@@ -337,8 +337,7 @@ class Settings
 
 	/**
 	 * Register custom endpoint for Pantheon Cloud Status.
-	 * This endpoint is used to check if the site is hosted live.
-	 * and checked only one time to show your website on PCC google addon
+	 * This endpoint is used to check site status
 	 */
 	public function registerPantheonCloudStatusEndpoint()
 	{

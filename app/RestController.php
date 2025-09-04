@@ -9,6 +9,8 @@ namespace Pantheon\ContentPublisher;
 use WP_REST_Request;
 use WP_REST_Response;
 use PccPhpSdk\api\Query\Enums\PublishingLevel;
+use PccPhpSdk\core\Status\Status;
+use PccPhpSdk\core\Status\StatusOptions;
 
 use function esc_html__;
 
@@ -98,7 +100,31 @@ class RestController
 	 */
 	public function pantheonCloudStatusCheck()
 	{
-		return new WP_REST_Response((object)[]);
+		$pccManager = new PccSyncManager();
+		$config = $pccManager->getClientConfig();
+		$isPCCConfigured = $pccManager->isPCCConfigured();
+
+		$options = new StatusOptions(
+			smartComponents: false,
+			smartComponentsCount: 0,
+			smartComponentPreview: false,
+			metadataGroups: false,
+			metadataGroupIdentifiers: null,
+			resolvePathConfigured: true,
+			notFoundPath: ''
+		);
+		$status = new Status($config, $options);
+
+		$platformStatus = $status->withPlatform([
+			'name' => 'wordpress',
+			'version' => get_bloginfo('version'),
+			'php' => PHP_VERSION,
+			'is_pcc_configured' => $isPCCConfigured,
+			'sdk' => ['name' => 'pcc-wp-sdk', 'version' => $this->getPluginVersion()],
+		]);
+
+		$payload = $platformStatus->toArray();
+		return new WP_REST_Response($payload);
 	}
 
 	/**
@@ -387,5 +413,11 @@ class RestController
 			esc_html__('Saved Data deleted.', 'pantheon-content-publisher-for-wordpress'),
 			200
 		);
+	}
+
+	private function getPluginVersion(): string
+	{
+		$headers = get_file_data(PCC_PLUGIN_FILE, ['Version' => 'Version']);
+		return isset($headers['Version']) ? (string) $headers['Version'] : '';
 	}
 }
