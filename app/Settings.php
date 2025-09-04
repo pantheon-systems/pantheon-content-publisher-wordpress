@@ -260,13 +260,21 @@ class Settings
 		}
 
 		$publishingLevelParam = sanitize_text_field(filter_input(INPUT_GET, 'publishingLevel'));
+		$pccGrant = sanitize_text_field(filter_input(INPUT_GET, 'pccGrant'));
+
+		// Check if required parameters are present
+		if (empty($pccGrant)) {
+			status_header(403);
+			wp_die(esc_html__('Content Publisher: Missing parameters for preview', 'pantheon-content-publisher'));
+			exit;
+		}
 
 		// Default to production if no publishing level is provided
 		if (empty($publishingLevelParam)) {
 			$publishingLevelParam = PublishingLevel::PRODUCTION->value;
 		}
 
-
+		$isProductionFlow = false;
 		try {
 			$PCCManager = new PccSyncManager();
 
@@ -275,8 +283,28 @@ class Settings
 				PublishingLevel::PRODUCTION->value === $publishingLevelParam &&
 				$PCCManager->isPCCConfigured()
 			) {
+				$isProductionFlow = true;
 				$parts = explode('/', $wp->request);
 				$documentId = sanitize_text_field(wp_unslash(end($parts)));
+
+				// Check the doc exists and is allowed.
+				$pccClient = (new PccSyncManager())->pccClient($pccGrant);
+				$articlesApi = new ArticlesApi(null, $pccClient);
+
+				$article = $articlesApi->getArticleById(
+					$documentId,
+					['id'],
+					PublishingLevel::PRODUCTION, 
+					ContentType::TREE_PANTHEON_V2
+				);
+
+				if (!$article) {
+					status_header(403);
+					wp_die(esc_html__('Content Publisher: Document not found or not connected to your collection', 'pantheon-content-publisher'));
+					exit;
+				}
+
+				// Proceed with publish.
 				$postId = $PCCManager->fetchAndStoreDocument($documentId, PublishingLevel::PRODUCTION);
 
 				wp_redirect(add_query_arg('nocache', 'true', get_permalink($postId) ?: site_url()));
@@ -364,6 +392,10 @@ class Settings
 				exit;
 			}
 		} catch (Exception $ex) {
+			if ($isProductionFlow) {
+				status_header(500);
+				wp_die(esc_html__('Content Publisher: Authorization failed.', 'pantheon-content-publisher'));
+			}
 			// No Action needed for safe exit
 		}
 	}
