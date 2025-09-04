@@ -184,6 +184,11 @@ class PccSyncManager
 		}
 	}
 
+	private function getFeaturedImageKey()
+	{
+		return apply_filters('pcc_featured_image_key', 'image');
+	}
+
 	/**
 	 * Set the post feature image.
 	 *
@@ -192,16 +197,28 @@ class PccSyncManager
 	 */
 	private function setPostFeatureImage($postId, Article $article)
 	{
-		if (!isset($article->metadata['FeaturedImage'])) {
+		$metadata = $article->metadata ?? [];
+		$imageKey = $this->getFeaturedImageKey();
+		$legacyKey = 'FeaturedImage';
+
+		$hasNewKey = is_array($metadata) && array_key_exists($imageKey, $metadata);
+		$hasLegacyKey = is_array($metadata) && array_key_exists($legacyKey, $metadata);
+
+		if (!$hasNewKey && !$hasLegacyKey) {
 			return;
 		}
-		// If the feature image is empty, delete the existing thumbnail.
-		if (!$article->metadata['FeaturedImage']) {
+
+		$selectedKey = $hasNewKey ? $imageKey : $legacyKey;
+		$imageValue = $metadata[$selectedKey] ?? null;
+
+		// If the selected key is present but empty, delete the existing thumbnail.
+		if (!$imageValue) {
 			delete_post_thumbnail($postId);
 			return;
 		}
 
-		$featuredImageURL = $article->metadata['FeaturedImage'] . '#image.jpg';
+		$featuredImageURL = $imageValue . '#image.jpg';
+
 		// Check if there was an existing image.
 		$existingImageId = $this->getImageIdByUrl($featuredImageURL);
 		if ($existingImageId) {
