@@ -554,6 +554,14 @@ class Settings
 	{
 
 		$view = sanitize_text_field(filter_input(INPUT_GET, 'view')) ?: '';
+
+		if ($view !== '') {
+			$nonce = filter_input(INPUT_GET, '_wpnonce');
+			if (!$nonce || !wp_verify_nonce($nonce, 'pcc_view')) {
+				$view = '';
+			}
+		}
+
 		if ($view && isset($this->pages[$view])) {
 			require $this->pages[$view];
 
