@@ -221,6 +221,11 @@ class Settings
 			return false;
 		}
 
+		// Validate preview signature
+		if ( ! $this->validatePreviewSignature() ) {
+			return false;
+		}
+
 		// Confirm the publishing level is realtime or draft
 		$publishingLevel = sanitize_text_field(filter_input(INPUT_GET, 'publishing_level'));
 
@@ -350,6 +355,11 @@ class Settings
 					$versionId ?: null
 				);
 
+				// Sign the preview URL with a timestamp and signature.
+				$ts = time();
+				$sig = hash_hmac('sha256', implode('|', [(string)$ts, (string)$documentId, (string)($versionId ?: ''), (string)$publishingLevel]), $this->previewSecretForTs($ts, 900));
+				$url = add_query_arg(['ts' => $ts, 'sig' => $sig], $url);
+
 				wp_redirect($url);
 				exit;
 			}
@@ -424,6 +434,11 @@ class Settings
 
 		if (empty($posts)) {
 			return $posts;
+		}
+
+		// Validate preview signature.
+		if ( ! $this->validatePreviewSignature() ) {
+			return $posts; // Invalid signature, return original posts.
 		}
 
 		$post = $posts[0];
