@@ -179,6 +179,36 @@ class Settings
 		return hash_hmac('sha256', 'pcc_preview|' . site_url() . '|' . $bucket, wp_salt('nonce') );
 	}
 
+	/**
+	 * Validate the preview signature.
+	 * 
+	 * Since preview links are public, we can't use nonces to validated. 
+	 * Instead, we use a HMAC signature with a shared secret that is 
+	 * time-limited.
+	 *
+	 * @return bool True if the signature is valid, false otherwise.
+	 */
+	private function validatePreviewSignature(): bool {
+		$timestamp = (int) filter_input(INPUT_GET, 'ts', FILTER_VALIDATE_INT);
+		$signature = (string) filter_input(INPUT_GET, 'sig');
+		$documentId = sanitize_text_field(filter_input(INPUT_GET, 'document_id'));
+		$versionId = sanitize_text_field(filter_input(INPUT_GET, 'versionId'));
+		$publishingLevel = sanitize_text_field(filter_input(INPUT_GET, 'publishing_level'));
+
+		if ( !$timestamp || !$signature || !$documentId || !$publishingLevel ) {
+			return false;
+		}
+
+		// 15 minute TTL.
+		if ( abs( time() - $timestamp ) > 900 ) {
+			return false;
+		}
+
+		$base = implode('|', [(string) $timestamp, $documentId, $versionId, $publishingLevel]);
+		$expected = hash_hmac('sha256', $base, $this->previewSecretForTs($timestamp));
+
+		return hash_equals($expected, $signature);
+	}
 
 	public function isPreviewRequest(): bool
 	{
