@@ -42,34 +42,3 @@ call_user_func(static function ($rootPath) {
 	}
 	add_action('plugins_loaded', [Plugin::class, 'getInstance'], -10);
 }, CONTENT_PUB_PLUGIN_DIR);
-
-/**
- * Content Publisher activation hook.
- *
- * Generates a temporary preview secret for WordPress that is used for
- * content previews from content.pantheon.io document previews.
- *
- * @return void
- */
-function _pcc_on_activate(): void
-{
-	if (! get_option(CONTENT_PUB_PREVIEW_SECRET_OPTION_KEY)) {
-		// 64 chars, mixed, not autoloaded to avoid polluting requests.
-		add_option(CONTENT_PUB_PREVIEW_SECRET_OPTION_KEY, wp_generate_password(64, true, true));
-	}
-}
-
-/**
- * Content Publisher deactivation hook.
- *
- * Cleans up the preview secret stored in the database.
- *
- * @return void
- */
-function _pcc_on_deactivate(): void
-{
-	delete_option(CONTENT_PUB_PREVIEW_SECRET_OPTION_KEY);
-}
-
-register_activation_hook(__FILE__, __NAMESPACE__ . '\\_pcc_on_activate');
-register_deactivation_hook(__FILE__, __NAMESPACE__ . '\\_pcc_on_deactivate');
