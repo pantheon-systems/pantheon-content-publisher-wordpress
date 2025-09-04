@@ -166,6 +166,20 @@ class Settings
 		return $apiKey ?: [];
 	}
 
+	/**
+	 * Generate a preview secret for a given timestamp.
+	 *
+	 * @param int $timestamp The timestamp to generate the secret for.
+	 * @param int $windowSeconds The time window in seconds (default is 900 seconds or 15 minutes).
+	 * @return string The generated preview secret.
+	 */
+	private function previewSecretForTs( int $timestamp, int $windowSeconds = 900 ): string
+	{
+		$bucket = (int) floor( $timestamp / $windowSeconds );
+		return hash_hmac('sha256', 'pcc_preview|' . site_url() . '|' . $bucket, wp_salt('nonce') );
+	}
+
+
 	public function isPreviewRequest(): bool
 	{
 		// Check if required parameters exist
