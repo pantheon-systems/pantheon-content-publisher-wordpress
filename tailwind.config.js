@@ -1,8 +1,7 @@
 /** @type {import('tailwindcss').Config} */
-// tailwind.config.js
-const plugin = require('tailwindcss/plugin');
-module.exports = {
-	content: ["./admin/**/*.{php,html,js}"],
+/** @type {import('tailwindcss').Config} */
+export default {
+	content: ["./admin/**/*.{php,html,js}", "./src/admin/**/*.{ts,tsx,js,jsx}"],
 	theme: {
 		fontSize: {
 			'xs': ['0.75rem', '1.125rem'], // 12px, 18px
