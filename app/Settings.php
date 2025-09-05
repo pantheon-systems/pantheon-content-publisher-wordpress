@@ -286,10 +286,34 @@ class Settings
 				$isProductionFlow = true;
 				$parts = explode('/', $wp->request);
 				$documentId = sanitize_text_field(wp_unslash(end($parts)));
+				$pccGrant = sanitize_text_field(filter_input(INPUT_GET, 'pccGrant'));
 
-				// Check the doc exists and is allowed.
-				$pccClient = (new PccSyncManager())->pccClient($pccGrant);
-				$articlesApi = new ArticlesApi(null, $pccClient);
+				// Check if required parameters are present
+				if (empty($documentId)) {
+					wp_die(esc_html__(
+						'Content Publisher: Missing document ID parameter',
+						'pantheon-content-publisher'
+					));
+					exit;
+				}
+
+				// For production publishing, pccGrant is optional since we use the site's configured API key
+				try {
+					if (empty($pccGrant)) {
+						// Use the default PCC client for production publishing
+						$pccClient = (new PccSyncManager())->pccClient();
+					} else {
+						// Use the provided grant
+						$pccClient = (new PccSyncManager())->pccClient($pccGrant);
+					}
+
+					// Check the doc exists and is allowed.
+					$articlesApi = new ArticlesApi($pccClient);
+				} catch (Exception $e) {
+					status_header(500);
+					wp_die(esc_html__('Content Publisher: Failed to initialize PCC client.', 'pantheon-content-publisher'));
+					exit;
+				}
 
 				$article = $articlesApi->getArticleById(
 					$documentId,
@@ -336,7 +360,12 @@ class Settings
 				}
 
 				// Create a new PCC client with the provided grant
-				$pccClient = (new PccSyncManager())->pccClient($pccGrant);
+				try {
+					$pccClient = (new PccSyncManager())->pccClient($pccGrant);
+				} catch (Exception $e) {
+					wp_die(esc_html__('Content Publisher: Failed to initialize PCC client for preview.', 'pantheon-content-publisher'));
+					exit;
+				}
 
 				// Find the post associated with the document ID
 				$postId = $PCCManager->findExistingConnectedPost(
