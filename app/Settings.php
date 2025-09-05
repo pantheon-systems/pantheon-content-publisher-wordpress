@@ -204,7 +204,7 @@ class Settings
 			return false;
 		}
 
-		$base = implode('|', [(string) $timestamp, $documentId, $versionId, $publishingLevel]);
+		$base = implode('|', [(string) $timestamp, $documentId, (string)($versionId ?: ''), $publishingLevel]);
 		$expected = hash_hmac('sha256', $base, $this->previewSecretForTs($timestamp));
 
 		return hash_equals($expected, $signature);
