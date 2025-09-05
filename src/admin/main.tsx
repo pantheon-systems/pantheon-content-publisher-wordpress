@@ -6,6 +6,7 @@ import { HashRouter } from "react-router-dom";
 import "./styles/index.css";
 import "@pantheon-systems/pds-toolkit-react/css/pds-core.css";
 import "@pantheon-systems/pds-toolkit-react/css/pds-components.css";
+import { GlobalWrapper } from "@pantheon-systems/pds-toolkit-react";
 
 const container = document.getElementById("content-pub-root");
 if (container) {
@@ -13,7 +14,9 @@ if (container) {
   root.render(
     <React.StrictMode>
       <HashRouter>
-        <App />
+        <GlobalWrapper>
+          <App />
+        </GlobalWrapper>
       </HashRouter>
     </React.StrictMode>
   );

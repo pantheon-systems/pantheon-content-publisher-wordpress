@@ -15,7 +15,7 @@ use function wp_register_style;
 class Admin
 {
   private string $menuSlug = 'pcc';
-  private string $title = 'Pantheon Content Publisher (React)';
+  private string $title = 'Pantheon Content Publisher (PDS)';
 
   public function __construct()
   {
@@ -101,7 +101,8 @@ class Admin
       . 'body.toplevel_page_' . $slug . ' #wpbody, '
       . 'body.toplevel_page_' . $slug . ' #wpbody-content { background: #fff; } '
       . 'body.toplevel_page_' . $slug . ' #wpbody-content { padding-top: 0; } '
-      . 'body.toplevel_page_' . $slug . ' #wpbody-content .wrap { margin: 0; padding: 0; }';
+      . 'body.toplevel_page_' . $slug . ' #wpbody-content .wrap { margin: 0; padding: 0; } '
+      . 'body.toplevel_page_' . $slug . ' #wpcontent { padding-left: 0; }';
 
     wp_add_inline_style($styleHandle, $css);
   }
@@ -112,6 +113,7 @@ class Admin
       'rest_url' => get_rest_url(get_current_blog_id(), PCC_API_NAMESPACE),
       'nonce' => wp_create_nonce('wp_rest'),
       'site_url' => site_url(),
+      'assets_url' => PCC_PLUGIN_DIR_URL . 'assets',
     ]) . ';';
 
     wp_register_script('pcc-admin-bootstrap', '', [], null, false);
