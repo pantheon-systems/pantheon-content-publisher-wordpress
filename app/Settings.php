@@ -260,14 +260,6 @@ class Settings
 		}
 
 		$publishingLevelParam = sanitize_text_field(filter_input(INPUT_GET, 'publishingLevel'));
-		$pccGrant = sanitize_text_field(filter_input(INPUT_GET, 'pccGrant'));
-
-		// Check if required parameters are present
-		if (empty($pccGrant)) {
-			status_header(403);
-			wp_die(esc_html__('Content Publisher: Missing parameters for preview', 'pantheon-content-publisher'));
-			exit;
-		}
 
 		// Default to production if no publishing level is provided
 		if (empty($publishingLevelParam)) {
