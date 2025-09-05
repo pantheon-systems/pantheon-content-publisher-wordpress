@@ -406,7 +406,9 @@ class Settings
 
 				// Sign the preview URL with a timestamp and signature.
 				$ts = time();
-				$sig = hash_hmac('sha256', implode('|', [(string)$ts, (string)$documentId, (string)($versionId ?: ''), (string)$publishingLevel]), $this->previewSecretForTs($ts, 900));
+				$levelValue = $publishingLevel->value; // 'realtime' or 'draft'.
+				$base = implode( '|', [(string)$ts, (string)$documentId, (string)($versionId ?: ''), $levelValue] );
+				$sig = hash_hmac('sha256', $base, $this->previewSecretForTs($ts, 900));
 				$url = add_query_arg(['ts' => $ts, 'sig' => $sig], $url);
 
 				wp_redirect($url);
@@ -724,6 +726,7 @@ class Settings
 				'nonce' => wp_create_nonce('wp_rest'),
 				'plugin_main_page' => menu_page_url('pantheon-content-publisher', false),
 				'site_url' => site_url(),
+				'view_nonce' => wp_create_nonce('pcc_view'),
 			]
 		);
 	}
