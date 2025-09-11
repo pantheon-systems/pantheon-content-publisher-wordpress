@@ -7,7 +7,7 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { apiClient } from "../../../api/client";
-import { getErrorMessage } from "../../../utils/errors";
+import { getErrorMessage } from "../../../lib/errors";
 
 interface Props {
   onDone: () => void;

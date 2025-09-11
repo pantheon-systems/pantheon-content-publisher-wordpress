@@ -14,7 +14,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import CollectionReady from "../../components/collections/CollectionReady";
 import { apiClient } from "../../api/client";
-import { getErrorMessage } from "../../utils/errors";
+import { getErrorMessage } from "../../lib/errors";
 
 export default function ConnectCollection() {
   const navigate = useNavigate();
