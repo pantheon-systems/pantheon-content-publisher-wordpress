@@ -45,29 +45,51 @@ class Admin
 
 	public function maybeEnqueueAssets(): void
 	{
-		if (!isset($_GET['page']) || $_GET['page'] !== $this->menuSlug) {
+		if (!$this->isOnPluginAdminPage()) {
 			return;
 		}
 
-		$devServer = getenv('VITE_DEV_SERVER');
 		$handle = 'pcc-admin-app';
 
 		$this->addAdminPageStyles();
 
-	  // Enqueue assets for development server
-		if (defined('WP_DEBUG') && WP_DEBUG && $devServer) {
-			$protocol = is_ssl() ? 'https' : 'http';
-			$clientHandle = $handle . '-client';
-			$preambleHandle = $handle . '-react-refresh-preamble';
-			wp_enqueue_script_module($clientHandle, "$protocol://localhost:5173/@vite/client", [], null, true);
-			wp_enqueue_script_module($preambleHandle, "$protocol://localhost:5173/src/scripts/react-refresh-preamble.js", [$clientHandle], null, true);
-			wp_enqueue_script_module($handle, "$protocol://localhost:5173/src/admin/main.tsx", [$clientHandle, $preambleHandle], null, true);
-
-			$this->addBootstrap();
+		if ($this->isDevServerEnabled()) {
+			$this->enqueueDevAssets($handle);
 			return;
 		}
 
-	  // Enqueue assets for production build
+		$this->enqueueProdAssets($handle);
+	}
+
+	private function isOnPluginAdminPage(): bool
+	{
+		$pageParam = filter_input(INPUT_GET, 'page', FILTER_UNSAFE_RAW);
+		if (!is_string($pageParam)) {
+			return false;
+		}
+
+		return $pageParam === $this->menuSlug;
+	}
+
+	private function isDevServerEnabled(): bool
+	{
+		return (defined('WP_DEBUG') && WP_DEBUG && (bool) getenv('VITE_DEV_SERVER'));
+	}
+
+	private function enqueueDevAssets(string $handle): void
+	{
+		$protocol = is_ssl() ? 'https' : 'http';
+		$clientHandle = $handle . '-client';
+		$preambleHandle = $handle . '-react-refresh-preamble';
+		wp_enqueue_script_module($clientHandle, "$protocol://localhost:5173/@vite/client", [], null, true);
+		wp_enqueue_script_module($preambleHandle, "$protocol://localhost:5173/src/scripts/react-refresh-preamble.js", [$clientHandle], null, true);
+		wp_enqueue_script_module($handle, "$protocol://localhost:5173/src/admin/main.tsx", [$clientHandle, $preambleHandle], null, true);
+
+		$this->addBootstrap();
+	}
+
+	private function enqueueProdAssets(string $handle): void
+	{
 		$manifestPath = PCC_PLUGIN_DIR . 'dist/build/.vite/manifest.json';
 		if (!file_exists($manifestPath)) {
 			error_log('Manifest file not found');
@@ -99,12 +121,12 @@ class Admin
 
 		$slug = $this->menuSlug;
 		$css = 'body.toplevel_page_' . $slug . ' #wpwrap, '
-		. 'body.toplevel_page_' . $slug . ' #wpcontent, '
-		. 'body.toplevel_page_' . $slug . ' #wpbody, '
-		. 'body.toplevel_page_' . $slug . ' #wpbody-content { background: #fff; } '
-		. 'body.toplevel_page_' . $slug . ' #wpbody-content { padding-top: 0; } '
-		. 'body.toplevel_page_' . $slug . ' #wpbody-content .wrap { margin: 0; padding: 0; } '
-		. 'body.toplevel_page_' . $slug . ' #wpcontent { padding-left: 0; }';
+			. 'body.toplevel_page_' . $slug . ' #wpcontent, '
+			. 'body.toplevel_page_' . $slug . ' #wpbody, '
+			. 'body.toplevel_page_' . $slug . ' #wpbody-content { background: #fff; } '
+			. 'body.toplevel_page_' . $slug . ' #wpbody-content { padding-top: 0; } '
+			. 'body.toplevel_page_' . $slug . ' #wpbody-content .wrap { margin: 0; padding: 0; } '
+			. 'body.toplevel_page_' . $slug . ' #wpcontent { padding-left: 0; }';
 
 		wp_add_inline_style($styleHandle, $css);
 	}
@@ -115,20 +137,20 @@ class Admin
 		$isPCCConfigured = $pccSyncManager->isPCCConfigured();
 
 		$bootstrap = 'window.PCC_BOOTSTRAP = ' . wp_json_encode([
-		'rest_url' => get_rest_url(get_current_blog_id(), PCC_API_NAMESPACE),
-		'nonce' => wp_create_nonce('wp_rest'),
-		'site_url' => site_url(),
-		'assets_url' => PCC_PLUGIN_DIR_URL . 'assets',
-		'plugin_main_page' => menu_page_url($this->menuSlug, false),
-		'is_pcc_configured' => $isPCCConfigured,
-		'configured' => [
-		'collection_url' => site_url(),
-		'collection_id' => get_option(PCC_SITE_ID_OPTION_KEY),
-		'publish_as' => get_option(PCC_INTEGRATION_POST_TYPE_OPTION_KEY, 'post'),
-		],
+			'rest_url' => get_rest_url(get_current_blog_id(), PCC_API_NAMESPACE),
+			'nonce' => wp_create_nonce('wp_rest'),
+			'site_url' => site_url(),
+			'assets_url' => PCC_PLUGIN_DIR_URL . 'assets',
+			'plugin_main_page' => menu_page_url($this->menuSlug, false),
+			'is_pcc_configured' => $isPCCConfigured,
+			'configured' => [
+				'collection_url' => site_url(),
+				'collection_id' => get_option(PCC_SITE_ID_OPTION_KEY),
+				'publish_as' => get_option(PCC_INTEGRATION_POST_TYPE_OPTION_KEY, 'post'),
+			],
 		]) . ';';
 
-	  // If PCC is configured, we can enrich the bootstrap data with the collection data
+		// If PCC is configured, we can enrich the bootstrap data with the collection data
 		if ($isPCCConfigured) {
 			$site = $pccSyncManager->getSiteData();
 			if ($site) {
