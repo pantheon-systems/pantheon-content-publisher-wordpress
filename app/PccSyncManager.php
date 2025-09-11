@@ -8,6 +8,8 @@ use PccPhpSdk\api\Query\Enums\PublishingLevel;
 use PccPhpSdk\api\Response\Article;
 use PccPhpSdk\core\PccClient;
 use PccPhpSdk\core\PccClientConfig;
+use PccPhpSdk\core\Query\GraphQLQuery;
+
 
 use function media_sideload_image;
 use function wp_trim_excerpt;
@@ -501,5 +503,43 @@ class PccSyncManager
 		}
 
 		return $data;
+	}
+
+	public function getSiteData()
+	{
+		$siteApi = $this->pccClient();
+		// TODO: Remove this query and use the SitesApi::getSite() method instead when
+		// the getSite() method is extended to return the name of the site.
+		$query = <<<'GRAPHQL'
+    query GetSite($siteId: String!) {
+      site(id: $siteId) {
+        id
+        url,
+        name
+      }
+    }
+    GRAPHQL;
+		$variables = new \ArrayObject(['siteId' => get_option(PCC_SITE_ID_OPTION_KEY)]);
+		$graphQLQuery = new GraphQLQuery($query, $variables);
+
+		$siteResponse = $siteApi->executeQuery($graphQLQuery);
+
+		// Parse the JSON response
+		$parsedResponse = json_decode($siteResponse, true);
+
+		// Check for GraphQL errors
+		if (isset($parsedResponse['errors']) && !empty($parsedResponse['errors'])) {
+			$errorMessage = $parsedResponse['errors'][0]['message'] ?? 'Unknown error';
+			error_log('PCC connectCollection GraphQL error: ' . $errorMessage);
+			throw new \Exception($errorMessage);
+		}
+
+		// Check if site data exists
+		$site = $parsedResponse['data']['site'] ?? null;
+		if (!$site || empty($site['id'])) {
+			return null;
+		}
+
+		return $site;
 	}
 }

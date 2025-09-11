@@ -1,6 +1,5 @@
 import { Routes, Route, Link } from "react-router-dom";
 import Landing from "./views/Landing";
-import Settings from "./views/Settings";
 import Collections from "./views/collections";
 import Dashboard from "./views/Dashboard";
 import {
@@ -10,6 +9,8 @@ import {
 } from "@pantheon-systems/pds-toolkit-react";
 
 export default function App() {
+  const isPCCConfigured = window.PCC_BOOTSTRAP.is_pcc_configured;
+
   return (
     <div className="w-full">
       <Navbar
@@ -40,10 +41,11 @@ export default function App() {
       <Container width="x-wide" className="pt-8">
         <main>
           <Routes>
-            <Route path="/" element={<Landing />} />
+            <Route
+              path="/"
+              element={isPCCConfigured ? <Dashboard /> : <Landing />}
+            />
             <Route path="/collections/*" element={<Collections />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </main>
       </Container>

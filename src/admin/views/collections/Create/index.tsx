@@ -30,7 +30,7 @@ export default function CreateCollection() {
   const navigate = useNavigate();
 
   if (isReady) {
-    return <CollectionReady onPrimary={() => navigate("/")} />;
+    return <CollectionReady />;
   }
 
   if (isLoading) {

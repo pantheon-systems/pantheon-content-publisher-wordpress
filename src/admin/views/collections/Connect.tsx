@@ -217,7 +217,7 @@ export default function ConnectCollection() {
           <Spinner label="Connecting your collection..." size="4xl" showLabel />
         </div>
       ) : (
-        <CollectionReady onPrimary={() => navigate("/")} />
+        <CollectionReady />
       )}
     </div>
   );

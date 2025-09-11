@@ -131,7 +131,7 @@ export default function StepCreateCollection({
           <SectionMessage
             type="info"
             className="mt-4"
-            message="You can find Content Publisher documents under the 'Post' or 'Page' menu in WordPress, depending on your selection at the time of publishing."
+            message="You can find Content Publisher documents under the 'Posts' or 'Pages' menu in WordPress, depending on your selection at the time of publishing."
           />
         </div>
       </div>

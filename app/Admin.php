@@ -11,6 +11,7 @@ use function wp_enqueue_script_module;
 use function wp_enqueue_style;
 use function wp_json_encode;
 use function wp_register_style;
+use function menu_page_url;
 
 class Admin
 {
@@ -109,12 +110,30 @@ class Admin
 
   private function addBootstrap(): void
   {
+    $pccSyncManager = new PccSyncManager();
+    $isPCCConfigured = $pccSyncManager->isPCCConfigured();
+
     $bootstrap = 'window.PCC_BOOTSTRAP = ' . wp_json_encode([
       'rest_url' => get_rest_url(get_current_blog_id(), PCC_API_NAMESPACE),
       'nonce' => wp_create_nonce('wp_rest'),
       'site_url' => site_url(),
       'assets_url' => PCC_PLUGIN_DIR_URL . 'assets',
+      'plugin_main_page' => menu_page_url($this->menuSlug, false),
+      'is_pcc_configured' => $isPCCConfigured,
+      'configured' => [
+        'collection_url' => site_url(),
+        'collection_id' => get_option(PCC_SITE_ID_OPTION_KEY),
+        'publish_as' => get_option(PCC_INTEGRATION_POST_TYPE_OPTION_KEY, 'post'),
+      ],
     ]) . ';';
+
+    // If PCC is configured, we can enrich the bootstrap data with the collection data
+    if ($isPCCConfigured) {
+      $site = $pccSyncManager->getSiteData();
+      if ($site) {
+        $bootstrap .= 'window.PCC_BOOTSTRAP.configured.collection_data = ' . wp_json_encode($site) . ';';
+      }
+    }
 
     wp_register_script('pcc-admin-bootstrap', '', [], null, false);
     wp_enqueue_script('pcc-admin-bootstrap');

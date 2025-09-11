@@ -1,10 +1,6 @@
 import { Button } from "@pantheon-systems/pds-toolkit-react";
 
-interface Props {
-  onPrimary: () => void;
-}
-
-export default function CollectionReady({ onPrimary }: Props) {
+export default function CollectionReady() {
   return (
     <div className="w-full h-[80vh] flex flex-col items-center justify-center text-center">
       <img
@@ -16,7 +12,9 @@ export default function CollectionReady({ onPrimary }: Props) {
       <p className="mb-12">
         You&apos;re now ready to start publishing using Content Publisher.
       </p>
-      <Button label="Go to your collection" onClick={onPrimary} />
+      <a href={window.PCC_BOOTSTRAP.plugin_main_page}>
+        <Button label="Go to your collection" />
+      </a>
     </div>
   );
 }

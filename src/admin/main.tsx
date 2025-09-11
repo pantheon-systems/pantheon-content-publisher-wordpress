@@ -7,7 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./styles/index.css";
 import "@pantheon-systems/pds-toolkit-react/css/pds-core.css";
 import "@pantheon-systems/pds-toolkit-react/css/pds-components.css";
-import { GlobalWrapper } from "@pantheon-systems/pds-toolkit-react";
+import { GlobalWrapper, Toaster } from "@pantheon-systems/pds-toolkit-react";
 
 const container = document.getElementById("content-pub-root");
 if (container) {
@@ -19,6 +19,7 @@ if (container) {
         <QueryClientProvider client={queryClient}>
           <GlobalWrapper>
             <App />
+            <Toaster />
           </GlobalWrapper>
         </QueryClientProvider>
       </HashRouter>
