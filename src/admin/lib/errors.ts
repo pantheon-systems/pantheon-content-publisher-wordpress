@@ -4,7 +4,7 @@ import type { AxiosError } from "axios";
 export function getErrorMessage(
   error: Error | AxiosError | unknown | undefined,
   fallbackMessage: string
-) {
+): string | null {
   return !error
     ? null
     : isAxiosError(error)

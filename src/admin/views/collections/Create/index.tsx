@@ -62,13 +62,21 @@ export default function CreateCollection() {
 
         {step.id === 1 ? (
           <StepConnectToken
-            onNext={() => setStep(steps[1])}
-            onCancel={() => navigate("/")}
+            onNext={() => {
+              setStep(steps[1]);
+            }}
+            onCancel={() => {
+              navigate("/");
+            }}
           />
         ) : (
           <StepCreateCollection
-            onDone={() => setIsReady(true)}
-            onCancel={() => navigate("/")}
+            onDone={() => {
+              setIsReady(true);
+            }}
+            onCancel={() => {
+              navigate("/");
+            }}
             onLoadingChange={setIsLoading}
             onLoadingStepChange={setLoadingStep}
           />

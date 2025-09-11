@@ -80,10 +80,6 @@ export default function Dashboard() {
     updateMutation.mutate(values.publishAs);
   };
 
-  const handleSaveConfiguration = () => {
-    setShowConfirmModal(true);
-  };
-
   const handleDisconnect = () => {
     setShowDisconnectModal(true);
   };
@@ -212,9 +208,7 @@ export default function Dashboard() {
               id="confirm-disconnect"
               label="Type “DISCONNECT” to proceed"
               value={disconnectConfirmText}
-              onChange={(e) =>
-                setDisconnectConfirmText((e as any)?.target?.value ?? "")
-              }
+              onChange={(e) => setDisconnectConfirmText(e.target.value)}
               disabled={disconnectMutation.isPending}
             />
           </div>
