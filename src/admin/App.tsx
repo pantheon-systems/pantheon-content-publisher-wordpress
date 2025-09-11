@@ -1,6 +1,8 @@
 import { Routes, Route, Link } from "react-router-dom";
 import Landing from "./views/Landing";
 import Settings from "./views/Settings";
+import Collections from "./views/collections";
+import Dashboard from "./views/Dashboard";
 import {
   Navbar,
   Container,
@@ -39,7 +41,9 @@ export default function App() {
         <main>
           <Routes>
             <Route path="/" element={<Landing />} />
+            <Route path="/collections/*" element={<Collections />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </main>
       </Container>

@@ -9,6 +9,9 @@ namespace Pantheon\ContentPublisher;
 use WP_REST_Request;
 use WP_REST_Response;
 use PccPhpSdk\api\Query\Enums\PublishingLevel;
+use PccPhpSdk\api\SitesApi;
+use PccPhpSdk\core\PccClient;
+use PccPhpSdk\core\PccClientConfig;
 
 use function esc_html__;
 
@@ -59,6 +62,11 @@ class RestController
 				'route' => '/collection',
 				'method' => 'PUT',
 				'callback' => [$this, 'updateCollection'],
+			],
+			[
+				'route' => '/collection/connect',
+				'method' => 'POST',
+				'callback' => [$this, 'connectCollection'],
 			],
 			[
 				'route' => '/webhook',
@@ -387,5 +395,95 @@ class RestController
 			esc_html__('Saved Data deleted.', 'pantheon-content-publisher-for-wordpress'),
 			200
 		);
+	}
+
+	/**
+	 * Connect collection to the current WordPress site
+	 *
+	 * @param WP_REST_Request $request
+	 * @return WP_REST_Response
+	 */
+	public function connectCollection(WP_REST_Request $request): WP_REST_Response
+	{
+		if (!current_user_can('manage_options')) {
+			return new WP_REST_Response(
+				esc_html__(
+					'You are not authorized to perform this action.',
+					'pantheon-content-publisher-for-wordpress'
+				),
+				401
+			);
+		}
+
+		try {
+			$collectionId = sanitize_text_field($request->get_param('collection_id'));
+			$accessToken = sanitize_text_field($request->get_param('access_token'));
+
+			// Validate input fields
+			if (empty($collectionId) || empty($accessToken)) {
+				return new WP_REST_Response(
+					esc_html__('Missing collection ID or access token', 'pantheon-content-publisher-for-wordpress'),
+					400
+				);
+			}
+
+			// Validate collection ID and access token with PCC API
+			try {
+				$client = new PccClient(new PccClientConfig($collectionId, $accessToken));
+				$siteApi = new SitesApi($client);
+				$siteResponse = $siteApi->getSite($collectionId);
+			} catch (\Throwable $e) {
+				error_log('PCC connectCollection API error: ' . $e->getMessage());
+				return new WP_REST_Response(
+					esc_html__('Failed to connect collection. Ensure your collection ID and access token are correct.', 'pantheon-content-publisher-for-wordpress'),
+					400
+				);
+			}
+
+			// Parse the JSON response
+			$parsedResponse = json_decode($siteResponse, true);
+
+			if (json_last_error() !== JSON_ERROR_NONE) {
+				error_log('PCC connectCollection JSON decode error: ' . json_last_error_msg());
+				return new WP_REST_Response(
+					esc_html__('Failed to connect collection: Unable to reach Content Publisher API.', 'pantheon-content-publisher-for-wordpress'),
+					500
+				);
+			}
+
+			// Check for GraphQL errors
+			if (isset($parsedResponse['errors']) && !empty($parsedResponse['errors'])) {
+				$errorMessage = $parsedResponse['errors'][0]['message'] ?? 'Unknown error';
+				error_log('PCC connectCollection GraphQL error: ' . $errorMessage);
+				return new WP_REST_Response(
+					esc_html__('Failed to connect collection: ' . $errorMessage, 'pantheon-content-publisher-for-wordpress'),
+					400
+				);
+			}
+
+			// Check if site data exists
+			$site = $parsedResponse['data']['site'] ?? null;
+			if (!$site || empty($site['id'])) {
+				return new WP_REST_Response(
+					esc_html__('Failed to connect collection: Collection not found.', 'pantheon-content-publisher-for-wordpress'),
+					400
+				);
+			}
+
+			// Update with the site id and access token (api key)
+			update_option(PCC_SITE_ID_OPTION_KEY, $site['id']);
+			update_option(PCC_ENCODED_SITE_URL_OPTION_KEY, md5(wp_parse_url(site_url())['host']));
+			update_option(PCC_API_KEY_OPTION_KEY, $accessToken);
+
+			// Update with the site id
+			return new WP_REST_Response(esc_html__('Collection connected', 'pantheon-content-publisher-for-wordpress'));
+		} catch (\Throwable $e) {
+			error_log('PCC connectCollection unexpected error: ' . $e->getMessage());
+			error_log('PCC connectCollection stack trace: ' . $e->getTraceAsString());
+			return new WP_REST_Response(
+				esc_html__('An unexpected error occurred while connecting the collection. Please try again. Contact support if the issue persists.', 'pantheon-content-publisher-for-wordpress'),
+				500
+			);
+		}
 	}
 }

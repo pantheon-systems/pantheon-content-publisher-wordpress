@@ -38,6 +38,7 @@ export default {
 			colors: {
 				'pds-color-foreground-default': 'var(--pds-color-foreground-default)',
 				'pds-color-text-default': 'var(--pds-color-text-default)',
+				'pds-color-text-default-secondary': 'var(--pds-color-text-default-secondary)',
 				'pds-color-link-active': 'var(--pds-color-link-active)',
 				'pds-color-link-cta-active': 'var(--pds-color-link-cta-active)',
 				'pds-color-link-cta-default': 'var(--pds-color-link-cta-default)',
