@@ -454,7 +454,7 @@ class PccSyncManager
 		$encodedSiteURL = get_option(PCC_ENCODED_SITE_URL_OPTION_KEY);
 		$apiKey = get_option(PCC_API_KEY_OPTION_KEY);
 
-		if (!$accessToken || !$siteId || !$apiKey || !$encodedSiteURL) {
+		if ((!$accessToken && !$apiKey) || !$siteId || !$encodedSiteURL) {
 			return false;
 		}
 

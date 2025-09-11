@@ -363,6 +363,16 @@ class RestController
 			);
 		}
 
+		// Validate token with PCC API
+		$siteManager = new PccSiteManager();
+		$isValid = $siteManager->validateManagementToken($accessToken);
+		if (!$isValid) {
+			return new WP_REST_Response(
+				esc_html__('Management token is invalid. Visit the Content Publisher dashboard to generate a new token.', 'pantheon-content-publisher-for-wordpress'),
+				400
+			);
+		}
+
 		update_option(PCC_ACCESS_TOKEN_OPTION_KEY, $accessToken);
 		return new WP_REST_Response(
 			esc_html__('Management token saved.', 'pantheon-content-publisher-for-wordpress'),
