@@ -14,6 +14,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import CollectionReady from "../../components/collections/CollectionReady";
 import { apiClient } from "../../api/client";
+import { getErrorMessage } from "../../utils/errors";
 
 export default function ConnectCollection() {
   const navigate = useNavigate();
@@ -58,12 +59,6 @@ export default function ConnectCollection() {
   const onSubmit = (data: { collectionId: string; accessToken: string }) => {
     connectMutation.mutate(data);
   };
-
-  const errorMessage = connectMutation.error
-    ? (connectMutation.error as any)?.response?.data ||
-      (connectMutation.error as any)?.message ||
-      "Failed to connect collection. Please try again."
-    : null;
 
   const steps = [
     {
@@ -169,14 +164,13 @@ export default function ConnectCollection() {
             </p>
           </div>
 
-          {errorMessage && (
+          {connectMutation.error && (
             <SectionMessage
               type="critical"
-              message={
-                typeof errorMessage === "string"
-                  ? errorMessage
-                  : JSON.stringify(errorMessage)
-              }
+              message={getErrorMessage(
+                connectMutation.error,
+                "Failed to connect collection. Please try again."
+              )}
               className="mt-6"
             />
           )}
@@ -223,7 +217,7 @@ export default function ConnectCollection() {
           <Spinner label="Connecting your collection..." size="4xl" showLabel />
         </div>
       ) : (
-        <CollectionReady onPrimary={() => navigate("/dashboard")} />
+        <CollectionReady onPrimary={() => navigate("/")} />
       )}
     </div>
   );

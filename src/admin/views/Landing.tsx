@@ -10,7 +10,7 @@ export default function Landing() {
   return (
     <div className="space-y-20">
       <div className="flex flex-col-reverse md:flex-row items-center gap-8">
-        <div className="lg:basis-[60%] xl:basis-[54%] ">
+        <div className="lg:basis-[60%] xl:basis-[54%]">
           <h1 className="pds-ts-4xl mb-8">
             Get started with Content Publisher by connecting a collection
           </h1>
@@ -54,7 +54,9 @@ export default function Landing() {
             </p>
             <ButtonLink
               variant="secondary"
-              linkContent={<Link to="/collections">Create new collection</Link>}
+              linkContent={
+                <Link to="/collections/create">Create new collection</Link>
+              }
             />
           </div>
         </Card>
