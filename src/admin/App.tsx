@@ -6,10 +6,34 @@ import {
   Navbar,
   Container,
   NavMenu,
+  useToast,
+  ToastType,
 } from "@pantheon-systems/pds-toolkit-react";
+import { useEffect } from "react";
+import { SRC_ACTIONS, SrcAction } from "./constants/navigation";
 
 export default function App() {
   const isPCCConfigured = window.PCC_BOOTSTRAP.is_pcc_configured;
+  const [addToast] = useToast();
+
+  // Handle source actions
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const src = url.searchParams.get("src") as SrcAction | null;
+
+    switch (src) {
+      case SRC_ACTIONS.DISCONNECTED:
+        addToast(ToastType.Success, "Collection disconnected successfully");
+        break;
+      default:
+        break;
+    }
+
+    if (src) {
+      url.searchParams.delete("src");
+      window.history.replaceState({}, "", url.toString());
+    }
+  }, [addToast]);
 
   return (
     <div className="w-full">
