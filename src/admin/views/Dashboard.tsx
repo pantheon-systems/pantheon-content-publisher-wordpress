@@ -143,7 +143,9 @@ export default function Dashboard() {
             label="Save configuration"
             type="button"
             disabled={!isDirty || updateMutation.isPending}
-            onClick={() => setShowConfirmModal(true)}
+            onClick={() => {
+              setShowConfirmModal(true);
+            }}
           />
         </div>
 
@@ -164,7 +166,9 @@ export default function Dashboard() {
                 label="Cancel"
                 variant="secondary"
                 disabled={updateMutation.isPending}
-                onClick={() => setShowConfirmModal(false)}
+                onClick={() => {
+                  setShowConfirmModal(false);
+                }}
               />
               <Button
                 type="submit"

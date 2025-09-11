@@ -95,7 +95,7 @@ export default function ConnectCollection() {
                 placeholder="12345678"
                 className="mt-4"
                 value={field.value}
-                onChange={(e: any) => field.onChange(e?.target?.value ?? e)}
+                onChange={(e) => field.onChange(e.target.value)}
                 onBlur={field.onBlur}
               />
             )}
@@ -138,7 +138,7 @@ export default function ConnectCollection() {
                 type="password"
                 autoComplete="off"
                 value={field.value}
-                onChange={(e: any) => field.onChange(e?.target?.value ?? e)}
+                onChange={(e) => field.onChange(e.target.value)}
                 onBlur={field.onBlur}
               />
             )}

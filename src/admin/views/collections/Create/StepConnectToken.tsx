@@ -83,7 +83,7 @@ export default function StepConnectToken({ onNext, onCancel }: Props) {
                 type="password"
                 placeholder="Enter management token"
                 value={field.value}
-                onChange={(e) => field.onChange(e?.target?.value ?? e)}
+                onChange={(e) => field.onChange(e.target.value)}
                 onBlur={field.onBlur}
               />
             )}

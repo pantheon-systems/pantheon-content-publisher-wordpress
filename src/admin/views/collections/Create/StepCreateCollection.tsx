@@ -103,7 +103,7 @@ export default function StepCreateCollection({
                 className="max-w-xl"
                 placeholder={`${window.PCC_BOOTSTRAP.site_url}`}
                 value={field.value}
-                onChange={(e: any) => field.onChange(e?.target?.value ?? e)}
+                onChange={(e) => field.onChange(e.target.value)}
                 onBlur={field.onBlur}
               />
             )}
