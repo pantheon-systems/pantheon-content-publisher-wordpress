@@ -10,7 +10,6 @@ use PccPhpSdk\core\PccClient;
 use PccPhpSdk\core\PccClientConfig;
 use PccPhpSdk\core\Query\GraphQLQuery;
 
-
 use function media_sideload_image;
 use function wp_trim_excerpt;
 
@@ -511,14 +510,14 @@ class PccSyncManager
 		// TODO: Remove this query and use the SitesApi::getSite() method instead when
 		// the getSite() method is extended to return the name of the site.
 		$query = <<<'GRAPHQL'
-    query GetSite($siteId: String!) {
-      site(id: $siteId) {
-        id
-        url,
-        name
-      }
-    }
-    GRAPHQL;
+		query GetSite($siteId: String!) {
+			site(id: $siteId) {
+				id
+				url
+				name
+			}
+		}
+		GRAPHQL;
 		$variables = new \ArrayObject(['siteId' => get_option(PCC_SITE_ID_OPTION_KEY)]);
 		$graphQLQuery = new GraphQLQuery($query, $variables);
 
@@ -531,7 +530,7 @@ class PccSyncManager
 		if (isset($parsedResponse['errors']) && !empty($parsedResponse['errors'])) {
 			$errorMessage = $parsedResponse['errors'][0]['message'] ?? 'Unknown error';
 			error_log('PCC connectCollection GraphQL error: ' . $errorMessage);
-			throw new \Exception($errorMessage);
+			return null;
 		}
 
 		// Check if site data exists

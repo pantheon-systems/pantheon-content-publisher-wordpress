@@ -358,7 +358,10 @@ class RestController
 		// Validate input field
 		if (empty($accessToken)) {
 			return new WP_REST_Response(
-				esc_html__('Management token cannot be empty.', 'pantheon-content-publisher-for-wordpress'),
+				esc_html__(
+					'Management token cannot be empty.',
+					'pantheon-content-publisher-for-wordpress'
+				),
 				400
 			);
 		}
@@ -368,14 +371,20 @@ class RestController
 		$isValid = $siteManager->validateManagementToken($accessToken);
 		if (!$isValid) {
 			return new WP_REST_Response(
-				esc_html__('Management token is invalid. Visit the Content Publisher dashboard to generate a new token.', 'pantheon-content-publisher-for-wordpress'),
+				esc_html__(
+					'Management token is invalid. Visit the Content Publisher dashboard to generate a new token.',
+					'pantheon-content-publisher-for-wordpress'
+				),
 				400
 			);
 		}
 
 		update_option(PCC_ACCESS_TOKEN_OPTION_KEY, $accessToken);
 		return new WP_REST_Response(
-			esc_html__('Management token saved.', 'pantheon-content-publisher-for-wordpress'),
+			esc_html__(
+				'Management token saved.',
+				'pantheon-content-publisher-for-wordpress'
+			),
 			200
 		);
 	}
