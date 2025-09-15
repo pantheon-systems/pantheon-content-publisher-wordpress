@@ -74,12 +74,7 @@ class Settings
 		add_action('template_redirect', [$this, 'registerPantheonCloudStatusEndpoint']);
 		add_action('template_redirect', [$this, 'publishDocuments']);
 		add_action('template_redirect', [$this, 'setPreviewHeaders']);
-		add_action('admin_menu', [$this, 'addMenu']);
 		add_action('pre_get_posts', [$this, 'handlePreviewPostResults']);
-		add_action(
-			'admin_enqueue_scripts',
-			[$this, 'enqueueAdminAssets']
-		);
 		add_action(
 			'wp_enqueue_scripts',
 			[$this, 'enqueueFrontAssets']
