@@ -214,8 +214,13 @@ class PccSyncManager
 		$imageKey = $this->getFeaturedImageKey();
 		$legacyKey = 'FeaturedImage';
 
-		$hasNewKey = is_array($metadata) && array_key_exists($imageKey, $metadata);
-		$hasLegacyKey = is_array($metadata) && array_key_exists($legacyKey, $metadata);
+		error_log('metadata: ' . print_r($metadata, true));
+
+		$hasNewKey = is_array($metadata) && array_key_exists($imageKey, $metadata) && $metadata[$imageKey];
+		$hasLegacyKey = is_array($metadata) && array_key_exists($legacyKey, $metadata) && $metadata[$legacyKey];
+
+		error_log('hasNewKey: ' . $hasNewKey);
+		error_log('hasLegacyKey: ' . $hasLegacyKey);
 
 		if (!$hasNewKey && !$hasLegacyKey) {
 			return;
