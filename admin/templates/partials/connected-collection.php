@@ -3,6 +3,13 @@
 if (!defined('ABSPATH')) {
 	exit;
 }
+
+$admin_url = add_query_arg([
+	'page' => 'pantheon-content-publisher',
+	'view' => 'connected-collection',
+], admin_url('admin.php'));
+
+$admin_url = wp_nonce_url($admin_url, 'pcc_view');
 ?>
 <div class="pcc-content">
 	<?php
@@ -26,10 +33,7 @@ if (!defined('ABSPATH')) {
 						</p>
 					</div>
 					<a class="secondary-button self-start col-span-4 justify-self-end" 
-						href="<?php echo esc_url(add_query_arg([
-						'page' => 'pantheon-content-publisher',
-						'view' => 'disconnect-confirmation'
-					], admin_url('admin.php'))) ?>">
+						href="<?php echo esc_url($admin_url) ?>">
 						<span>
 							<?php esc_html_e('Disconnect collection', 'pantheon-content-publisher') ?>
 						</span>

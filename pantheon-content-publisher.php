@@ -25,6 +25,7 @@ define('CONTENT_PUB_PLUGIN_DIR', plugin_dir_path(CONTENT_PUB_PLUGIN_FILE));
 define('CONTENT_PUB_BASENAME', plugin_basename(CONTENT_PUB_PLUGIN_FILE));
 define('CONTENT_PUB_PLUGIN_DIR_URL', plugin_dir_url(CONTENT_PUB_PLUGIN_FILE));
 define('CONTENT_PUB_ACCESS_TOKEN_OPTION_KEY', 'content_pub_access_token');
+define('CONTENT_PUB_PREVIEW_SECRET_OPTION_KEY', 'content_pub_preview_secret');
 define('CONTENT_PUB_SITE_ID_OPTION_KEY', 'content_pub_site_id');
 define('CONTENT_PUB_ENCODED_SITE_URL_OPTION_KEY', 'content_pub_encoded_site_url');
 define('CONTENT_PUB_API_KEY_OPTION_KEY', 'content_pub_api_key');

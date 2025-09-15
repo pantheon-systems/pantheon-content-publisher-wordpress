@@ -148,11 +148,29 @@ class RestController
 	}
 
 	/**
-	 * @return true
+	 * @param WP_REST_Request $request
+	 * @return true|WP_Error
 	 */
-	public function permissionCallback()
+	public function permissionCallback(WP_REST_Request $request)
 	{
-		rest_cookie_check_errors(null);
+		$cookie_error = rest_cookie_check_errors(null);
+		if (!empty( $cookie_error)) {
+			return $cookie_error;
+		}
+
+		// Nonce check
+		$nonce = $request->get_header('X-WP-Nonce');
+		if (!$nonce) {
+			$nonce = $request->get_param('_wpnonce');
+		}
+
+		if ($nonce && ! wp_verify_nonce($nonce, 'wp_rest')) {
+			return new WP_Error(
+				'rest_forbidden',
+				esc_html__('Security check failed', 'pantheon-content-publisher'),
+				['status' => 403]
+			);
+		}
 
 		return true;
 	}

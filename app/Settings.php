@@ -166,6 +166,50 @@ class Settings
 		return $apiKey ?: [];
 	}
 
+	/**
+	 * Generate a preview secret for a given timestamp.
+	 *
+	 * @param int $timestamp The timestamp to generate the secret for.
+	 * @param int $windowSeconds The time window in seconds (default is 900 seconds or 15 minutes).
+	 * @return string The generated preview secret.
+	 */
+	private function previewSecretForTs( int $timestamp, int $windowSeconds = 900 ): string
+	{
+		$bucket = (int) floor( $timestamp / $windowSeconds );
+		return hash_hmac('sha256', 'pcc_preview|' . site_url() . '|' . $bucket, wp_salt('nonce') );
+	}
+
+	/**
+	 * Validate the preview signature.
+	 * 
+	 * Since preview links are public, we can't use nonces to validated. 
+	 * Instead, we use a HMAC signature with a shared secret that is 
+	 * time-limited.
+	 *
+	 * @return bool True if the signature is valid, false otherwise.
+	 */
+	private function validatePreviewSignature(): bool {
+		$timestamp = (int) filter_input(INPUT_GET, 'ts', FILTER_VALIDATE_INT);
+		$signature = (string) filter_input(INPUT_GET, 'sig');
+		$documentId = sanitize_text_field(filter_input(INPUT_GET, 'document_id'));
+		$versionId = sanitize_text_field(filter_input(INPUT_GET, 'versionId'));
+		$publishingLevel = sanitize_text_field(filter_input(INPUT_GET, 'publishing_level'));
+
+		if ( !$timestamp || !$signature || !$documentId || !$publishingLevel ) {
+			return false;
+		}
+
+		// 15 minute TTL.
+		if ( abs( time() - $timestamp ) > 900 ) {
+			return false;
+		}
+
+		$base = implode('|', [(string) $timestamp, $documentId, (string)($versionId ?: ''), $publishingLevel]);
+		$expected = hash_hmac('sha256', $base, $this->previewSecretForTs($timestamp));
+
+		return hash_equals($expected, $signature);
+	}
+
 	public function isPreviewRequest(): bool
 	{
 		// Check if required parameters exist
@@ -174,6 +218,11 @@ class Settings
 				!filter_has_var(INPUT_GET, 'publishing_level') ||
 				!filter_has_var(INPUT_GET, 'pccGrant')
 		) {
+			return false;
+		}
+
+		// Validate preview signature
+		if ( ! $this->validatePreviewSignature() ) {
 			return false;
 		}
 
@@ -217,7 +266,7 @@ class Settings
 			$publishingLevelParam = PublishingLevel::PRODUCTION->value;
 		}
 
-
+		$isProductionFlow = false;
 		try {
 			$PCCManager = new PccSyncManager();
 
@@ -226,8 +275,52 @@ class Settings
 				PublishingLevel::PRODUCTION->value === $publishingLevelParam &&
 				$PCCManager->isPCCConfigured()
 			) {
+				$isProductionFlow = true;
 				$parts = explode('/', $wp->request);
 				$documentId = sanitize_text_field(wp_unslash(end($parts)));
+				$pccGrant = sanitize_text_field(filter_input(INPUT_GET, 'pccGrant'));
+
+				// Check if required parameters are present
+				if (empty($documentId)) {
+					wp_die(esc_html__(
+						'Content Publisher: Missing document ID parameter',
+						'pantheon-content-publisher'
+					));
+					exit;
+				}
+
+				// For production publishing, pccGrant is optional since we use the site's configured API key
+				try {
+					if (empty($pccGrant)) {
+						// Use the default PCC client for production publishing
+						$pccClient = (new PccSyncManager())->pccClient();
+					} else {
+						// Use the provided grant
+						$pccClient = (new PccSyncManager())->pccClient($pccGrant);
+					}
+
+					// Check the doc exists and is allowed.
+					$articlesApi = new ArticlesApi($pccClient);
+				} catch (Exception $e) {
+					status_header(500);
+					wp_die(esc_html__('Content Publisher: Failed to initialize PCC client.', 'pantheon-content-publisher'));
+					exit;
+				}
+
+				$article = $articlesApi->getArticleById(
+					$documentId,
+					['id'],
+					PublishingLevel::PRODUCTION, 
+					ContentType::TREE_PANTHEON_V2
+				);
+
+				if (!$article) {
+					status_header(403);
+					wp_die(esc_html__('Content Publisher: Document not found or not connected to your collection', 'pantheon-content-publisher'));
+					exit;
+				}
+
+				// Proceed with publish.
 				$postId = $PCCManager->fetchAndStoreDocument($documentId, PublishingLevel::PRODUCTION);
 
 				wp_redirect(add_query_arg('nocache', 'true', get_permalink($postId) ?: site_url()));
@@ -259,7 +352,12 @@ class Settings
 				}
 
 				// Create a new PCC client with the provided grant
-				$pccClient = (new PccSyncManager())->pccClient($pccGrant);
+				try {
+					$pccClient = (new PccSyncManager())->pccClient($pccGrant);
+				} catch (Exception $e) {
+					wp_die(esc_html__('Content Publisher: Failed to initialize PCC client for preview.', 'pantheon-content-publisher'));
+					exit;
+				}
 
 				// Find the post associated with the document ID
 				$postId = $PCCManager->findExistingConnectedPost(
@@ -306,10 +404,21 @@ class Settings
 					$versionId ?: null
 				);
 
+				// Sign the preview URL with a timestamp and signature.
+				$ts = time();
+				$levelValue = $publishingLevel->value; // 'realtime' or 'draft'.
+				$base = implode( '|', [(string)$ts, (string)$documentId, (string)($versionId ?: ''), $levelValue] );
+				$sig = hash_hmac('sha256', $base, $this->previewSecretForTs($ts, 900));
+				$url = add_query_arg(['ts' => $ts, 'sig' => $sig], $url);
+
 				wp_redirect($url);
 				exit;
 			}
 		} catch (Exception $ex) {
+			if ($isProductionFlow) {
+				status_header(500);
+				wp_die(esc_html__('Content Publisher: Authorization failed.', 'pantheon-content-publisher'));
+			}
 			// No Action needed for safe exit
 		}
 	}
@@ -380,6 +489,11 @@ class Settings
 
 		if (empty($posts)) {
 			return $posts;
+		}
+
+		// Validate preview signature.
+		if ( ! $this->validatePreviewSignature() ) {
+			return $posts; // Invalid signature, return original posts.
 		}
 
 		$post = $posts[0];
@@ -554,6 +668,14 @@ class Settings
 	{
 
 		$view = sanitize_text_field(filter_input(INPUT_GET, 'view')) ?: '';
+
+		if ($view !== '') {
+			$nonce = filter_input(INPUT_GET, '_wpnonce');
+			if (!$nonce || !wp_verify_nonce($nonce, 'pcc_view')) {
+				$view = '';
+			}
+		}
+
 		if ($view && isset($this->pages[$view])) {
 			require $this->pages[$view];
 
@@ -604,6 +726,7 @@ class Settings
 				'nonce' => wp_create_nonce('wp_rest'),
 				'plugin_main_page' => menu_page_url('pantheon-content-publisher', false),
 				'site_url' => site_url(),
+				'view_nonce' => wp_create_nonce('pcc_view'),
 			]
 		);
 	}
