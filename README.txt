@@ -50,6 +50,11 @@ The connection will be established automatically.
 All posts/pages created with Pantheon Content Publisher will remain on your WordPress site. However, you will no longer be able to edit them from Google Docs.
 
 == Changelog ==
+
+= 1.3.0 =
+* Feature: Introduces new improved UI for the plugin settings page.
+* Feature: Adds support for connecting existing content collections to WordPress.
+
 = 1.2.7 =
 * Fix: Resolves issue where duplicate posts would be created when publishing from Google Docs.
 * Feature: Adds linking of posts to authors by default
