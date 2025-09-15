@@ -332,8 +332,7 @@ class Settings
 
 	/**
 	 * Register custom endpoint for Pantheon Cloud Status.
-	 * This endpoint is used to check if the site is hosted live.
-	 * and checked only one time to show your website on PCC google addon
+	 * This endpoint is used to check site status
 	 */
 	public function registerPantheonCloudStatusEndpoint()
 	{
