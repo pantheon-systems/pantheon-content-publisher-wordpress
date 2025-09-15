@@ -308,7 +308,8 @@ class PccSyncManager
 	private function findOrCreateCategories(array $categories): array
 	{
 		$ids = [];
-		if (!function_exists('wp_insert_category')) {
+		if (!function_exists('wp_insert_term')) {
+			error_log('wp_insert_term does not exist, category insert will fail');
 			// has to fail silently
 			return $ids;
 		}
@@ -316,12 +317,9 @@ class PccSyncManager
 		foreach ($categories as $category) {
 			$categoryId = (int) get_cat_ID($category);
 			if (0 === $categoryId) {
-				$newCategory = wp_insert_category([
-					'cat_name' => $category,
-				]);
-
-				if (!is_wp_error($newCategory)) {
-					$categoryId = $newCategory;
+				$newTerm = wp_insert_term($category, 'category');
+				if (!is_wp_error($newTerm) && isset($newTerm['term_id'])) {
+					$categoryId = (int) $newTerm['term_id'];
 				}
 			}
 			$ids[] = $categoryId;
