@@ -136,7 +136,7 @@ export default function Dashboard() {
             <img
               src={`${window.PCC_BOOTSTRAP.assets_url}/images/webhooks.png`}
               alt="Webhook notice"
-              className="max-h-[240px] object-contain"
+              className="max-h-[240px] md:block hidden object-contain"
             />
           </div>
           <div className="flex flex-col gap-4 w-full">

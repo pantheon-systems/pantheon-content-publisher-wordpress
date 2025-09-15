@@ -11,7 +11,6 @@ use PccPhpSdk\core\PccClientConfig;
 use PccPhpSdk\core\Query\GraphQLQuery;
 
 use function media_sideload_image;
-use function wp_trim_excerpt;
 
 class PccSyncManager
 {
@@ -215,8 +214,8 @@ class PccSyncManager
 		$imageKey = $this->getFeaturedImageKey();
 		$legacyKey = 'FeaturedImage';
 
-		$hasNewKey = is_array($metadata) && array_key_exists($imageKey, $metadata);
-		$hasLegacyKey = is_array($metadata) && array_key_exists($legacyKey, $metadata);
+		$hasNewKey = is_array($metadata) && array_key_exists($imageKey, $metadata) && $metadata[$imageKey];
+		$hasLegacyKey = is_array($metadata) && array_key_exists($legacyKey, $metadata) && $metadata[$legacyKey];
 
 		if (!$hasNewKey && !$hasLegacyKey) {
 			return;
@@ -242,8 +241,14 @@ class PccSyncManager
 
 		// Ensure media_sideload_image function is available.
 		if (!function_exists('media_sideload_image')) {
-			// has to fail silently
-			return;
+			require_once ABSPATH . 'wp-admin/includes/media.php';
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+			require_once ABSPATH . 'wp-admin/includes/image.php';
+			if (!function_exists('media_sideload_image')) {
+				error_log('media_sideload_image does not exist after includes, returning');
+				// has to fail silently
+				return;
+			}
 		}
 
 		// Download and attach the new image.
@@ -308,7 +313,8 @@ class PccSyncManager
 	private function findOrCreateCategories(array $categories): array
 	{
 		$ids = [];
-		if (!function_exists('wp_insert_category')) {
+		if (!function_exists('wp_insert_term')) {
+			error_log('wp_insert_term does not exist, category insert will fail');
 			// has to fail silently
 			return $ids;
 		}
@@ -316,12 +322,9 @@ class PccSyncManager
 		foreach ($categories as $category) {
 			$categoryId = (int) get_cat_ID($category);
 			if (0 === $categoryId) {
-				$newCategory = wp_insert_category([
-					'cat_name' => $category,
-				]);
-
-				if (!is_wp_error($newCategory)) {
-					$categoryId = $newCategory;
+				$newTerm = wp_insert_term($category, 'category');
+				if (!is_wp_error($newTerm) && isset($newTerm['term_id'])) {
+					$categoryId = (int) $newTerm['term_id'];
 				}
 			}
 			$ids[] = $categoryId;
