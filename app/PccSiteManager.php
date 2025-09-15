@@ -37,6 +37,7 @@ class PccSiteManager
 		$statusCode = $response['http_response']->get_status();
 		if (204 === intval($statusCode)) {
 			update_option(PCC_WEBHOOK_SECRET_OPTION_KEY, $webhookSecret);
+			update_option(PCC_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY, true);
 			return true;
 		}
 

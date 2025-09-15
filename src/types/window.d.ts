@@ -10,6 +10,10 @@ interface Window {
       collection_url: string;
       collection_id: string;
       publish_as: "post" | "page";
+      webhook?: {
+        url: string;
+        notice_dismissed: boolean;
+      };
       collection_data?: {
         id: string;
         url: string;

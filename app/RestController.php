@@ -86,6 +86,11 @@ class RestController
 				'callback' => [$this, 'disconnect'],
 			],
 			[
+				'route' => '/webhook-notice',
+				'method' => 'PUT',
+				'callback' => [$this, 'updateWebhookNoticeState'],
+			],
+			[
 				'route' => 'api/pantheoncloud/status',
 				'method' => 'GET',
 				'callback' => [$this, 'pantheonCloudStatusCheck'],
@@ -436,6 +441,9 @@ class RestController
 		$manager = new PccSyncManager();
 		$manager->disconnect();
 
+		// Reset dismissed webhook notice
+		update_option(PCC_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY, false);
+
 		return new WP_REST_Response(
 			esc_html__('Saved Data deleted.', 'pantheon-content-publisher-for-wordpress'),
 			200
@@ -520,6 +528,9 @@ class RestController
 			update_option(PCC_ENCODED_SITE_URL_OPTION_KEY, md5(wp_parse_url(site_url())['host']));
 			update_option(PCC_API_KEY_OPTION_KEY, $accessToken);
 
+			// Ensure webhook notice is not dismissed for newly connected existing collections
+			update_option(PCC_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY, false);
+
 			// Update with the site id
 			return new WP_REST_Response(esc_html__('Collection connected', 'pantheon-content-publisher-for-wordpress'));
 		} catch (\Throwable $e) {
@@ -530,6 +541,29 @@ class RestController
 				500
 			);
 		}
+	}
+
+	/**
+	 * Update webhook notice state for current site
+	 */
+	public function updateWebhookNoticeState(WP_REST_Request $request): WP_REST_Response
+	{
+		if (!current_user_can('manage_options')) {
+			return new WP_REST_Response(
+				esc_html__(
+					'You are not authorized to perform this action.',
+					'pantheon-content-publisher-for-wordpress'
+				),
+				401
+			);
+		}
+
+		$dismissed = (bool) $request->get_param('dismissed');
+		update_option(PCC_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY, $dismissed);
+
+		return new WP_REST_Response([
+			'dismissed' => $dismissed,
+		]);
 	}
 
 	private function getPluginVersion(): string

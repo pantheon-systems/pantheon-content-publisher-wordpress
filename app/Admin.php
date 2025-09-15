@@ -147,6 +147,10 @@ class Admin
 				'collection_url' => site_url(),
 				'collection_id' => get_option(PCC_SITE_ID_OPTION_KEY),
 				'publish_as' => get_option(PCC_INTEGRATION_POST_TYPE_OPTION_KEY, 'post'),
+				'webhook' => [
+					'url' => rest_url(PCC_API_NAMESPACE . '/webhook'),
+					'notice_dismissed' => (bool) get_option(PCC_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY, false),
+				],
 			],
 		]) . ';';
 
