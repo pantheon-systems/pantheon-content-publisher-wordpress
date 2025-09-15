@@ -186,7 +186,9 @@ export default function Dashboard() {
               <Button
                 label="Dismiss"
                 variant="subtle"
-                onClick={() => setShowDismissConfirmModal(true)}
+                onClick={() => {
+                  setShowDismissConfirmModal(true);
+                }}
                 isLoading={dismissNoticeMutation.isPending}
               />
             </div>
@@ -215,7 +217,9 @@ export default function Dashboard() {
               label="Cancel"
               variant="secondary"
               disabled={dismissNoticeMutation.isPending}
-              onClick={() => setShowDismissConfirmModal(false)}
+              onClick={() => {
+                setShowDismissConfirmModal(false);
+              }}
             />
             <Button
               type="button"
