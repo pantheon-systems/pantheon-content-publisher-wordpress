@@ -11,7 +11,6 @@ use PccPhpSdk\core\PccClientConfig;
 use PccPhpSdk\core\Query\GraphQLQuery;
 
 use function media_sideload_image;
-use function wp_trim_excerpt;
 
 class PccSyncManager
 {
@@ -242,8 +241,14 @@ class PccSyncManager
 
 		// Ensure media_sideload_image function is available.
 		if (!function_exists('media_sideload_image')) {
-			// has to fail silently
-			return;
+			require_once ABSPATH . 'wp-admin/includes/media.php';
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+			require_once ABSPATH . 'wp-admin/includes/image.php';
+			if (!function_exists('media_sideload_image')) {
+				error_log('media_sideload_image does not exist after includes, returning');
+				// has to fail silently
+				return;
+			}
 		}
 
 		// Download and attach the new image.
