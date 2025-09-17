@@ -31,7 +31,6 @@ Click “Upload Plugin,” select the downloaded zip file, then “Install Now�
 
 Set up your connection to Pantheon Content Publisher and Google Drive via the settings page in the WordPress admin dashboard.
 
-
 ## Integration with Third-Party Services
 **Important Disclosure**
 This plugin integrates with Google Drive and Google Docs to facilitate document publishing to WordPress.
