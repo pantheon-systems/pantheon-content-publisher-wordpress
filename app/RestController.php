@@ -164,6 +164,11 @@ class RestController
 			$nonce = $request->get_param('_wpnonce');
 		}
 
+		// Sanitize nonce
+		if ($nonce) {
+			$nonce = sanitize_text_field( wp_unslash( $nonce ) );
+		}
+
 		if ($nonce && ! wp_verify_nonce($nonce, 'wp_rest')) {
 			return new WP_Error(
 				'rest_forbidden',
