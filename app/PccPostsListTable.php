@@ -59,7 +59,7 @@ class PccPostsListTable extends \WP_Posts_List_Table
 	 */
 	protected function isLinkedPost($post)
 	{
-		return (bool) get_post_meta($post->ID, CONTENT_PUB_CONTENT_META_KEY, true);
+		return (bool) get_post_meta($post->ID, CPUB_CONTENT_META_KEY, true);
 	}
 
 	/**
