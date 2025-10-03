@@ -12,7 +12,7 @@ use PccPhpSdk\api\Query\Enums\PublishingLevel;
 
 use function esc_html__;
 
-use const CONTENT_PUB_ACCESS_TOKEN_OPTION_KEY;
+use const CPUB_ACCESS_TOKEN_OPTION_KEY;
 
 /**
  * REST controller class.
@@ -83,7 +83,7 @@ class RestController
 		];
 
 		foreach ($endpoints as $endpoint) {
-			register_rest_route(CONTENT_PUB_API_NAMESPACE, $endpoint['route'], [
+			register_rest_route(CPUB_API_NAMESPACE, $endpoint['route'], [
 				'methods' => $endpoint['method'],
 				'callback' => $endpoint['callback'],
 				'permission_callback' => [$this, 'permissionCallback'],
@@ -107,7 +107,7 @@ class RestController
 	 */
 	public function handleWebhook(WP_REST_Request $request)
 	{
-		if (get_option(CONTENT_PUB_WEBHOOK_SECRET_OPTION_KEY) !== $request->get_header('x-pcc-webhook-secret')) {
+		if (get_option(CPUB_WEBHOOK_SECRET_OPTION_KEY) !== $request->get_header('x-pcc-webhook-secret')) {
 			return new WP_REST_Response(
 				esc_html__('You are not authorized to perform this action', 'pantheon-content-publisher'),
 				401
@@ -191,8 +191,8 @@ class RestController
 			], 400);
 		}
 
-		update_option(CONTENT_PUB_SITE_ID_OPTION_KEY, $siteId);
-		update_option(CONTENT_PUB_INTEGRATION_POST_TYPE_OPTION_KEY, $postType);
+		update_option(CPUB_SITE_ID_OPTION_KEY, $siteId);
+		update_option(CPUB_INTEGRATION_POST_TYPE_OPTION_KEY, $postType);
 
 		return new WP_REST_Response(esc_html__('Saved!', 'pantheon-content-publisher'));
 	}
@@ -208,7 +208,7 @@ class RestController
 			return new WP_REST_Response(esc_html__('You are not authorized to perform this action.', 'pantheon-content-publisher'), 401);
 		}
 		// Check management token is set
-		if (!get_option(CONTENT_PUB_ACCESS_TOKEN_OPTION_KEY)) {
+		if (!get_option(CPUB_ACCESS_TOKEN_OPTION_KEY)) {
 			return new WP_REST_Response(esc_html__('Management token is not set yet', 'pantheon-content-publisher'), 401);
 		}
 
@@ -219,8 +219,8 @@ class RestController
 		}
 
 		// Update with the site id
-		update_option(CONTENT_PUB_SITE_ID_OPTION_KEY, $response);
-		update_option(CONTENT_PUB_ENCODED_SITE_URL_OPTION_KEY, md5(wp_parse_url(site_url())['host']));
+		update_option(CPUB_SITE_ID_OPTION_KEY, $response);
+		update_option(CPUB_ENCODED_SITE_URL_OPTION_KEY, md5(wp_parse_url(site_url())['host']));
 		return new WP_REST_Response($response);
 	}
 
@@ -232,12 +232,12 @@ class RestController
 	public function registerWebhook(): WP_REST_Response
 	{
 		// Check management token is set
-		if (!get_option(CONTENT_PUB_ACCESS_TOKEN_OPTION_KEY)) {
+		if (!get_option(CPUB_ACCESS_TOKEN_OPTION_KEY)) {
 			return new WP_REST_Response(esc_html__('Management token is not set yet', 'pantheon-content-publisher'), 400);
 		}
 
 		// Check site id is set
-		if (!get_option(CONTENT_PUB_SITE_ID_OPTION_KEY)) {
+		if (!get_option(CPUB_SITE_ID_OPTION_KEY)) {
 			return new WP_REST_Response(esc_html__('Site is not created yet', 'pantheon-content-publisher'), 400);
 		}
 
@@ -263,7 +263,7 @@ class RestController
 	public function createApiKey(): WP_REST_Response
 	{
 		// Check site id is set
-		if (!get_option(CONTENT_PUB_SITE_ID_OPTION_KEY)) {
+		if (!get_option(CPUB_SITE_ID_OPTION_KEY)) {
 			return new WP_REST_Response(esc_html__('Site is not created yet', 'pantheon-content-publisher'), 400);
 		}
 
@@ -275,7 +275,7 @@ class RestController
 		$siteManager = new PccSiteManager();
 		$apiKey = $siteManager->createSiteApiKey();
 		if ($apiKey) {
-			update_option(CONTENT_PUB_API_KEY_OPTION_KEY, $apiKey);
+			update_option(CPUB_API_KEY_OPTION_KEY, $apiKey);
 			return new WP_REST_Response(esc_html__('API created', 'pantheon-content-publisher'));
 		}
 
@@ -292,12 +292,12 @@ class RestController
 	{
 		$siteId = sanitize_text_field($request->get_param('site_id') ?: '');
 		if ($siteId) {
-			update_option(CONTENT_PUB_SITE_ID_OPTION_KEY, $siteId);
+			update_option(CPUB_SITE_ID_OPTION_KEY, $siteId);
 		}
 
 		$postType = sanitize_text_field($request->get_param('post_type') ?: '');
 		if ($postType) {
-			update_option(CONTENT_PUB_INTEGRATION_POST_TYPE_OPTION_KEY, $postType);
+			update_option(CPUB_INTEGRATION_POST_TYPE_OPTION_KEY, $postType);
 		}
 
 		return new WP_REST_Response(esc_html__('Saved!', 'pantheon-content-publisher'));
@@ -326,7 +326,7 @@ class RestController
 			);
 		}
 
-		update_option(CONTENT_PUB_ACCESS_TOKEN_OPTION_KEY, $accessToken);
+		update_option(CPUB_ACCESS_TOKEN_OPTION_KEY, $accessToken);
 		return new WP_REST_Response(
 			esc_html__('Management token saved.', 'pantheon-content-publisher'),
 			200
