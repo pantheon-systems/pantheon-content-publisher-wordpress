@@ -190,7 +190,7 @@ class Settings
 	 */
 	private function validatePreviewSignature(): bool {
 		$timestamp = (int) filter_input(INPUT_GET, 'ts', FILTER_VALIDATE_INT);
-		$signature = (string) filter_input(INPUT_GET, 'sig');
+		$signature = (string) sanitize_key(filter_input(INPUT_GET, 'sig'));
 		$documentId = sanitize_text_field(filter_input(INPUT_GET, 'document_id'));
 		$versionId = sanitize_text_field(filter_input(INPUT_GET, 'versionId'));
 		$publishingLevel = sanitize_text_field(filter_input(INPUT_GET, 'publishing_level'));
@@ -670,7 +670,7 @@ class Settings
 		$view = sanitize_text_field(filter_input(INPUT_GET, 'view')) ?: '';
 
 		if ($view !== '') {
-			$nonce = filter_input(INPUT_GET, '_wpnonce');
+			$nonce = sanitize_text_field(wp_unslash(filter_input(INPUT_GET, '_wpnonce')));
 			if (!$nonce || !wp_verify_nonce($nonce, 'pcc_view')) {
 				$view = '';
 			}
