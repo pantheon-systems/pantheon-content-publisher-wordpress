@@ -166,7 +166,7 @@ class RestController
 
 		// Sanitize nonce
 		if ($nonce) {
-			$nonce = sanitize_text_field( wp_unslash( $nonce ) );
+			$nonce = sanitize_text_field(wp_unslash($nonce));
 		}
 
 		if ($nonce && ! wp_verify_nonce($nonce, 'wp_rest')) {
