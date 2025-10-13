@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
 		<div class="continue-setup">
 			<div class="header">
 				<img src="<?php
-				echo esc_url(CONTENT_PUB_PLUGIN_DIR_URL . 'assets/images/pantheon-logo.svg') ?>"
+				echo esc_url(CPUB_PLUGIN_DIR_URL . 'assets/images/pantheon-logo.svg') ?>"
 					 alt="Pantheon Logo">
 				<span class="header-title">
 					<?php
