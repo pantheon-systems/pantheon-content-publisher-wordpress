@@ -60,7 +60,7 @@ below_**
 ## Development
 
 1. `composer i && npm i` to install dependencies.
-2. `npm run watch` / `npm run dev` / `npm run prod` to build assets.
+2. `npm run watch` / `npm run dev` / `npm run build` to build assets.
 3. Read through
    our [contributing guidelines](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/primary/.github/CONTRIBUTING.md)
    for additional information. Included are directions for opening issues, coding standards and miscellaneous notes.

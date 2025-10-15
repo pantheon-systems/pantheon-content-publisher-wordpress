@@ -28,7 +28,7 @@ echo "Installing NPM dependencies..."
 npm install
 
 echo "Building production assets..."
-npm run prod
+npm run build
 
 echo "Creating release artifact: $ZIP..."
 
