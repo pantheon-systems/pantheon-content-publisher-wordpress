@@ -20,4 +20,5 @@ jobs:
           gh_token: ${{ github.token }}
           readme_md: README.md
           build_node_assets: true
+          build_composer_assets: true
           generate_release_notes: true
