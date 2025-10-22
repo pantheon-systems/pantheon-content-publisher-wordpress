@@ -534,7 +534,7 @@ class PccSyncManager
 			}
 		}
 		GRAPHQL;
-		$variables = new \ArrayObject(['siteId' => get_option(PCC_SITE_ID_OPTION_KEY)]);
+		$variables = new \ArrayObject(['siteId' => get_option(CPUB_SITE_ID_OPTION_KEY)]);
 		$graphQLQuery = new GraphQLQuery($query, $variables);
 
 		$siteResponse = $siteApi->executeQuery($graphQLQuery);

@@ -27,7 +27,7 @@ class ArticleOperationsTest extends WP_UnitTestCase
 	{
 		parent::setUp();
 		// Use the standard `post` type.
-		update_option(PCC_INTEGRATION_POST_TYPE_OPTION_KEY, 'post');
+		update_option(CPUB_INTEGRATION_POST_TYPE_OPTION_KEY, 'post');
 		$this->manager = new PccSyncManager();
 	}
 
@@ -73,7 +73,7 @@ class ArticleOperationsTest extends WP_UnitTestCase
 			'post_title' => 'Published',
 			'post_type' => 'post',
 		]);
-		update_post_meta($publishedId, PCC_CONTENT_META_KEY, 'doc-123');
+		update_post_meta($publishedId, CPUB_CONTENT_META_KEY, 'doc-123');
 
 		// Create a draft connected to the same PCC content ID.
 		$draftId = wp_insert_post([
@@ -81,7 +81,7 @@ class ArticleOperationsTest extends WP_UnitTestCase
 			'post_title' => 'Draft',
 			'post_type' => 'post',
 		]);
-		update_post_meta($draftId, PCC_CONTENT_META_KEY, 'doc-123');
+		update_post_meta($draftId, CPUB_CONTENT_META_KEY, 'doc-123');
 
 		// Default behavior finds the published post.
 		$this->assertSame($publishedId, $this->manager->findExistingConnectedPost('doc-123'));
@@ -246,7 +246,7 @@ class ArticleOperationsTest extends WP_UnitTestCase
 		$dupCheck = get_posts([
 			'post_type' => 'any',
 			'post_status' => 'any',
-			'meta_key' => PCC_CONTENT_META_KEY,
+			'meta_key' => CPUB_CONTENT_META_KEY,
 			'meta_value' => 'doc-4',
 			'fields' => 'ids',
 			'numberposts' => -1,

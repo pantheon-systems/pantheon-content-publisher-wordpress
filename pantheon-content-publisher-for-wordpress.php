@@ -20,21 +20,21 @@ if (!\defined('ABSPATH')) {
 	exit;
 }
 
-define('PCC_PLUGIN_FILE', __FILE__);
-define('PCC_PLUGIN_DIR', plugin_dir_path(PCC_PLUGIN_FILE));
-define('PCC_BASENAME', plugin_basename(PCC_PLUGIN_FILE));
-define('PCC_PLUGIN_DIR_URL', plugin_dir_url(PCC_PLUGIN_FILE));
-define('PCC_ACCESS_TOKEN_OPTION_KEY', 'pcc_access_token');
-define('PCC_PREVIEW_SECRET_OPTION_KEY', 'cpub_preview_secret');
-define('PCC_SITE_ID_OPTION_KEY', 'pcc_site_id');
-define('PCC_ENCODED_SITE_URL_OPTION_KEY', 'pcc_encoded_site_url');
-define('PCC_API_KEY_OPTION_KEY', 'pcc_api_key');
-define('PCC_INTEGRATION_POST_TYPE_OPTION_KEY', 'pcc_integration_post_type');
-define('PCC_API_NAMESPACE', 'pcc/v1');
-define('PCC_CONTENT_META_KEY', 'pcc_id');
-define('PCC_ENDPOINT', 'https://addonapi-gfttxsojwq-uc.a.run.app');
-define('PCC_WEBHOOK_SECRET_OPTION_KEY', 'pcc_webhook_secret');
-define('PCC_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY', 'pcc_webhook_notice_dismissed');
+define('CPUB_PLUGIN_FILE', __FILE__);
+define('CPUB_PLUGIN_DIR', plugin_dir_path(CPUB_PLUGIN_FILE));
+define('CPUB_BASENAME', plugin_basename(CPUB_PLUGIN_FILE));
+define('CPUB_PLUGIN_DIR_URL', plugin_dir_url(CPUB_PLUGIN_FILE));
+define('CPUB_ACCESS_TOKEN_OPTION_KEY', 'cpub_access_token');
+define('CPUB_PREVIEW_SECRET_OPTION_KEY', 'cpub_preview_secret');
+define('CPUB_SITE_ID_OPTION_KEY', 'cpub_site_id');
+define('CPUB_ENCODED_SITE_URL_OPTION_KEY', 'cpub_encoded_site_url');
+define('CPUB_API_KEY_OPTION_KEY', 'cpub_api_key');
+define('CPUB_INTEGRATION_POST_TYPE_OPTION_KEY', 'cpub_integration_post_type');
+define('CPUB_API_NAMESPACE', 'pcc/v1');
+define('CPUB_CONTENT_META_KEY', 'cpub_id');
+define('CPUB_ENDPOINT', 'https://addonapi-gfttxsojwq-uc.a.run.app');
+define('CPUB_WEBHOOK_SECRET_OPTION_KEY', 'cpub_webhook_secret');
+define('CPUB_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY', 'cpub_webhook_notice_dismissed');
 
 call_user_func(static function ($rootPath) {
 	$autoload = "{$rootPath}vendor/autoload.php";
@@ -42,4 +42,4 @@ call_user_func(static function ($rootPath) {
 		require_once $autoload;
 	}
 	add_action('plugins_loaded', [Plugin::class, 'getInstance'], -10);
-}, PCC_PLUGIN_DIR);
+}, CPUB_PLUGIN_DIR);

@@ -465,7 +465,7 @@ class RestController
 		$manager->disconnect();
 
 		// Reset dismissed webhook notice
-		update_option(PCC_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY, false);
+		update_option(CPUB_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY, false);
 
 		return new WP_REST_Response(
 			esc_html__('Saved Data deleted.', 'pantheon-content-publisher'),
@@ -547,12 +547,12 @@ class RestController
 			}
 
 			// Update with the site id and access token (api key)
-			update_option(PCC_SITE_ID_OPTION_KEY, $site['id']);
-			update_option(PCC_ENCODED_SITE_URL_OPTION_KEY, md5(wp_parse_url(site_url())['host']));
-			update_option(PCC_API_KEY_OPTION_KEY, $accessToken);
+			update_option(CPUB_SITE_ID_OPTION_KEY, $site['id']);
+			update_option(CPUB_ENCODED_SITE_URL_OPTION_KEY, md5(wp_parse_url(site_url())['host']));
+			update_option(CPUB_API_KEY_OPTION_KEY, $accessToken);
 
 			// Ensure webhook notice is not dismissed for newly connected existing collections
-			update_option(PCC_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY, false);
+			update_option(CPUB_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY, false);
 
 			// Update with the site id
 			return new WP_REST_Response(esc_html__('Collection connected', 'pantheon-content-publisher-for-wordpress'));
@@ -582,7 +582,7 @@ class RestController
 		}
 
 		$dismissed = (bool) $request->get_param('dismissed');
-		update_option(PCC_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY, $dismissed);
+		update_option(CPUB_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY, $dismissed);
 
 		return new WP_REST_Response([
 			'dismissed' => $dismissed,
@@ -591,7 +591,7 @@ class RestController
 
 	private function getPluginVersion(): string
 	{
-		$headers = get_file_data(PCC_PLUGIN_FILE, ['Version' => 'Version']);
+		$headers = get_file_data(CPUB_PLUGIN_FILE, ['Version' => 'Version']);
 		return isset($headers['Version']) ? (string) $headers['Version'] : '';
 	}
 }
