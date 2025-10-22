@@ -199,7 +199,7 @@ class PccSyncManager
 
 	private function getFeaturedImageKey()
 	{
-		return apply_filters('pcc_featured_image_key', 'image');
+		return apply_filters('cpub_featured_image_key', 'image');
 	}
 
 	/**
@@ -347,7 +347,7 @@ class PccSyncManager
 	/**
 	 * Get the default author ID for content created by Content Publisher.
 	 *
-	 * Allows filtering via 'pcc_default_author_id'. The filter receives the
+	 * Allows filtering via 'cpub_default_author_id'. The filter receives the
 	 * computed default ID and the Article (if available). The filter can be
 	 * used to override the default author ID for a given article.
 	 *
@@ -366,7 +366,7 @@ class PccSyncManager
 
 		$defaultId = !empty($adminIds) ? (int) $adminIds[0] : 0;
 
-		return (int) apply_filters('pcc_default_author_id', $defaultId, $article);
+		return (int) apply_filters('cpub_default_author_id', $defaultId, $article);
 	}
 
 	/**

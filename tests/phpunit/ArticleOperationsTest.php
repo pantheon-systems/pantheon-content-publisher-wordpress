@@ -360,14 +360,14 @@ class ArticleOperationsTest extends WP_UnitTestCase
 	}
 
 	/**
-	 * When the 'pcc_default_author_id' filter is present, it should override the
+	 * When the 'cpub_default_author_id' filter is present, it should override the
 	 * computed default author for new inserts.
 	 */
 	public function testFilterOverridesDefaultAuthorOnInsert(): void
 	{
 		$userId = static::factory()->user->create(['role' => 'subscriber']);
 
-		add_filter('pcc_default_author_id', function () use ($userId) {
+		add_filter('cpub_default_author_id', function () use ($userId) {
 			return (int) $userId;
 		}, 10, 0);
 
@@ -376,7 +376,7 @@ class ArticleOperationsTest extends WP_UnitTestCase
 			$postId = $this->manager->storeArticle($article, false);
 			$this->assertSame((int) $userId, (int) get_post($postId)->post_author);
 		} finally {
-			remove_all_filters('pcc_default_author_id');
+			remove_all_filters('cpub_default_author_id');
 		}
 	}
 
@@ -388,7 +388,7 @@ class ArticleOperationsTest extends WP_UnitTestCase
 		$userA = static::factory()->user->create(['role' => 'subscriber']);
 		$userB = static::factory()->user->create(['role' => 'subscriber']);
 
-		add_filter('pcc_default_author_id', function ($defaultAuthorId, $article) use ($userA, $userB) {
+		add_filter('cpub_default_author_id', function ($defaultAuthorId, $article) use ($userA, $userB) {
 			// Get around the unused parameter warning
 			$defaultAuthorId = (int) $defaultAuthorId;
 
@@ -416,7 +416,7 @@ class ArticleOperationsTest extends WP_UnitTestCase
 			);
 			$this->assertSame((int) $userB, (int) get_post($postIdB)->post_author);
 		} finally {
-			remove_all_filters('pcc_default_author_id');
+			remove_all_filters('cpub_default_author_id');
 		}
 	}
 
@@ -429,7 +429,7 @@ class ArticleOperationsTest extends WP_UnitTestCase
 		$userA = static::factory()->user->create(['role' => 'subscriber']);
 		$userB = static::factory()->user->create(['role' => 'subscriber']);
 
-		add_filter('pcc_default_author_id', function () use ($userA) {
+		add_filter('cpub_default_author_id', function () use ($userA) {
 			return (int) $userA;
 		}, 10, 0);
 
@@ -438,9 +438,9 @@ class ArticleOperationsTest extends WP_UnitTestCase
 		$originalAuthor = (int) get_post($postId)->post_author;
 
 		// Change the filter to return a different user and update the same document
-		remove_all_filters('pcc_default_author_id');
+		remove_all_filters('cpub_default_author_id');
 
-		add_filter('pcc_default_author_id', function () use ($userB) {
+		add_filter('cpub_default_author_id', function () use ($userB) {
 			return (int) $userB;
 		}, 10, 0);
 
@@ -454,6 +454,6 @@ class ArticleOperationsTest extends WP_UnitTestCase
 		$this->assertSame($postId, $postId2);
 		$this->assertSame($originalAuthor, (int) get_post($postId2)->post_author);
 
-		remove_all_filters('pcc_default_author_id');
+		remove_all_filters('cpub_default_author_id');
 	}
 }
