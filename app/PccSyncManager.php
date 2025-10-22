@@ -8,9 +8,9 @@ use PccPhpSdk\api\Query\Enums\PublishingLevel;
 use PccPhpSdk\api\Response\Article;
 use PccPhpSdk\core\PccClient;
 use PccPhpSdk\core\PccClientConfig;
+use PccPhpSdk\core\Query\GraphQLQuery;
 
 use function media_sideload_image;
-use function wp_trim_excerpt;
 
 class PccSyncManager
 {
@@ -63,6 +63,22 @@ class PccSyncManager
 	}
 
 	/**
+	 * Build PccClientConfig.
+	 *
+	 * @param string|null $pccGrant
+	 * @return PccClientConfig
+	 */
+	public function getClientConfig(?string $pccGrant = null): PccClientConfig
+	{
+		$args = [$this->siteId, $this->apiKey];
+		if ($pccGrant) {
+			$args = [$this->siteId, '', null, $pccGrant];
+		}
+
+		return new PccClientConfig(...$args);
+	}
+
+	/**
 	 * Get PccClient instance.
 	 *
 	 * @param string|null $pccGrant
@@ -70,12 +86,9 @@ class PccSyncManager
 	 */
 	public function pccClient(?string $pccGrant = null): PccClient
 	{
-		$args = [$this->siteId, $this->apiKey];
-		if ($pccGrant) {
-			$args = [$this->siteId, '', null, $pccGrant];
-		}
+		$config = $this->getClientConfig($pccGrant);
 
-		return new PccClient(new PccClientConfig(...$args));
+		return new PccClient($config);
 	}
 
 	/**
@@ -85,7 +98,7 @@ class PccSyncManager
 	 * @param bool $isDraft
 	 * @return int
 	 */
-	private function storeArticle(Article $article, bool $isDraft = false)
+	public function storeArticle(Article $article, bool $isDraft = false)
 	{
 		$postId = $this->findExistingConnectedPost($article->id);
 
@@ -100,6 +113,7 @@ class PccSyncManager
 	{
 		$args = [
 			'post_type'   => 'any',
+			'post_status' => 'any',
 			'meta_key'    => CPUB_CONTENT_META_KEY,
 			'meta_value'  => $value,
 			'fields'      => 'ids',
@@ -136,7 +150,9 @@ class PccSyncManager
 		];
 
 		if (!$postId) {
-			$postId = wp_insert_post($data);
+			$insertData = $data;
+			$insertData['post_author'] = $this->getDefaultAuthorId($article);
+			$postId = wp_insert_post($insertData);
 			update_post_meta($postId, CPUB_CONTENT_META_KEY, $article->id);
 			$this->syncPostMetaAndTags($postId, $article);
 			return $postId;
@@ -181,6 +197,11 @@ class PccSyncManager
 		}
 	}
 
+	private function getFeaturedImageKey()
+	{
+		return apply_filters('pcc_featured_image_key', 'image');
+	}
+
 	/**
 	 * Set the post feature image.
 	 *
@@ -189,16 +210,28 @@ class PccSyncManager
 	 */
 	private function setPostFeatureImage($postId, Article $article)
 	{
-		if (!isset($article->metadata['FeaturedImage'])) {
+		$metadata = $article->metadata ?? [];
+		$imageKey = $this->getFeaturedImageKey();
+		$legacyKey = 'FeaturedImage';
+
+		$hasNewKey = is_array($metadata) && array_key_exists($imageKey, $metadata) && $metadata[$imageKey];
+		$hasLegacyKey = is_array($metadata) && array_key_exists($legacyKey, $metadata) && $metadata[$legacyKey];
+
+		if (!$hasNewKey && !$hasLegacyKey) {
 			return;
 		}
-		// If the feature image is empty, delete the existing thumbnail.
-		if (!$article->metadata['FeaturedImage']) {
+
+		$selectedKey = $hasNewKey ? $imageKey : $legacyKey;
+		$imageValue = $metadata[$selectedKey] ?? null;
+
+		// If the selected key is present but empty, delete the existing thumbnail.
+		if (!$imageValue) {
 			delete_post_thumbnail($postId);
 			return;
 		}
 
-		$featuredImageURL = $article->metadata['FeaturedImage'] . '#image.jpg';
+		$featuredImageURL = $imageValue . '#image.jpg';
+
 		// Check if there was an existing image.
 		$existingImageId = $this->getImageIdByUrl($featuredImageURL);
 		if ($existingImageId) {
@@ -208,8 +241,14 @@ class PccSyncManager
 
 		// Ensure media_sideload_image function is available.
 		if (!function_exists('media_sideload_image')) {
-			// has to fail silently
-			return;
+			require_once ABSPATH . 'wp-admin/includes/media.php';
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+			require_once ABSPATH . 'wp-admin/includes/image.php';
+			if (!function_exists('media_sideload_image')) {
+				error_log('media_sideload_image does not exist after includes, returning');
+				// has to fail silently
+				return;
+			}
 		}
 
 		// Download and attach the new image.
@@ -274,7 +313,8 @@ class PccSyncManager
 	private function findOrCreateCategories(array $categories): array
 	{
 		$ids = [];
-		if (!function_exists('wp_insert_category')) {
+		if (!function_exists('wp_insert_term')) {
+			error_log('wp_insert_term does not exist, category insert will fail');
 			// has to fail silently
 			return $ids;
 		}
@@ -282,12 +322,9 @@ class PccSyncManager
 		foreach ($categories as $category) {
 			$categoryId = (int) get_cat_ID($category);
 			if (0 === $categoryId) {
-				$newCategory = wp_insert_category([
-					'cat_name' => $category,
-				]);
-
-				if (!is_wp_error($newCategory)) {
-					$categoryId = $newCategory;
+				$newTerm = wp_insert_term($category, 'category');
+				if (!is_wp_error($newTerm) && isset($newTerm['term_id'])) {
+					$categoryId = (int) $newTerm['term_id'];
 				}
 			}
 			$ids[] = $categoryId;
@@ -305,6 +342,31 @@ class PccSyncManager
 	private function getIntegrationPostType()
 	{
 		return get_option(CPUB_INTEGRATION_POST_TYPE_OPTION_KEY);
+	}
+
+	/**
+	 * Get the default author ID for content created by Content Publisher.
+	 *
+	 * Allows filtering via 'pcc_default_author_id'. The filter receives the
+	 * computed default ID and the Article (if available). The filter can be
+	 * used to override the default author ID for a given article.
+	 *
+	 * @param Article|null $article
+	 * @return int
+	 */
+	public function getDefaultAuthorId(?Article $article = null): int
+	{
+		$adminIds = get_users([
+			'role' => 'administrator',
+			'orderby' => 'ID',
+			'order' => 'ASC',
+			'number' => 1,
+			'fields' => 'ID',
+		]);
+
+		$defaultId = !empty($adminIds) ? (int) $adminIds[0] : 0;
+
+		return (int) apply_filters('pcc_default_author_id', $defaultId, $article);
 	}
 
 	/**
@@ -357,8 +419,7 @@ class PccSyncManager
 		$pccGrant = null,
 		?PublishingLevel $publishingLevel = null,
 		?string $versionId = null
-	): string
-	{
+	): string {
 		$postId = $postId ?: $this->findExistingConnectedPost($documentId);
 		$queryArgs = [
 			'publishing_level' => ($publishingLevel ?? PublishingLevel::REALTIME)->value,
@@ -410,7 +471,7 @@ class PccSyncManager
 		$encodedSiteURL = get_option(CPUB_ENCODED_SITE_URL_OPTION_KEY);
 		$apiKey = get_option(CPUB_API_KEY_OPTION_KEY);
 
-		if (!$accessToken || !$siteId || !$apiKey || !$encodedSiteURL) {
+		if ((!$accessToken && !$apiKey) || !$siteId || !$encodedSiteURL) {
 			return false;
 		}
 
@@ -457,5 +518,43 @@ class PccSyncManager
 		}
 
 		return $data;
+	}
+
+	public function getSiteData()
+	{
+		$siteApi = $this->pccClient();
+		// TODO: Remove this query and use the SitesApi::getSite() method instead when
+		// the getSite() method is extended to return the name of the site.
+		$query = <<<'GRAPHQL'
+		query GetSite($siteId: String!) {
+			site(id: $siteId) {
+				id
+				url
+				name
+			}
+		}
+		GRAPHQL;
+		$variables = new \ArrayObject(['siteId' => get_option(PCC_SITE_ID_OPTION_KEY)]);
+		$graphQLQuery = new GraphQLQuery($query, $variables);
+
+		$siteResponse = $siteApi->executeQuery($graphQLQuery);
+
+		// Parse the JSON response
+		$parsedResponse = json_decode($siteResponse, true);
+
+		// Check for GraphQL errors
+		if (isset($parsedResponse['errors']) && !empty($parsedResponse['errors'])) {
+			$errorMessage = $parsedResponse['errors'][0]['message'] ?? 'Unknown error';
+			error_log('PCC connectCollection GraphQL error: ' . $errorMessage);
+			return null;
+		}
+
+		// Check if site data exists
+		$site = $parsedResponse['data']['site'] ?? null;
+		if (!$site || empty($site['id'])) {
+			return null;
+		}
+
+		return $site;
 	}
 }
