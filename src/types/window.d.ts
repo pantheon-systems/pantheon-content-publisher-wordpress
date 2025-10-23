@@ -1,5 +1,5 @@
 interface Window {
-  PCC_BOOTSTRAP: {
+  CPUB_BOOTSTRAP: {
     rest_url: string;
     nonce: string;
     site_url: string;

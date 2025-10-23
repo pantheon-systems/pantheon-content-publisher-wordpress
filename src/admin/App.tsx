@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import { SRC_ACTIONS, SrcAction } from "./constants/navigation";
 
 export default function App() {
-  const isPCCConfigured = window.PCC_BOOTSTRAP.is_pcc_configured;
+  const isPCCConfigured = window.CPUB_BOOTSTRAP.is_pcc_configured;
   const [addToast] = useToast();
 
   // Handle source actions

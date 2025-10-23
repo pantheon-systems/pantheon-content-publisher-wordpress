@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const { rest_url, nonce } = window.PCC_BOOTSTRAP;
+const { rest_url, nonce } = window.CPUB_BOOTSTRAP;
 
 export const apiClient = axios.create({
   baseURL: rest_url,

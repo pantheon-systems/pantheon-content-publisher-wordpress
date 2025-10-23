@@ -136,7 +136,7 @@ class Admin
 		$pccSyncManager = new PccSyncManager();
 		$isPCCConfigured = $pccSyncManager->isPCCConfigured();
 
-		$bootstrap = 'window.PCC_BOOTSTRAP = ' . wp_json_encode([
+		$bootstrap = 'window.CPUB_BOOTSTRAP = ' . wp_json_encode([
 			'rest_url' => get_rest_url(get_current_blog_id(), CPUB_API_NAMESPACE),
 			'nonce' => wp_create_nonce('wp_rest'),
 			'site_url' => site_url(),
@@ -158,7 +158,7 @@ class Admin
 		if ($isPCCConfigured) {
 			$site = $pccSyncManager->getSiteData();
 			if ($site) {
-				$bootstrap .= 'window.PCC_BOOTSTRAP.configured.collection_data = ' . wp_json_encode($site) . ';';
+				$bootstrap .= 'window.CPUB_BOOTSTRAP.configured.collection_data = ' . wp_json_encode($site) . ';';
 			}
 		}
 

@@ -1,7 +1,7 @@
 export function useCollectionData() {
   const {
     configured: { collection_url, collection_id, collection_data },
-  } = window.PCC_BOOTSTRAP;
+  } = window.CPUB_BOOTSTRAP;
 
   const collectionName = (() => {
     if (collection_data?.name) {
