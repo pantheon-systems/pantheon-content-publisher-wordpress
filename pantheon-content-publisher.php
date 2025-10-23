@@ -47,7 +47,7 @@ call_user_func(static function ($rootPath) {
 // Granted the wp-submission release will be 1.3
 define('CPUB_VERSION', '1.3.1');
 
-require_once CPUB_PLUGIN_DIR_URL . 'app/migrations/PluginUpgrade.php';
+require_once CPUB_PLUGIN_DIR . 'app/migrations/PluginUpgrade.php';
 
 add_action( 'plugins_loaded', function() {
 	\Pantheon\ContentPublisher\Migrations\PluginUpgrade::isUpgradeNeeded();
