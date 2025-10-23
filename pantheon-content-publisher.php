@@ -8,7 +8,7 @@
  * Plugin URI: https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/
  * Author: Pantheon
  * Author URI: https://pantheon.io
- * Version: 1.3
+ * Version: 1.3.1
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -45,7 +45,7 @@ call_user_func(static function ($rootPath) {
 
 // define version for migration script on upgrade
 // Granted the wp-submission release will be 1.3
-define('CPUB_VERSION', '1.3');
+define('CPUB_VERSION', '1.3.1');
 
 require_once CPUB_PLUGIN_DIR_URL . 'app/migrations/PluginUpgrade.php';
 
