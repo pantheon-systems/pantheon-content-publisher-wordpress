@@ -18,10 +18,10 @@ use function get_post_meta;
 use function wp_enqueue_script;
 use function wp_strip_all_tags;
 
-use const CONTENT_PUB_CONTENT_META_KEY;
-use const CONTENT_PUB_INTEGRATION_POST_TYPE_OPTION_KEY;
-use const CONTENT_PUB_PLUGIN_DIR;
-use const CONTENT_PUB_PLUGIN_DIR_URL;
+use const CPUB_CONTENT_META_KEY;
+use const CPUB_INTEGRATION_POST_TYPE_OPTION_KEY;
+use const CPUB_PLUGIN_DIR;
+use const CPUB_PLUGIN_DIR_URL;
 
 // phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
 
@@ -35,28 +35,28 @@ class Settings
 	 * Pantheon menu icon in base64
 	 */
 	// phpcs:ignore Generic.Files.LineLength.TooLong
-	private const CONTENT_PUB_ICON_BASE64 = 'PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik00LjcxNjkxIDFMNi4xNTA3MSA0LjQ1NDE4SDQuMzI1ODdMNC45MTI0MiA1Ljk1MzE2SDguNjI3MjlMNC43MTY5MSAxWiIgZmlsbD0id2hpdGUiLz4KICAgIDxwYXRoIGQ9Ik05LjU3MjI5IDEzLjU0NThMOC45NTMxNCAxMi4wNDY5SDguMTA1ODlMNi4zNDYyMiA3Ljc3ODAySDUuNTk2NzNMNy4zNTY0IDEyLjA0NjlINS4yMDU2OUw5LjE4MTI1IDE3TDcuNzQ3NDQgMTMuNTQ1OEg5LjU3MjI5WiIKICAgICAgICAgIGZpbGw9IndoaXRlIi8+CiAgICA8cGF0aCBkPSJNMTAuMDYxMSAxMC41MTUzSDcuNzQ3NDRMOC4yMzYyNCAxMS42ODg0SDEwLjA2MTFDMTAuMDkzNyAxMS42ODg0IDEwLjIyNCAxMS42MjMyIDEwLjIyNCAxMS4xMDE4QzEwLjE5MTQgMTAuNTgwNCAxMC4wOTM3IDEwLjUxNTMgMTAuMDYxMSAxMC41MTUzWiIKICAgICAgICAgIGZpbGw9IndoaXRlIi8+CiAgICA8cGF0aCBkPSJNMTAuMjg5MiA5LjExNDA0SDcuMTkzNDhMNy42ODIyOCAxMC4yODcySDEwLjI4OTJDMTAuMzIxOCAxMC4yODcyIDEwLjQ1MjEgMTAuMjIyIDEwLjQ1MjEgOS43MDA2QzEwLjQxOTYgOS4xNzkyMiAxMC4zMjE4IDkuMTE0MDQgMTAuMjg5MiA5LjExNDA0WiIKICAgICAgICAgIGZpbGw9IndoaXRlIi8+CiAgICA8cGF0aCBkPSJNMTAuMDYxMSA3LjQ4NDczQzEwLjA5MzcgNy40ODQ3MyAxMC4yMjQgNy40MTk1NiAxMC4yMjQgNi44OTgxN0MxMC4yMjQgNi4zNzY3OSAxMC4xMjYzIDYuMzExNjEgMTAuMDYxMSA2LjMxMTYxSDcuNTE5MzVMOC4wMDgxNSA3LjQ4NDczSDEwLjA2MTFaIgogICAgICAgICAgZmlsbD0id2hpdGUiLz4KICAgIDxwYXRoIGQ9Ik04LjU2MjEgOC44ODU5NUgxMC4yNTY2QzEwLjI4OTIgOC44ODU5NSAxMC40MTk1IDguODIwNzcgMTAuNDE5NSA4LjI5OTM5QzEwLjQxOTUgNy43NzggMTAuMzIxOCA3LjcxMjgzIDEwLjI1NjYgNy43MTI4M0g4LjA3MzNMOC41NjIxIDguODg1OTVaIgogICAgICAgICAgZmlsbD0id2hpdGUiLz4KICAgIDxwYXRoIGQ9Ik01Ljc1OTY3IDguODg1OTVMNS4yMDU3IDcuNDg0NzNINi40NzY1OEw3LjA2MzE0IDguODg1OTVIOC4yNjg4NEw3LjE5MzQ4IDYuMzExNjFINC41NTM5N0M0LjM1ODQ1IDYuMzExNjEgNC4yMjgxMSA2LjMxMTYxIDQuMTMwMzUgNi42MDQ4OUM0LjAzMjU5IDYuOTYzMzUgNCA3LjY0NzY2IDQgOC45ODM3MUM0IDEwLjMxOTggNCAxMS4wMDQxIDQuMTMwMzUgMTEuMzYyNUM0LjIyODExIDExLjY1NTggNC4zMjU4NyAxMS42NTU4IDQuNTUzOTcgMTEuNjU1OEg2Ljg2NzYyTDUuNzU5NjcgOC44ODU5NVoiCiAgICAgICAgICBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4=';
+	private const CPUB_ICON_BASE64 = 'PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik00LjcxNjkxIDFMNi4xNTA3MSA0LjQ1NDE4SDQuMzI1ODdMNC45MTI0MiA1Ljk1MzE2SDguNjI3MjlMNC43MTY5MSAxWiIgZmlsbD0id2hpdGUiLz4KICAgIDxwYXRoIGQ9Ik05LjU3MjI5IDEzLjU0NThMOC45NTMxNCAxMi4wNDY5SDguMTA1ODlMNi4zNDYyMiA3Ljc3ODAySDUuNTk2NzNMNy4zNTY0IDEyLjA0NjlINS4yMDU2OUw5LjE4MTI1IDE3TDcuNzQ3NDQgMTMuNTQ1OEg5LjU3MjI5WiIKICAgICAgICAgIGZpbGw9IndoaXRlIi8+CiAgICA8cGF0aCBkPSJNMTAuMDYxMSAxMC41MTUzSDcuNzQ3NDRMOC4yMzYyNCAxMS42ODg0SDEwLjA2MTFDMTAuMDkzNyAxMS42ODg0IDEwLjIyNCAxMS42MjMyIDEwLjIyNCAxMS4xMDE4QzEwLjE5MTQgMTAuNTgwNCAxMC4wOTM3IDEwLjUxNTMgMTAuMDYxMSAxMC41MTUzWiIKICAgICAgICAgIGZpbGw9IndoaXRlIi8+CiAgICA8cGF0aCBkPSJNMTAuMjg5MiA5LjExNDA0SDcuMTkzNDhMNy42ODIyOCAxMC4yODcySDEwLjI4OTJDMTAuMzIxOCAxMC4yODcyIDEwLjQ1MjEgMTAuMjIyIDEwLjQ1MjEgOS43MDA2QzEwLjQxOTYgOS4xNzkyMiAxMC4zMjE4IDkuMTE0MDQgMTAuMjg5MiA5LjExNDA0WiIKICAgICAgICAgIGZpbGw9IndoaXRlIi8+CiAgICA8cGF0aCBkPSJNMTAuMDYxMSA3LjQ4NDczQzEwLjA5MzcgNy40ODQ3MyAxMC4yMjQgNy40MTk1NiAxMC4yMjQgNi44OTgxN0MxMC4yMjQgNi4zNzY3OSAxMC4xMjYzIDYuMzExNjEgMTAuMDYxMSA2LjMxMTYxSDcuNTE5MzVMOC4wMDgxNSA3LjQ4NDczSDEwLjA2MTFaIgogICAgICAgICAgZmlsbD0id2hpdGUiLz4KICAgIDxwYXRoIGQ9Ik04LjU2MjEgOC44ODU5NUgxMC4yNTY2QzEwLjI4OTIgOC44ODU5NSAxMC40MTk1IDguODIwNzcgMTAuNDE5NSA4LjI5OTM5QzEwLjQxOTUgNy43NzggMTAuMzIxOCA3LjcxMjgzIDEwLjI1NjYgNy43MTI4M0g4LjA3MzNMOC41NjIxIDguODg1OTVaIgogICAgICAgICAgZmlsbD0id2hpdGUiLz4KICAgIDxwYXRoIGQ9Ik01Ljc1OTY3IDguODg1OTVMNS4yMDU3IDcuNDg0NzNINi40NzY1OEw3LjA2MzE0IDguODg1OTVIOC4yNjg4NEw3LjE5MzQ4IDYuMzExNjFINC41NTM5N0M0LjM1ODQ1IDYuMzExNjEgNC4yMjgxMSA2LjMxMTYxIDQuMTMwMzUgNi42MDQ4OUM0LjAzMjU5IDYuOTYzMzUgNCA3LjY0NzY2IDQgOC45ODM3MUM0IDEwLjMxOTggNCAxMS4wMDQxIDQuMTMwMzUgMTEuMzYyNUM0LjIyODExIDExLjY1NTggNC4zMjU4NyAxMS42NTU4IDQuNTUzOTcgMTEuNjU1OEg2Ljg2NzYyTDUuNzU5NjcgOC44ODU5NVoiCiAgICAgICAgICBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4=';
 
 	/**
 	 * Pantheon Cloud Status endpoint required by PCC
 	 */
-	private const CONTENT_PUB_STATUS_ENDPOINT = 'api/pantheoncloud/status';
+	private const CPUB_STATUS_ENDPOINT = 'api/pantheoncloud/status';
 
 	/**
 	 * Publish document endpoint required by PCC
 	 */
-	private const CONTENT_PUB_PUBLISH_DOCUMENT_ENDPOINT = 'api/pantheoncloud/document/';
+	private const CPUB_PUBLISH_DOCUMENT_ENDPOINT = 'api/pantheoncloud/document/';
 
 	/**
 	 * Google Docs edit URL.
 	 */
-	private const CONTENT_PUB_DOCUMENT_EDIT_URL = 'https://docs.google.com/document/d/%s/edit';
+	private const CPUB_DOCUMENT_EDIT_URL = 'https://docs.google.com/document/d/%s/edit';
 
 	private $pages = [
-		'connected-collection' => CONTENT_PUB_PLUGIN_DIR . 'admin/templates/partials/connected-collection.php',
-		'create-collection' => CONTENT_PUB_PLUGIN_DIR . 'admin/templates/partials/create-collection.php',
-		'disconnect-confirmation' => CONTENT_PUB_PLUGIN_DIR . 'admin/templates/partials/disconnect-confirmation.php',
-		'setup' => CONTENT_PUB_PLUGIN_DIR . 'admin/templates/partials/setup.php',
+		'connected-collection' => CPUB_PLUGIN_DIR . 'admin/templates/partials/connected-collection.php',
+		'create-collection' => CPUB_PLUGIN_DIR . 'admin/templates/partials/create-collection.php',
+		'disconnect-confirmation' => CPUB_PLUGIN_DIR . 'admin/templates/partials/disconnect-confirmation.php',
+		'setup' => CPUB_PLUGIN_DIR . 'admin/templates/partials/setup.php',
 	];
 
 	public function __construct()
@@ -103,7 +103,7 @@ class Settings
 	 */
 	public function stripExcerptTags(string $content): string
 	{
-		if (get_post_meta(get_the_ID(), CONTENT_PUB_CONTENT_META_KEY, true)) {
+		if (get_post_meta(get_the_ID(), CPUB_CONTENT_META_KEY, true)) {
 			return wp_strip_all_tags($content);
 		}
 
@@ -119,7 +119,7 @@ class Settings
 	{
 		$accessToken = $this->getAccessToken();
 		$siteId = $this->getSiteId();
-		$encodedSiteURL = get_option(CONTENT_PUB_ENCODED_SITE_URL_OPTION_KEY);
+		$encodedSiteURL = get_option(CPUB_ENCODED_SITE_URL_OPTION_KEY);
 		$apiKey = $this->getAPIAccessKey();
 
 		if (!$accessToken || !$siteId || !$apiKey || !$encodedSiteURL) {
@@ -141,7 +141,7 @@ class Settings
 	 */
 	private function getAccessToken(): mixed
 	{
-		$pccToken = get_option(CONTENT_PUB_ACCESS_TOKEN_OPTION_KEY);
+		$pccToken = get_option(CPUB_ACCESS_TOKEN_OPTION_KEY);
 
 		return $pccToken ?: [];
 	}
@@ -151,7 +151,7 @@ class Settings
 	 */
 	private function getSiteId(): mixed
 	{
-		return get_option(CONTENT_PUB_SITE_ID_OPTION_KEY);
+		return get_option(CPUB_SITE_ID_OPTION_KEY);
 	}
 
 	/**
@@ -161,9 +161,53 @@ class Settings
 	 */
 	private function getAPIAccessKey(): mixed
 	{
-		$apiKey = get_option(CONTENT_PUB_API_KEY_OPTION_KEY);
+		$apiKey = get_option(CPUB_API_KEY_OPTION_KEY);
 
 		return $apiKey ?: [];
+	}
+
+	/**
+	 * Generate a preview secret for a given timestamp.
+	 *
+	 * @param int $timestamp The timestamp to generate the secret for.
+	 * @param int $windowSeconds The time window in seconds (default is 900 seconds or 15 minutes).
+	 * @return string The generated preview secret.
+	 */
+	private function previewSecretForTs( int $timestamp, int $windowSeconds = 900 ): string
+	{
+		$bucket = (int) floor( $timestamp / $windowSeconds );
+		return hash_hmac('sha256', 'pcc_preview|' . site_url() . '|' . $bucket, wp_salt('nonce') );
+	}
+
+	/**
+	 * Validate the preview signature.
+	 * 
+	 * Since preview links are public, we can't use nonces to validated. 
+	 * Instead, we use a HMAC signature with a shared secret that is 
+	 * time-limited.
+	 *
+	 * @return bool True if the signature is valid, false otherwise.
+	 */
+	private function validatePreviewSignature(): bool {
+		$timestamp = (int) filter_input(INPUT_GET, 'ts', FILTER_VALIDATE_INT);
+		$signature = (string) sanitize_key(filter_input(INPUT_GET, 'sig'));
+		$documentId = sanitize_text_field(filter_input(INPUT_GET, 'document_id'));
+		$versionId = sanitize_text_field(filter_input(INPUT_GET, 'versionId'));
+		$publishingLevel = sanitize_text_field(filter_input(INPUT_GET, 'publishing_level'));
+
+		if ( !$timestamp || !$signature || !$documentId || !$publishingLevel ) {
+			return false;
+		}
+
+		// 15 minute TTL.
+		if ( abs( time() - $timestamp ) > 900 ) {
+			return false;
+		}
+
+		$base = implode('|', [(string) $timestamp, $documentId, (string)($versionId ?: ''), $publishingLevel]);
+		$expected = hash_hmac('sha256', $base, $this->previewSecretForTs($timestamp));
+
+		return hash_equals($expected, $signature);
 	}
 
 	public function isPreviewRequest(): bool
@@ -174,6 +218,11 @@ class Settings
 				!filter_has_var(INPUT_GET, 'publishing_level') ||
 				!filter_has_var(INPUT_GET, 'pccGrant')
 		) {
+			return false;
+		}
+
+		// Validate preview signature
+		if ( ! $this->validatePreviewSignature() ) {
 			return false;
 		}
 
@@ -191,7 +240,7 @@ class Settings
 	 */
 	public function allowStyleTags($allowedTags)
 	{
-		if (get_post_meta(get_the_ID(), CONTENT_PUB_CONTENT_META_KEY, true)) {
+		if (get_post_meta(get_the_ID(), CPUB_CONTENT_META_KEY, true)) {
 				$allowedTags['style'] = [];
 		}
 
@@ -206,7 +255,7 @@ class Settings
 	public function publishDocuments(): void
 	{
 		global $wp;
-		if (!str_starts_with($wp->request, static::CONTENT_PUB_PUBLISH_DOCUMENT_ENDPOINT)) {
+		if (!str_starts_with($wp->request, static::CPUB_PUBLISH_DOCUMENT_ENDPOINT)) {
 			return;
 		}
 
@@ -217,7 +266,7 @@ class Settings
 			$publishingLevelParam = PublishingLevel::PRODUCTION->value;
 		}
 
-
+		$isProductionFlow = false;
 		try {
 			$PCCManager = new PccSyncManager();
 
@@ -226,8 +275,52 @@ class Settings
 				PublishingLevel::PRODUCTION->value === $publishingLevelParam &&
 				$PCCManager->isPCCConfigured()
 			) {
+				$isProductionFlow = true;
 				$parts = explode('/', $wp->request);
 				$documentId = sanitize_text_field(wp_unslash(end($parts)));
+				$pccGrant = sanitize_text_field(filter_input(INPUT_GET, 'pccGrant'));
+
+				// Check if required parameters are present
+				if (empty($documentId)) {
+					wp_die(esc_html__(
+						'Content Publisher: Missing document ID parameter',
+						'pantheon-content-publisher'
+					));
+					exit;
+				}
+
+				// For production publishing, pccGrant is optional since we use the site's configured API key
+				try {
+					if (empty($pccGrant)) {
+						// Use the default PCC client for production publishing
+						$pccClient = (new PccSyncManager())->pccClient();
+					} else {
+						// Use the provided grant
+						$pccClient = (new PccSyncManager())->pccClient($pccGrant);
+					}
+
+					// Check the doc exists and is allowed.
+					$articlesApi = new ArticlesApi($pccClient);
+				} catch (Exception $e) {
+					status_header(500);
+					wp_die(esc_html__('Content Publisher: Failed to initialize PCC client.', 'pantheon-content-publisher'));
+					exit;
+				}
+
+				$article = $articlesApi->getArticleById(
+					$documentId,
+					['id'],
+					PublishingLevel::PRODUCTION, 
+					ContentType::TREE_PANTHEON_V2
+				);
+
+				if (!$article) {
+					status_header(403);
+					wp_die(esc_html__('Content Publisher: Document not found or not connected to your collection', 'pantheon-content-publisher'));
+					exit;
+				}
+
+				// Proceed with publish.
 				$postId = $PCCManager->fetchAndStoreDocument($documentId, PublishingLevel::PRODUCTION);
 
 				wp_redirect(add_query_arg('nocache', 'true', get_permalink($postId) ?: site_url()));
@@ -259,7 +352,12 @@ class Settings
 				}
 
 				// Create a new PCC client with the provided grant
-				$pccClient = (new PccSyncManager())->pccClient($pccGrant);
+				try {
+					$pccClient = (new PccSyncManager())->pccClient($pccGrant);
+				} catch (Exception $e) {
+					wp_die(esc_html__('Content Publisher: Failed to initialize PCC client for preview.', 'pantheon-content-publisher'));
+					exit;
+				}
 
 				// Find the post associated with the document ID
 				$postId = $PCCManager->findExistingConnectedPost(
@@ -306,10 +404,21 @@ class Settings
 					$versionId ?: null
 				);
 
+				// Sign the preview URL with a timestamp and signature.
+				$ts = time();
+				$levelValue = $publishingLevel->value; // 'realtime' or 'draft'.
+				$base = implode( '|', [(string)$ts, (string)$documentId, (string)($versionId ?: ''), $levelValue] );
+				$sig = hash_hmac('sha256', $base, $this->previewSecretForTs($ts, 900));
+				$url = add_query_arg(['ts' => $ts, 'sig' => $sig], $url);
+
 				wp_redirect($url);
 				exit;
 			}
 		} catch (Exception $ex) {
+			if ($isProductionFlow) {
+				status_header(500);
+				wp_die(esc_html__('Content Publisher: Authorization failed.', 'pantheon-content-publisher'));
+			}
 			// No Action needed for safe exit
 		}
 	}
@@ -336,8 +445,8 @@ class Settings
 	public function registerPantheonCloudStatusEndpoint()
 	{
 		global $wp;
-		if (static::CONTENT_PUB_STATUS_ENDPOINT === $wp->request) {
-			$url = rest_url(CONTENT_PUB_API_NAMESPACE . '/' . static::CONTENT_PUB_STATUS_ENDPOINT);
+		if (static::CPUB_STATUS_ENDPOINT === $wp->request) {
+			$url = rest_url(CPUB_API_NAMESPACE . '/' . static::CPUB_STATUS_ENDPOINT);
 
 			return wp_redirect($url);
 		}
@@ -380,6 +489,11 @@ class Settings
 
 		if (empty($posts)) {
 			return $posts;
+		}
+
+		// Validate preview signature.
+		if ( ! $this->validatePreviewSignature() ) {
+			return $posts; // Invalid signature, return original posts.
 		}
 
 		$post = $posts[0];
@@ -455,7 +569,7 @@ class Settings
 	 */
 	private function buildEditDocumentURL(string $documentId): string
 	{
-		return sprintf(self::CONTENT_PUB_DOCUMENT_EDIT_URL, $documentId);
+		return sprintf(self::CPUB_DOCUMENT_EDIT_URL, $documentId);
 	}
 
 	/**
@@ -489,7 +603,7 @@ class Settings
 	 */
 	public function addRowActions($actions, $post): mixed
 	{
-		$documentId = get_post_meta($post->ID, CONTENT_PUB_CONTENT_META_KEY, true);
+		$documentId = get_post_meta($post->ID, CPUB_CONTENT_META_KEY, true);
 		if (!$documentId) {
 			return $actions;
 		}
@@ -542,7 +656,7 @@ class Settings
 	 */
 	public function pccMenuIcon(): string
 	{
-		return 'data:image/svg+xml;base64,' . self::CONTENT_PUB_ICON_BASE64;
+		return 'data:image/svg+xml;base64,' . self::CPUB_ICON_BASE64;
 	}
 
 	/**
@@ -554,6 +668,14 @@ class Settings
 	{
 
 		$view = sanitize_text_field(filter_input(INPUT_GET, 'view')) ?: '';
+
+		if ($view !== '') {
+			$nonce = sanitize_text_field(wp_unslash(filter_input(INPUT_GET, '_wpnonce')));
+			if (!$nonce || !wp_verify_nonce($nonce, 'pcc_view')) {
+				$view = '';
+			}
+		}
+
 		if ($view && isset($this->pages[$view])) {
 			require $this->pages[$view];
 
@@ -583,27 +705,28 @@ class Settings
 	{
 		wp_enqueue_script(
 			'pantheon-content-publisher',
-			CONTENT_PUB_PLUGIN_DIR_URL . 'dist/app.js',
+			CPUB_PLUGIN_DIR_URL . 'dist/app.js',
 			[],
-			filemtime(CONTENT_PUB_PLUGIN_DIR . 'dist/app.js'),
+			filemtime(CPUB_PLUGIN_DIR . 'dist/app.js'),
 			true
 		);
 
 		wp_enqueue_style(
 			'pantheon-content-publisher',
-			CONTENT_PUB_PLUGIN_DIR_URL . 'dist/app.css',
+			CPUB_PLUGIN_DIR_URL . 'dist/app.css',
 			[],
-			filemtime(CONTENT_PUB_PLUGIN_DIR . 'dist/app.css')
+			filemtime(CPUB_PLUGIN_DIR . 'dist/app.css')
 		);
 
 		wp_localize_script(
 			'pantheon-content-publisher',
 			'PCCAdmin',
 			[
-				'rest_url' => get_rest_url(get_current_blog_id(), CONTENT_PUB_API_NAMESPACE),
+				'rest_url' => get_rest_url(get_current_blog_id(), CPUB_API_NAMESPACE),
 				'nonce' => wp_create_nonce('wp_rest'),
 				'plugin_main_page' => menu_page_url('pantheon-content-publisher', false),
 				'site_url' => site_url(),
+				'view_nonce' => wp_create_nonce('pcc_view'),
 			]
 		);
 	}
@@ -624,9 +747,9 @@ class Settings
 
 		wp_enqueue_script(
 			'pantheon-content-publisher',
-			CONTENT_PUB_PLUGIN_DIR_URL . 'dist/pcc-front.js',
+			CPUB_PLUGIN_DIR_URL . 'dist/pcc-front.js',
 			[],
-			filemtime(CONTENT_PUB_PLUGIN_DIR . 'dist/pcc-front.js'),
+			filemtime(CPUB_PLUGIN_DIR . 'dist/pcc-front.js'),
 			true
 		);
 
@@ -660,7 +783,7 @@ class Settings
 	 */
 	public function pluginNotification()
 	{
-		require CONTENT_PUB_PLUGIN_DIR . 'admin/templates/partials/plugin-notification.php';
+		require CPUB_PLUGIN_DIR . 'admin/templates/partials/plugin-notification.php';
 	}
 
 	/**
@@ -684,6 +807,6 @@ class Settings
 	 */
 	private function getEncodedSiteURL(): mixed
 	{
-		return get_option(CONTENT_PUB_ENCODED_SITE_URL_OPTION_KEY);
+		return get_option(CPUB_ENCODED_SITE_URL_OPTION_KEY);
 	}
 }

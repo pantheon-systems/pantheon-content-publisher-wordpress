@@ -3,6 +3,13 @@
 if (!defined('ABSPATH')) {
 	exit;
 }
+
+$admin_url = add_query_arg([
+	'page' => 'pantheon-content-publisher',
+	'view' => 'connected-collection',
+], admin_url('admin.php'));
+
+$admin_url = wp_nonce_url($admin_url, 'pcc_view');
 ?>
 <div class="pcc-content">
 	<?php
@@ -10,7 +17,7 @@ if (!defined('ABSPATH')) {
 	?>
 	<div class="page-content">
 		<div class="connected-collection-page">
-			<?php require CONTENT_PUB_PLUGIN_DIR . 'admin/templates/partials/error-message.php'; ?>
+			<?php require CPUB_PLUGIN_DIR . 'admin/templates/partials/error-message.php'; ?>
 			<div class="py-2.5">
 				<h3 class="text-grey font-bold text-sm mb-[0.5rem]">
 					<?php esc_html_e('Connected content collection', 'pantheon-content-publisher') ?>
@@ -22,14 +29,11 @@ if (!defined('ABSPATH')) {
 						</h1>
 						<p class="font-bold text-sm mt-2">
 							<span class="text-grey font-normal">COLLECTION ID:</span>
-							<?php echo esc_html(get_option(CONTENT_PUB_SITE_ID_OPTION_KEY)) ?>
+							<?php echo esc_html(get_option(CPUB_SITE_ID_OPTION_KEY)) ?>
 						</p>
 					</div>
 					<a class="secondary-button self-start col-span-4 justify-self-end" 
-						href="<?php echo esc_url(add_query_arg([
-						'page' => 'pantheon-content-publisher',
-						'view' => 'disconnect-confirmation'
-					], admin_url('admin.php'))) ?>">
+						href="<?php echo esc_url($admin_url) ?>">
 						<span>
 							<?php esc_html_e('Disconnect collection', 'pantheon-content-publisher') ?>
 						</span>
@@ -43,7 +47,7 @@ if (!defined('ABSPATH')) {
 					<div class="inputs-container">
 						<div class='input-wrapper'>
 							<input class='radio-input' name='post_type' type='radio' value='post' id='radio-post' <?php
-							checked(get_option(CONTENT_PUB_INTEGRATION_POST_TYPE_OPTION_KEY), 'post');
+							checked(get_option(CPUB_INTEGRATION_POST_TYPE_OPTION_KEY), 'post');
 							?>>
 							<label class="text-base" for="radio-post">
 								<?php
@@ -54,7 +58,7 @@ if (!defined('ABSPATH')) {
 						</div>
 						<div class='input-wrapper'>
 							<input class='radio-input' name='post_type' type='radio' value='page' id='radio-page' <?php
-							checked(get_option(CONTENT_PUB_INTEGRATION_POST_TYPE_OPTION_KEY), 'page');
+							checked(get_option(CPUB_INTEGRATION_POST_TYPE_OPTION_KEY), 'page');
 							?>>
 							<label class="text-base" for="radio-page">
 								<?php

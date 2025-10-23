@@ -20,19 +20,20 @@ if (!defined('ABSPATH')) {
 	exit;
 }
 
-define('CONTENT_PUB_PLUGIN_FILE', __FILE__);
-define('CONTENT_PUB_PLUGIN_DIR', plugin_dir_path(CONTENT_PUB_PLUGIN_FILE));
-define('CONTENT_PUB_BASENAME', plugin_basename(CONTENT_PUB_PLUGIN_FILE));
-define('CONTENT_PUB_PLUGIN_DIR_URL', plugin_dir_url(CONTENT_PUB_PLUGIN_FILE));
-define('CONTENT_PUB_ACCESS_TOKEN_OPTION_KEY', 'content_pub_access_token');
-define('CONTENT_PUB_SITE_ID_OPTION_KEY', 'content_pub_site_id');
-define('CONTENT_PUB_ENCODED_SITE_URL_OPTION_KEY', 'content_pub_encoded_site_url');
-define('CONTENT_PUB_API_KEY_OPTION_KEY', 'content_pub_api_key');
-define('CONTENT_PUB_INTEGRATION_POST_TYPE_OPTION_KEY', 'content_pub_integration_post_type');
-define('CONTENT_PUB_API_NAMESPACE', 'pcc/v1');
-define('CONTENT_PUB_CONTENT_META_KEY', 'content_pub_id');
-define('CONTENT_PUB_ENDPOINT', 'https://addonapi-gfttxsojwq-uc.a.run.app');
-define('CONTENT_PUB_WEBHOOK_SECRET_OPTION_KEY', 'content_pub_webhook_secret');
+define('CPUB_PLUGIN_FILE', __FILE__);
+define('CPUB_PLUGIN_DIR', plugin_dir_path(CPUB_PLUGIN_FILE));
+define('CPUB_BASENAME', plugin_basename(CPUB_PLUGIN_FILE));
+define('CPUB_PLUGIN_DIR_URL', plugin_dir_url(CPUB_PLUGIN_FILE));
+define('CPUB_ACCESS_TOKEN_OPTION_KEY', 'cpub_access_token');
+define('CPUB_PREVIEW_SECRET_OPTION_KEY', 'cpub_preview_secret');
+define('CPUB_SITE_ID_OPTION_KEY', 'cpub_site_id');
+define('CPUB_ENCODED_SITE_URL_OPTION_KEY', 'cpub_encoded_site_url');
+define('CPUB_API_KEY_OPTION_KEY', 'cpub_api_key');
+define('CPUB_INTEGRATION_POST_TYPE_OPTION_KEY', 'cpub_integration_post_type');
+define('CPUB_API_NAMESPACE', 'pcc/v1');
+define('CPUB_CONTENT_META_KEY', 'cpub_id');
+define('CPUB_ENDPOINT', 'https://addonapi-gfttxsojwq-uc.a.run.app');
+define('CPUB_WEBHOOK_SECRET_OPTION_KEY', 'cpub_webhook_secret');
 
 call_user_func(static function ($rootPath) {
 	$autoload = "{$rootPath}vendor/autoload.php";
@@ -40,13 +41,13 @@ call_user_func(static function ($rootPath) {
 		require_once $autoload;
 	}
 	add_action('plugins_loaded', [Plugin::class, 'getInstance'], -10);
-}, CONTENT_PUB_PLUGIN_DIR);
+}, CPUB_PLUGIN_DIR);
 
 // define version for migration script on upgrade
 // Granted the wp-submission release will be 1.3
-define('CONTENT_PUB_VERSION', '1.3');
+define('CPUB_VERSION', '1.3');
 
-require_once CONTENT_PUB_PLUGIN_DIR_URL . 'app/migrations/PluginUpgrade.php';
+require_once CPUB_PLUGIN_DIR_URL . 'app/migrations/PluginUpgrade.php';
 
 add_action( 'plugins_loaded', function() {
 	\Pantheon\ContentPublisher\Migrations\PluginUpgrade::isUpgradeNeeded();
