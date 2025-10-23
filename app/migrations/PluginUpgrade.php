@@ -15,7 +15,7 @@ class PluginUpgrade
 
 		// Run if new version is higher than the current
 		if (version_compare($installer_version, CPUB_VERSION, '<')) {
-			// Run if version is 1.3 (pcc metapost in db upgrade)
+			// Run if version is 1.3 (cpub metapost in db upgrade)
 			// Granted the wp-submission release will be 1.3
 			if (version_compare($installer_version, '1.3.1', '<') &&
 				version_compare(CPUB_VERSION, '1.3.1', '>=')) 
