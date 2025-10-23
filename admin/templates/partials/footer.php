@@ -11,13 +11,13 @@ if (!defined('ABSPATH')) {
 			<?php
 			esc_html_e(
 				'For detailed instructions on publishing content from Google Docs,',
-				'pantheon-content-publisher-for-wordpress'
+				'pantheon-content-publisher'
 			)
 			?>
 		</span>
 		<a href="https://pcc.pantheon.io/docs" class="documentation-link" target="_blank">
 			<span class="text-base"><?php
-			esc_html_e('please refer to our documentation', 'pantheon-content-publisher-for-wordpress')
+			esc_html_e('please refer to our documentation', 'pantheon-content-publisher')
 			?></span>
 			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
 				version="1.1" x="0px" y="0px"

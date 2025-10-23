@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 							<?php
 							esc_html_e(
 								'Create your first content collection',
-								'pantheon-content-publisher-for-wordpress'
+								'pantheon-content-publisher'
 							)
 							?>
 						</h1>
@@ -29,12 +29,12 @@ if (!defined('ABSPATH')) {
 						A content collection is a set of content for your WordPress site.
 						Connected to Google Workspace,
 						it helps you organize and manage your site content in Google Docs.',
-								'pantheon-content-publisher-for-wordpress'
+								'pantheon-content-publisher'
 							) ?>
 						</p>
 						<p class="text-with-border mb-[1.875rem]"><?php echo esc_url(site_url()) ?></p>
 						<p class="text-lg font-bold mb-[1.25rem]">
-							<?php esc_html_e('Publish your document as:', 'pantheon-content-publisher-for-wordpress') ?>
+							<?php esc_html_e('Publish your document as:', 'pantheon-content-publisher') ?>
 						</p>
 						<div class="inputs-container">
 							<div class='input-wrapper'>
@@ -74,7 +74,7 @@ if (!defined('ABSPATH')) {
 								<?php
 								esc_html_e(
 									'Reset your Google Workspace authentication',
-									'pantheon-content-publisher-for-wordpress'
+									'pantheon-content-publisher'
 								)
 								?>
 							</a>

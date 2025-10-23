@@ -167,7 +167,7 @@ class RestController
 
 		if (!is_array($payload) || !isset($payload['articleId']) || empty($payload['articleId'])) {
 			return new WP_REST_Response(
-				esc_html__('Invalid article ID in payload', 'pantheon-content-publisher-for-wordpress'),
+				esc_html__('Invalid article ID in payload', 'pantheon-content-publisher'),
 				400
 			);
 		}
@@ -255,7 +255,7 @@ class RestController
 			return new WP_REST_Response(
 				esc_html__(
 					'You are not authorized to perform this action.',
-					'pantheon-content-publisher-for-wordpress'
+					'pantheon-content-publisher'
 				),
 				401
 			);
@@ -263,7 +263,7 @@ class RestController
 		// Check management token is set
 		if (!get_option(CPUB_ACCESS_TOKEN_OPTION_KEY)) {
 			return new WP_REST_Response(
-				esc_html__('Management token is not set yet', 'pantheon-content-publisher-for-wordpress'),
+				esc_html__('Management token is not set yet', 'pantheon-content-publisher'),
 				401
 			);
 		}
@@ -290,7 +290,7 @@ class RestController
 		// Check management token is set
 		if (!get_option(CPUB_ACCESS_TOKEN_OPTION_KEY)) {
 			return new WP_REST_Response(
-				esc_html__('Management token is not set yet', 'pantheon-content-publisher-for-wordpress'),
+				esc_html__('Management token is not set yet', 'pantheon-content-publisher'),
 				400
 			);
 		}
@@ -298,7 +298,7 @@ class RestController
 		// Check site id is set
 		if (!get_option(CPUB_SITE_ID_OPTION_KEY)) {
 			return new WP_REST_Response(
-				esc_html__('Site is not created yet', 'pantheon-content-publisher-for-wordpress'),
+				esc_html__('Site is not created yet', 'pantheon-content-publisher'),
 				400
 			);
 		}
@@ -308,7 +308,7 @@ class RestController
 			return new WP_REST_Response(
 				esc_html__(
 					'You are not authorized to perform this action.',
-					'pantheon-content-publisher-for-wordpress'
+					'pantheon-content-publisher'
 				),
 				401
 			);
@@ -317,12 +317,12 @@ class RestController
 		$siteManager = new PccSiteManager();
 		if ($siteManager->registerWebhook()) {
 			return new WP_REST_Response(
-				esc_html__('Webhook registered', 'pantheon-content-publisher-for-wordpress')
+				esc_html__('Webhook registered', 'pantheon-content-publisher')
 			);
 		}
 
 		return new WP_REST_Response(
-			esc_html__('Error while register webhook', 'pantheon-content-publisher-for-wordpress'),
+			esc_html__('Error while register webhook', 'pantheon-content-publisher'),
 			400
 		);
 	}
@@ -338,7 +338,7 @@ class RestController
 		// Check site id is set
 		if (!get_option(CPUB_SITE_ID_OPTION_KEY)) {
 			return new WP_REST_Response(
-				esc_html__('Site is not created yet', 'pantheon-content-publisher-for-wordpress'),
+				esc_html__('Site is not created yet', 'pantheon-content-publisher'),
 				400
 			);
 		}
@@ -348,7 +348,7 @@ class RestController
 			return new WP_REST_Response(
 				esc_html__(
 					'You are not authorized to perform this action.',
-					'pantheon-content-publisher-for-wordpress'
+					'pantheon-content-publisher'
 				),
 				401
 			);
@@ -362,7 +362,7 @@ class RestController
 		}
 
 		return new WP_REST_Response(
-			esc_html__('Error while creating API key', 'pantheon-content-publisher-for-wordpress'),
+			esc_html__('Error while creating API key', 'pantheon-content-publisher'),
 			400
 		);
 	}
@@ -401,7 +401,7 @@ class RestController
 			return new WP_REST_Response(
 				esc_html__(
 					'You are not authorized to perform this action.',
-					'pantheon-content-publisher-for-wordpress'
+					'pantheon-content-publisher'
 				),
 				401
 			);
@@ -414,7 +414,7 @@ class RestController
 			return new WP_REST_Response(
 				esc_html__(
 					'Management token cannot be empty.',
-					'pantheon-content-publisher-for-wordpress'
+					'pantheon-content-publisher'
 				),
 				400
 			);
@@ -427,7 +427,7 @@ class RestController
 			return new WP_REST_Response(
 				esc_html__(
 					'Management token is invalid. Visit the Content Publisher dashboard to generate a new token.',
-					'pantheon-content-publisher-for-wordpress'
+					'pantheon-content-publisher'
 				),
 				400
 			);
@@ -437,7 +437,7 @@ class RestController
 		return new WP_REST_Response(
 			esc_html__(
 				'Management token saved.',
-				'pantheon-content-publisher-for-wordpress'
+				'pantheon-content-publisher'
 			),
 			200
 		);
@@ -454,7 +454,7 @@ class RestController
 			return new WP_REST_Response(
 				esc_html__(
 					'You are not authorized to perform this action.',
-					'pantheon-content-publisher-for-wordpress'
+					'pantheon-content-publisher'
 				),
 				401
 			);
@@ -485,7 +485,7 @@ class RestController
 			return new WP_REST_Response(
 				esc_html__(
 					'You are not authorized to perform this action.',
-					'pantheon-content-publisher-for-wordpress'
+					'pantheon-content-publisher'
 				),
 				401
 			);
@@ -498,7 +498,7 @@ class RestController
 			// Validate input fields
 			if (empty($collectionId) || empty($accessToken)) {
 				return new WP_REST_Response(
-					esc_html__('Missing collection ID or access token', 'pantheon-content-publisher-for-wordpress'),
+					esc_html__('Missing collection ID or access token', 'pantheon-content-publisher'),
 					400
 				);
 			}
@@ -511,7 +511,7 @@ class RestController
 			} catch (\Throwable $e) {
 				error_log('PCC connectCollection API error: ' . $e->getMessage());
 				return new WP_REST_Response(
-					esc_html__('Failed to connect collection. Ensure your collection ID and access token are correct.', 'pantheon-content-publisher-for-wordpress'),
+					esc_html__('Failed to connect collection. Ensure your collection ID and access token are correct.', 'pantheon-content-publisher'),
 					400
 				);
 			}
@@ -522,7 +522,7 @@ class RestController
 			if (json_last_error() !== JSON_ERROR_NONE) {
 				error_log('PCC connectCollection JSON decode error: ' . json_last_error_msg());
 				return new WP_REST_Response(
-					esc_html__('Failed to connect collection: Unable to reach Content Publisher API.', 'pantheon-content-publisher-for-wordpress'),
+					esc_html__('Failed to connect collection: Unable to reach Content Publisher API.', 'pantheon-content-publisher'),
 					500
 				);
 			}
@@ -532,7 +532,7 @@ class RestController
 				$errorMessage = $parsedResponse['errors'][0]['message'] ?? 'Unknown error';
 				error_log('PCC connectCollection GraphQL error: ' . $errorMessage);
 				return new WP_REST_Response(
-					esc_html__('Failed to connect collection: ' . $errorMessage, 'pantheon-content-publisher-for-wordpress'),
+					esc_html__('Failed to connect collection: ' . $errorMessage, 'pantheon-content-publisher'),
 					400
 				);
 			}
@@ -541,7 +541,7 @@ class RestController
 			$site = $parsedResponse['data']['site'] ?? null;
 			if (!$site || empty($site['id'])) {
 				return new WP_REST_Response(
-					esc_html__('Failed to connect collection: Collection not found.', 'pantheon-content-publisher-for-wordpress'),
+					esc_html__('Failed to connect collection: Collection not found.', 'pantheon-content-publisher'),
 					400
 				);
 			}
@@ -555,12 +555,12 @@ class RestController
 			update_option(CPUB_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY, false);
 
 			// Update with the site id
-			return new WP_REST_Response(esc_html__('Collection connected', 'pantheon-content-publisher-for-wordpress'));
+			return new WP_REST_Response(esc_html__('Collection connected', 'pantheon-content-publisher'));
 		} catch (\Throwable $e) {
 			error_log('PCC connectCollection unexpected error: ' . $e->getMessage());
 			error_log('PCC connectCollection stack trace: ' . $e->getTraceAsString());
 			return new WP_REST_Response(
-				esc_html__('An unexpected error occurred while connecting the collection. Please try again. Contact support if the issue persists.', 'pantheon-content-publisher-for-wordpress'),
+				esc_html__('An unexpected error occurred while connecting the collection. Please try again. Contact support if the issue persists.', 'pantheon-content-publisher'),
 				500
 			);
 		}
@@ -575,7 +575,7 @@ class RestController
 			return new WP_REST_Response(
 				esc_html__(
 					'You are not authorized to perform this action.',
-					'pantheon-content-publisher-for-wordpress'
+					'pantheon-content-publisher'
 				),
 				401
 			);

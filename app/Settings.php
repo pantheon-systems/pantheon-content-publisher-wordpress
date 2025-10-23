@@ -380,7 +380,7 @@ class Settings
 						wp_die(esc_html__(
 							'Content Publisher: Failed to preview this document. Your preview link may have expired. ' .
 								'Try previewing this document again from Content Publisher.',
-							'pantheon-content-publisher-for-wordpress'
+							'pantheon-content-publisher'
 						));
 						$postId = 0;
 					}
@@ -391,7 +391,7 @@ class Settings
 						'Content Publisher: Failed to preview this document. ' .
 							'Confirm that this document is connected to your collection. ' .
 							'Reach out to support if the issue persists.',
-						'pantheon-content-publisher-for-wordpress'
+						'pantheon-content-publisher'
 					));
 					exit;
 				}

@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
 								<?php
 								esc_html_e(
 									'Connect Google Workspace to your WordPress site',
-									'pantheon-content-publisher-for-wordpress'
+									'pantheon-content-publisher'
 								)
 								?>
 							</h1>
@@ -34,7 +34,7 @@ if (!defined('ABSPATH')) {
 							</p>
 							<div class="mt-8 mb-0.5">
 								<span class="font-semibold text-[0.83rem]">
-									<?php esc_html_e('Management token', 'pantheon-content-publisher-for-wordpress') ?>
+									<?php esc_html_e('Management token', 'pantheon-content-publisher') ?>
 								</span>
 								<img class="scale-110 ms-1 pb-2.5 inline"
 									src="<?php echo esc_url(CPUB_PLUGIN_DIR_URL . 'assets/images/red-dot.svg') ?>"
@@ -49,7 +49,7 @@ if (!defined('ABSPATH')) {
 										esc_html_e(
 											'Enter the management token obtained from
                                     the Pantheon Content Publisher dashboard',
-											'pantheon-content-publisher-for-wordpress'
+											'pantheon-content-publisher'
 										) ?>
 									</span>
 								</div>
@@ -72,7 +72,7 @@ if (!defined('ABSPATH')) {
 									__(
 										"Don't have a token yet? Go to the " .
 											"<a %s>Pantheon Content Publisher dashboard</a> to generate one.",
-										'pantheon-content-publisher-for-wordpress'
+										'pantheon-content-publisher'
 									),
 									'class="pantheon-link  hover:text-secondary" target="_blank" ' .
 										'href="https://content.pantheon.io/dashboard/settings/tokens?tab=1"'
