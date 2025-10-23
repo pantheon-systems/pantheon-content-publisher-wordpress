@@ -196,7 +196,7 @@ class RestController
 	public function permissionCallback(WP_REST_Request $request)
 	{
 		$cookie_error = rest_cookie_check_errors(null);
-		if (!empty( $cookie_error)) {
+		if (!empty($cookie_error)) {
 			return $cookie_error;
 		}
 

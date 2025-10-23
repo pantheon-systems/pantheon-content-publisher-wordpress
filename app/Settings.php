@@ -168,34 +168,35 @@ class Settings
 	 * @param int $windowSeconds The time window in seconds (default is 900 seconds or 15 minutes).
 	 * @return string The generated preview secret.
 	 */
-	private function previewSecretForTs( int $timestamp, int $windowSeconds = 900 ): string
+	private function previewSecretForTs(int $timestamp, int $windowSeconds = 900): string
 	{
-		$bucket = (int) floor( $timestamp / $windowSeconds );
-		return hash_hmac('sha256', 'pcc_preview|' . site_url() . '|' . $bucket, wp_salt('nonce') );
+		$bucket = (int) floor($timestamp / $windowSeconds);
+		return hash_hmac('sha256', 'pcc_preview|' . site_url() . '|' . $bucket, wp_salt('nonce'));
 	}
 
 	/**
 	 * Validate the preview signature.
-	 * 
-	 * Since preview links are public, we can't use nonces to validated. 
-	 * Instead, we use a HMAC signature with a shared secret that is 
+	 *
+	 * Since preview links are public, we can't use nonces to validated.
+	 * Instead, we use a HMAC signature with a shared secret that is
 	 * time-limited.
 	 *
 	 * @return bool True if the signature is valid, false otherwise.
 	 */
-	private function validatePreviewSignature(): bool {
+	private function validatePreviewSignature(): bool
+	{
 		$timestamp = (int) filter_input(INPUT_GET, 'ts', FILTER_VALIDATE_INT);
 		$signature = (string) sanitize_key(filter_input(INPUT_GET, 'sig'));
 		$documentId = sanitize_text_field(filter_input(INPUT_GET, 'document_id'));
 		$versionId = sanitize_text_field(filter_input(INPUT_GET, 'versionId'));
 		$publishingLevel = sanitize_text_field(filter_input(INPUT_GET, 'publishing_level'));
 
-		if ( !$timestamp || !$signature || !$documentId || !$publishingLevel ) {
+		if (!$timestamp || !$signature || !$documentId || !$publishingLevel) {
 			return false;
 		}
 
 		// 15 minute TTL.
-		if ( abs( time() - $timestamp ) > 900 ) {
+		if (abs(time() - $timestamp) > 900) {
 			return false;
 		}
 
@@ -217,7 +218,7 @@ class Settings
 		}
 
 		// Validate preview signature
-		if ( ! $this->validatePreviewSignature() ) {
+		if (! $this->validatePreviewSignature()) {
 			return false;
 		}
 
@@ -305,7 +306,7 @@ class Settings
 				$article = $articlesApi->getArticleById(
 					$documentId,
 					['id'],
-					PublishingLevel::PRODUCTION, 
+					PublishingLevel::PRODUCTION,
 					ContentType::TREE_PANTHEON_V2
 				);
 
@@ -409,7 +410,7 @@ class Settings
 				// Sign the preview URL with a timestamp and signature.
 				$ts = time();
 				$levelValue = $publishingLevel->value; // 'realtime' or 'draft'.
-				$base = implode( '|', [(string)$ts, (string)$documentId, (string)($versionId ?: ''), $levelValue] );
+				$base = implode('|', [(string)$ts, (string)$documentId, (string)($versionId ?: ''), $levelValue]);
 				$sig = hash_hmac('sha256', $base, $this->previewSecretForTs($ts, 900));
 				$url = add_query_arg(['ts' => $ts, 'sig' => $sig], $url);
 
@@ -493,7 +494,7 @@ class Settings
 		}
 
 		// Validate preview signature.
-		if ( ! $this->validatePreviewSignature() ) {
+		if (! $this->validatePreviewSignature()) {
 			return $posts; // Invalid signature, return original posts.
 		}
 
