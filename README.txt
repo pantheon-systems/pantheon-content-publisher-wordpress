@@ -63,6 +63,12 @@ All posts/pages created with Pantheon Content Publisher will remain on your Word
 
 == Changelog ==
 
+= 1.3.1 =
+* Compatibility: Update plugin naming, prefixes and structure for WordPress.org submission
+* Compatibility: Change main plugin file name to match WordPress.org requirements
+* Security: Add sanitization for signatures and nonces
+* Security: Add nonce verification for all REST API endpoints
+
 = 1.3.0 =
 * Feature: Introduces new improved UI for the plugin settings page.
 * Feature: Adds support for connecting existing content collections to WordPress.
