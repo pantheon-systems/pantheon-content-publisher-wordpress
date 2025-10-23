@@ -128,15 +128,7 @@ class RestController
 		);
 		$status = new Status($config, $options);
 
-		$platformStatus = $status->withPlatform([
-			'name' => 'wordpress',
-			'version' => get_bloginfo('version'),
-			'php' => PHP_VERSION,
-			'is_pcc_configured' => $isPCCConfigured,
-			'sdk' => ['name' => 'pcc-wp-sdk', 'version' => $this->getPluginVersion()],
-		]);
-
-		$payload = $platformStatus->toArray();
+		$payload = $status->toArray();
 		return new WP_REST_Response($payload);
 	}
 
