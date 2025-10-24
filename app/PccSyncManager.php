@@ -172,6 +172,15 @@ class PccSyncManager
 	 */
 	private function syncPostMetaAndTags($postId, Article $article): void
 	{
+		//static variable persists between calls withing the same request
+		static $yoastActive; // implicitly null 
+
+		// Cache Yoast active status for this request to avoid repeated DB checks
+		if (!isset($yoastActive)) {
+		    $activePlugins = apply_filters('active_plugins', get_option('active_plugins'));
+		    $yoastActive = in_array('wordpress-seo/wp-seo.php', $activePlugins, true);
+		}
+
 		if (isset($article->tags) && is_array($article->tags)) {
 			wp_set_post_terms($postId, $article->tags, 'post_tag', false);
 		}
@@ -185,16 +194,13 @@ class PccSyncManager
 			wp_set_post_categories($postId, $this->findArticleCategories($article));
 		}
 
-		// Check if Yoast SEO is installed and active.
-		$activePlugins = apply_filters('active_plugins', get_option('active_plugins'));
-		if (in_array('wordpress-seo/wp-seo.php', $activePlugins)) {
-			if (isset($article->metadata['title'])) {
-				update_post_meta($postId, '_yoast_wpseo_title', $article->metadata['title']);
-			}
-			if (isset($article->metadata['description'])) {
-				update_post_meta($postId, '_yoast_wpseo_metadesc', $article->metadata['description']);
-			}
+		if (isset($article->metadata['title'])) {
+			update_post_meta($postId, '_yoast_wpseo_title', $article->metadata['title']);
 		}
+		if (isset($article->metadata['description'])) {
+			update_post_meta($postId, '_yoast_wpseo_metadesc', $article->metadata['description']);
+		}
+		
 	}
 
 	private function getFeaturedImageKey()
