@@ -173,12 +173,12 @@ class PccSyncManager
 	private function syncPostMetaAndTags($postId, Article $article): void
 	{
 		//static variable persists between calls withing the same request
-		static $yoastActive; // implicitly null 
+		static $yoastActive; // implicitly null
 
 		// Cache Yoast active status for this request to avoid repeated DB checks
 		if (!isset($yoastActive)) {
-		    $activePlugins = apply_filters('active_plugins', get_option('active_plugins'));
-		    $yoastActive = in_array('wordpress-seo/wp-seo.php', $activePlugins, true);
+			$activePlugins = apply_filters('active_plugins', get_option('active_plugins'));
+			$yoastActive = in_array('wordpress-seo/wp-seo.php', $activePlugins, true);
 		}
 
 		if (isset($article->tags) && is_array($article->tags)) {
