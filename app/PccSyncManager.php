@@ -200,7 +200,6 @@ class PccSyncManager
 		if (isset($article->metadata['description'])) {
 			update_post_meta($postId, '_yoast_wpseo_metadesc', $article->metadata['description']);
 		}
-		
 	}
 
 	private function getFeaturedImageKey()
