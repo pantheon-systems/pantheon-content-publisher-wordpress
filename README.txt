@@ -63,7 +63,7 @@ All posts/pages created with Pantheon Content Publisher will remain on your Word
 
 == Changelog ==
 = 1.3.1 =
-* Add migration script to update medadata
+* Add migration script to update post metadata and wp options with the new cpub_ prefix
 
 = 1.2.6 =
 * Feature: Add support for draft publishing level and versioning
