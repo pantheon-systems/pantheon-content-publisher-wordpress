@@ -194,11 +194,13 @@ class PccSyncManager
 			wp_set_post_categories($postId, $this->findArticleCategories($article));
 		}
 
-		if (isset($article->metadata['title'])) {
+		if ($yoastActive) {
+			if (isset($article->metadata['title'])) {
 			update_post_meta($postId, '_yoast_wpseo_title', $article->metadata['title']);
-		}
-		if (isset($article->metadata['description'])) {
-			update_post_meta($postId, '_yoast_wpseo_metadesc', $article->metadata['description']);
+			}
+			if (isset($article->metadata['description'])) {
+				update_post_meta($postId, '_yoast_wpseo_metadesc', $article->metadata['description']);
+			}
 		}
 	}
 
