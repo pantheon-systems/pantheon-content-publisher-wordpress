@@ -4,7 +4,6 @@ namespace Pantheon\ContentPublisher\Migrations;
 
 class PluginUpgrade
 {
-
 	/**
 	 * Check if upgrades are needed
 	 */
@@ -31,10 +30,11 @@ class PluginUpgrade
 	private static function runMigrations($from_version)
 	{
 		// Run 1.3.1 migration if needed
-		if (version_compare($from_version, '1.3.1', '<') &&
-			version_compare(CPUB_VERSION, '1.3.1', '>='))
-		{
-			Upgrade_131::run();
-		}
+		if (
+			version_compare($from_version, '1.3.1', '<') &&
+			version_compare(CPUB_VERSION, '1.3.1', '>=')
+			) {
+				Upgrade_131::run();
+			}
 	}
 }
