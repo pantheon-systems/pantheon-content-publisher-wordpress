@@ -61,6 +61,7 @@ below_**
 
 1. `composer i && npm i` to install dependencies.
 2. `npm run watch` / `npm run dev` / `npm run prod` to build assets.
+Since version 1.3.0 `npm run build:vite` to build assets and dist/build folder.
 3. Read through
    our [contributing guidelines](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/primary/.github/CONTRIBUTING.md)
    for additional information. Included are directions for opening issues, coding standards and miscellaneous notes.
