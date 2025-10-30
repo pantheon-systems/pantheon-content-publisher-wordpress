@@ -255,7 +255,7 @@ class PccSyncManager
 		$imageId = media_sideload_image($featuredImageURL, $postId, null, 'id');
 
 		if (is_int($imageId)) {
-			update_post_meta($imageId, 'content_pub_feature_image_url', $featuredImageURL);
+			update_post_meta($imageId, 'cpub_feature_image_url', $featuredImageURL);
 			// Set as the featured image.
 			set_post_thumbnail($postId, $imageId);
 		}
@@ -271,7 +271,7 @@ class PccSyncManager
 	{
 		$args = [
 			'post_type'  => 'attachment', // Ensure we're looking for attachments.
-			'meta_key'   => 'content_pub_feature_image_url',
+			'meta_key'   => 'cpub_feature_image_url',
 			'meta_value' => $imageUrl,
 			'fields'     => 'ids', // Return only the IDs.
 			'numberposts' => 1,    // Limit to 1 post.

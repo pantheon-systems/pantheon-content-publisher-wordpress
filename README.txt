@@ -3,7 +3,7 @@ Contributors: getpantheon
 Tags: pantheon
 Requires at least: 5.7
 Tested up to: 6.8.1
-Stable tag: 1.2.7
+Stable tag: 1.3.1
 Requires PHP: 8.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -62,20 +62,8 @@ The connection will be established automatically.
 All posts/pages created with Pantheon Content Publisher will remain on your WordPress site. However, you will no longer be able to edit them from Google Docs.
 
 == Changelog ==
-
 = 1.3.1 =
-* Compatibility: Update plugin naming, prefixes and structure for WordPress.org submission
-* Compatibility: Change main plugin file name to match WordPress.org requirements
-* Security: Add sanitization for signatures and nonces
-* Security: Add nonce verification for all REST API endpoints
-
-= 1.3.0 =
-* Feature: Introduces new improved UI for the plugin settings page.
-* Feature: Adds support for connecting existing content collections to WordPress.
-
-= 1.2.7 =
-* Fix: Resolves issue where duplicate posts would be created when publishing from Google Docs.
-* Feature: Adds linking of posts to authors by default
+* Add migration script to update post metadata and wp options with the new cpub_ prefix
 
 = 1.2.6 =
 * Feature: Add support for draft publishing level and versioning

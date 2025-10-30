@@ -35,11 +35,13 @@ define('CPUB_CONTENT_META_KEY', 'cpub_id');
 define('CPUB_ENDPOINT', 'https://addonapi-gfttxsojwq-uc.a.run.app');
 define('CPUB_WEBHOOK_SECRET_OPTION_KEY', 'cpub_webhook_secret');
 define('CPUB_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY', 'cpub_webhook_notice_dismissed');
+define('CPUB_VERSION', '1.3.1');
 
 call_user_func(static function ($rootPath) {
 	$autoload = "{$rootPath}vendor/autoload.php";
 	if (is_readable($autoload)) {
 		require_once $autoload;
 	}
+	add_action('plugins_loaded', [Migrations\PluginUpgrade::class, 'isUpgradeNeeded'], -20);
 	add_action('plugins_loaded', [Plugin::class, 'getInstance'], -10);
 }, CPUB_PLUGIN_DIR);
