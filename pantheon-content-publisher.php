@@ -1,6 +1,6 @@
 <?php
 
-//phpcs:disable Files.SideEffects.FoundWithSymbols
+//phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
 
 /**
  * Plugin Name: Pantheon Content Publisher
@@ -16,7 +16,7 @@
 namespace Pantheon\ContentPublisher;
 
 // Exit if accessed directly.
-if (!defined('ABSPATH')) {
+if (!\defined('ABSPATH')) {
 	exit;
 }
 
@@ -34,6 +34,7 @@ define('CPUB_API_NAMESPACE', 'pcc/v1');
 define('CPUB_CONTENT_META_KEY', 'cpub_id');
 define('CPUB_ENDPOINT', 'https://addonapi-gfttxsojwq-uc.a.run.app');
 define('CPUB_WEBHOOK_SECRET_OPTION_KEY', 'cpub_webhook_secret');
+define('CPUB_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY', 'cpub_webhook_notice_dismissed');
 define('CPUB_VERSION', '1.3.1');
 
 call_user_func(static function ($rootPath) {

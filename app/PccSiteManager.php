@@ -11,6 +11,7 @@ class PccSiteManager
 		'create_site' => CPUB_ENDPOINT . '/sites',
 		'site' => CPUB_ENDPOINT . '/sites/%s',
 		'api_key' => CPUB_ENDPOINT . '/api-key',
+		'default_site' => CPUB_ENDPOINT . '/sites/default',
 	];
 
 	/**
@@ -36,6 +37,7 @@ class PccSiteManager
 		$statusCode = $response['http_response']->get_status();
 		if (204 === intval($statusCode)) {
 			update_option(CPUB_WEBHOOK_SECRET_OPTION_KEY, $webhookSecret);
+			update_option(CPUB_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY, true);
 			return true;
 		}
 
@@ -53,11 +55,11 @@ class PccSiteManager
 	/**
 	 * @return array[]
 	 */
-	private function getHeaders()
+	private function getHeaders(string $token = null)
 	{
 		return [
 			'Content-Type' => 'application/json',
-			'Authorization' => sprintf('Bearer %s', $this->getAccessToken()),
+			'Authorization' => sprintf('Bearer %s', $token ?? $this->getAccessToken()),
 		];
 	}
 
@@ -150,5 +152,26 @@ class PccSiteManager
 		}
 
 		return new WP_Error(400, 'Error while creating your API key. Please try again.');
+	}
+
+	/**
+	 * Validate management token with PCC API
+	 *
+	 * @param string $managementToken
+	 * @return bool
+	 */
+	public function validateManagementToken($managementToken)
+	{
+		$response = wp_remote_get($this->endpoints['default_site'], [
+			'headers' => $this->getHeaders($managementToken),
+		]);
+		$content = $this->parseResponse($response);
+
+		// If we get a 200 response and the site id is not empty, the token is valid
+		if (isset($content['id']) && !empty($content['id'])) {
+			return true;
+		}
+
+		return false;
 	}
 }
