@@ -22,7 +22,7 @@ export default function Landing() {
         </div>
         <div>
           <img
-            src={`${window.PCC_BOOTSTRAP.assets_url}/images/multi-icons.png`}
+            src={`${window.CPUB_BOOTSTRAP.assets_url}/images/multi-icons.png`}
             alt="Dashboard"
             className="w-full min-w-[300px]"
           />

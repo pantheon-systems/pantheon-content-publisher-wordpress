@@ -4,7 +4,7 @@ export default function CollectionReady() {
   return (
     <div className="w-full h-[80vh] flex flex-col items-center justify-center text-center">
       <img
-        src={`${window.PCC_BOOTSTRAP.assets_url}/images/rocket-launch.png`}
+        src={`${window.CPUB_BOOTSTRAP.assets_url}/images/rocket-launch.png`}
         alt="Collection ready"
         className="w-40 h-40 mb-6"
       />
@@ -12,7 +12,7 @@ export default function CollectionReady() {
       <p className="mb-12">
         You&apos;re now ready to start publishing using Content Publisher.
       </p>
-      <a href={window.PCC_BOOTSTRAP.plugin_main_page}>
+      <a href={window.CPUB_BOOTSTRAP.plugin_main_page}>
         <Button label="Go to your collection" />
       </a>
     </div>

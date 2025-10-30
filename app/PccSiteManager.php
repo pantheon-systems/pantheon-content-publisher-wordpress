@@ -8,10 +8,10 @@ use WP_HTTP_Requests_Response;
 class PccSiteManager
 {
 	private $endpoints = [
-		'create_site' => PCC_ENDPOINT . '/sites',
-		'site' => PCC_ENDPOINT . '/sites/%s',
-		'api_key' => PCC_ENDPOINT . '/api-key',
-		'default_site' => PCC_ENDPOINT . '/sites/default',
+		'create_site' => CPUB_ENDPOINT . '/sites',
+		'site' => CPUB_ENDPOINT . '/sites/%s',
+		'api_key' => CPUB_ENDPOINT . '/api-key',
+		'default_site' => CPUB_ENDPOINT . '/sites/default',
 	];
 
 	/**
@@ -20,7 +20,7 @@ class PccSiteManager
 	 */
 	public function registerWebhook()
 	{
-		$endpoint = sprintf($this->endpoints['site'], get_option(PCC_SITE_ID_OPTION_KEY));
+		$endpoint = sprintf($this->endpoints['site'], get_option(CPUB_SITE_ID_OPTION_KEY));
 		$webhookSecret = $this->generateWebhookSecret();
 		$args = [
 			'method' => 'PATCH',
@@ -36,8 +36,8 @@ class PccSiteManager
 		/** @var WP_HTTP_Requests_Response $response */
 		$statusCode = $response['http_response']->get_status();
 		if (204 === intval($statusCode)) {
-			update_option(PCC_WEBHOOK_SECRET_OPTION_KEY, $webhookSecret);
-			update_option(PCC_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY, true);
+			update_option(CPUB_WEBHOOK_SECRET_OPTION_KEY, $webhookSecret);
+			update_option(CPUB_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY, true);
 			return true;
 		}
 
@@ -68,7 +68,7 @@ class PccSiteManager
 	 */
 	private function getAccessToken()
 	{
-		return trim(get_option(PCC_ACCESS_TOKEN_OPTION_KEY));
+		return trim(get_option(CPUB_ACCESS_TOKEN_OPTION_KEY));
 	}
 
 	/**
@@ -76,7 +76,7 @@ class PccSiteManager
 	 */
 	private function getWebhookEndpoint()
 	{
-		return rest_url(PCC_API_NAMESPACE . '/webhook');
+		return rest_url(CPUB_API_NAMESPACE . '/webhook');
 	}
 
 	/**
@@ -136,7 +136,7 @@ class PccSiteManager
 		$args = [
 			'headers' => $this->getHeaders(),
 			'body' => wp_json_encode([
-				'siteId' => get_option(PCC_SITE_ID_OPTION_KEY),
+				'siteId' => get_option(CPUB_SITE_ID_OPTION_KEY),
 				'isManagementKey' => false,
 			]),
 		];

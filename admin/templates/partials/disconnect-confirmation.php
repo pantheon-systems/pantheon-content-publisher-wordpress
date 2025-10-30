@@ -3,23 +3,30 @@
 if (!defined('ABSPATH')) {
 	exit;
 }
+
+$admin_url = add_query_arg([
+	'page' => 'pantheon-content-publisher',
+	'view' => 'connected-collection',
+], admin_url('admin.php'));
+
+$admin_url = wp_nonce_url($admin_url, 'pcc_view');
 ?>
 <div class="pcc-content">
 	<?php
 	require 'header.php';
 	?>
 	<div class="page-content">
-		<?php require PCC_PLUGIN_DIR . 'admin/templates/partials/spinner.php'; ?>
+		<?php require CPUB_PLUGIN_DIR . 'admin/templates/partials/spinner.php'; ?>
 		<div id="pcc-content">
 			<div class="disconnect-confirm-page">
-				<?php require PCC_PLUGIN_DIR . 'admin/templates/partials/error-message.php'; ?>
+				<?php require CPUB_PLUGIN_DIR . 'admin/templates/partials/error-message.php'; ?>
 				<div class="page-grid">
 					<div class="col-span-7">
 						<h1 class="page-header">
 							<?php
 							esc_html_e(
 								'Are you sure you want to disconnect the content collection?',
-								'pantheon-content-publisher-for-wordpress'
+								'pantheon-content-publisher'
 							)
 							?>
 						</h1>
@@ -27,29 +34,27 @@ if (!defined('ABSPATH')) {
 							<?php esc_html_e(
 								'All Google Docs in the collection will be disconnected from your site
                             , and you wont be able to update site content in Google Docs anymore.',
-								'pantheon-content-publisher-for-wordpress'
+								'pantheon-content-publisher'
 							) ?>
 						</p>
 						<p class="page-description">
 							<?php esc_html_e(
 								'The content will remain on the site, manageable using the WordPress admin interface.',
-								'pantheon-content-publisher-for-wordpress'
+								'pantheon-content-publisher'
 							) ?>
 						</p>
 						<div class="flex gap-4 mt-[1.875rem]">
 							<a class="secondary-button"
-							   href="<?php echo esc_url(add_query_arg([
-								   'page' => 'pantheon-content-publisher-for-wordpress',
-								   'view' => 'connected-collection'], admin_url('admin.php'))) ?>">
-								<?php esc_html_e('Stay connected', 'pantheon-content-publisher-for-wordpress') ?>
+							   href="<?php echo esc_url($admin_url) ?>">
+								<?php esc_html_e('Stay connected', 'pantheon-content-publisher') ?>
 							</a>
 							<a class="danger-button" id="pcc-disconnect" href="#">
-								<?php esc_html_e('Disconnect', 'pantheon-content-publisher-for-wordpress') ?>
+								<?php esc_html_e('Disconnect', 'pantheon-content-publisher') ?>
 							</a>
 						</div>
 					</div>
 					<div class="col-span-5 justify-self-end">
-						<img src="<?php echo esc_url(PCC_PLUGIN_DIR_URL . 'assets/images/Inspection.png') ?>"
+						<img src="<?php echo esc_url(CPUB_PLUGIN_DIR_URL . 'assets/images/Inspection.png') ?>"
 							 alt="Inspection images"
 						>
 					</div>

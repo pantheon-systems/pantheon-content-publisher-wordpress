@@ -91,7 +91,7 @@ export default function StepConnectToken({ onNext, onCancel }: Props) {
         </div>
 
         <img
-          src={`${window.PCC_BOOTSTRAP.assets_url}/images/create-management-token.png`}
+          src={`${window.CPUB_BOOTSTRAP.assets_url}/images/create-management-token.png`}
           alt="Connect Content Publisher"
           className="max-h-[260px] sobject-contain hidden lg:block"
         />
