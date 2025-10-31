@@ -50,9 +50,9 @@ or
   your `wp-content/plugins`
   folder
 
-or
+**_or soon_**
 
-- Install via Composer: `composer require pantheon-systems/pantheon-content-publisher-for-wordpress`
+- Install via Composer: `composer require pantheon-systems/pantheon-content-publisher-wordpress`
 
 **_If installing from source, make sure to follow the build instructions in the [Development](#development) section
 below_**
@@ -61,8 +61,9 @@ below_**
 
 1. `composer i && npm i` to install dependencies.
 2. `npm run watch` / `npm run dev` / `npm run prod` to build assets.
+Since version 1.3.0 `npm run build:vite` to build assets and dist/build folder.
 3. Read through
-   our [contributing guidelines](https://github.com/pantheon-systems/pantheon-content-publisher-for-wordpress/blob/primary/.github/CONTRIBUTING.md)
+   our [contributing guidelines](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/primary/.github/CONTRIBUTING.md)
    for additional information. Included are directions for opening issues, coding standards and miscellaneous notes.
 
 ## Repository Actions
@@ -73,7 +74,7 @@ This repository takes advantage of the following workflows to automate the relea
 - [PHPCompatibility](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/primary/.github/workflows/php-version-compatibility.yml)
 - [Release Drafter](https://github.com/marketplace/actions/release-drafter)
 - [PR Labeler](https://github.com/marketplace/actions/pr-labeler)
-- [A custom workflow that builds release artifacts](https://github.com/pantheon-systems/pantheon-content-publisher-for-wordpress/blob/primary/.github/workflows/release-artifact.yml)
+- [A custom workflow that builds release artifacts](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/primary/.github/workflows/release-artifact.yml)
 
 These workflows will build a release draft and keep it up-to-date as new PRs are merged. Once a release is published, a
 ready-to-install zip file will be generated and attached to the newly-published release.

@@ -27,7 +27,7 @@ class ArticleOperationsTest extends WP_UnitTestCase
 	{
 		parent::setUp();
 		// Use the standard `post` type.
-		update_option(PCC_INTEGRATION_POST_TYPE_OPTION_KEY, 'post');
+		update_option(CPUB_INTEGRATION_POST_TYPE_OPTION_KEY, 'post');
 		$this->manager = new PccSyncManager();
 	}
 
@@ -73,7 +73,7 @@ class ArticleOperationsTest extends WP_UnitTestCase
 			'post_title' => 'Published',
 			'post_type' => 'post',
 		]);
-		update_post_meta($publishedId, PCC_CONTENT_META_KEY, 'doc-123');
+		update_post_meta($publishedId, CPUB_CONTENT_META_KEY, 'doc-123');
 
 		// Create a draft connected to the same PCC content ID.
 		$draftId = wp_insert_post([
@@ -81,7 +81,7 @@ class ArticleOperationsTest extends WP_UnitTestCase
 			'post_title' => 'Draft',
 			'post_type' => 'post',
 		]);
-		update_post_meta($draftId, PCC_CONTENT_META_KEY, 'doc-123');
+		update_post_meta($draftId, CPUB_CONTENT_META_KEY, 'doc-123');
 
 		// Default behavior finds the published post.
 		$this->assertSame($publishedId, $this->manager->findExistingConnectedPost('doc-123'));
@@ -246,7 +246,7 @@ class ArticleOperationsTest extends WP_UnitTestCase
 		$dupCheck = get_posts([
 			'post_type' => 'any',
 			'post_status' => 'any',
-			'meta_key' => PCC_CONTENT_META_KEY,
+			'meta_key' => CPUB_CONTENT_META_KEY,
 			'meta_value' => 'doc-4',
 			'fields' => 'ids',
 			'numberposts' => -1,
@@ -360,14 +360,15 @@ class ArticleOperationsTest extends WP_UnitTestCase
 	}
 
 	/**
-	 * When the 'pcc_default_author_id' filter is present, it should override the
+
+	 * When the 'cpub_default_author_id' filter is present, it should override the
 	 * computed default author for new inserts.
 	 */
 	public function testFilterOverridesDefaultAuthorOnInsert(): void
 	{
 		$userId = static::factory()->user->create(['role' => 'subscriber']);
 
-		add_filter('pcc_default_author_id', function () use ($userId) {
+		add_filter('cpub_default_author_id', function () use ($userId) {
 			return (int) $userId;
 		}, 10, 0);
 
@@ -376,7 +377,7 @@ class ArticleOperationsTest extends WP_UnitTestCase
 			$postId = $this->manager->storeArticle($article, false);
 			$this->assertSame((int) $userId, (int) get_post($postId)->post_author);
 		} finally {
-			remove_all_filters('pcc_default_author_id');
+			remove_all_filters('cpub_default_author_id');
 		}
 	}
 
@@ -388,7 +389,7 @@ class ArticleOperationsTest extends WP_UnitTestCase
 		$userA = static::factory()->user->create(['role' => 'subscriber']);
 		$userB = static::factory()->user->create(['role' => 'subscriber']);
 
-		add_filter('pcc_default_author_id', function ($defaultAuthorId, $article) use ($userA, $userB) {
+		add_filter('cpub_default_author_id', function ($defaultAuthorId, $article) use ($userA, $userB) {
 			// Get around the unused parameter warning
 			$defaultAuthorId = (int) $defaultAuthorId;
 
@@ -416,7 +417,7 @@ class ArticleOperationsTest extends WP_UnitTestCase
 			);
 			$this->assertSame((int) $userB, (int) get_post($postIdB)->post_author);
 		} finally {
-			remove_all_filters('pcc_default_author_id');
+			remove_all_filters('cpub_default_author_id');
 		}
 	}
 
@@ -429,7 +430,7 @@ class ArticleOperationsTest extends WP_UnitTestCase
 		$userA = static::factory()->user->create(['role' => 'subscriber']);
 		$userB = static::factory()->user->create(['role' => 'subscriber']);
 
-		add_filter('pcc_default_author_id', function () use ($userA) {
+		add_filter('cpub_default_author_id', function () use ($userA) {
 			return (int) $userA;
 		}, 10, 0);
 
@@ -438,9 +439,9 @@ class ArticleOperationsTest extends WP_UnitTestCase
 		$originalAuthor = (int) get_post($postId)->post_author;
 
 		// Change the filter to return a different user and update the same document
-		remove_all_filters('pcc_default_author_id');
+		remove_all_filters('cpub_default_author_id');
 
-		add_filter('pcc_default_author_id', function () use ($userB) {
+		add_filter('cpub_default_author_id', function () use ($userB) {
 			return (int) $userB;
 		}, 10, 0);
 
@@ -454,6 +455,6 @@ class ArticleOperationsTest extends WP_UnitTestCase
 		$this->assertSame($postId, $postId2);
 		$this->assertSame($originalAuthor, (int) get_post($postId2)->post_author);
 
-		remove_all_filters('pcc_default_author_id');
+		remove_all_filters('cpub_default_author_id');
 	}
 }

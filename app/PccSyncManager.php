@@ -22,8 +22,8 @@ class PccSyncManager
 
 	public function __construct()
 	{
-		$this->siteId = get_option(PCC_SITE_ID_OPTION_KEY);
-		$this->apiKey = get_option(PCC_API_KEY_OPTION_KEY);
+		$this->siteId = get_option(CPUB_SITE_ID_OPTION_KEY);
+		$this->apiKey = get_option(CPUB_API_KEY_OPTION_KEY);
 	}
 
 	/**
@@ -114,7 +114,7 @@ class PccSyncManager
 		$args = [
 			'post_type'   => 'any',
 			'post_status' => 'any',
-			'meta_key'    => PCC_CONTENT_META_KEY,
+			'meta_key'    => CPUB_CONTENT_META_KEY,
 			'meta_value'  => $value,
 			'fields'      => 'ids',
 			'numberposts' => 1,
@@ -153,7 +153,7 @@ class PccSyncManager
 			$insertData = $data;
 			$insertData['post_author'] = $this->getDefaultAuthorId($article);
 			$postId = wp_insert_post($insertData);
-			update_post_meta($postId, PCC_CONTENT_META_KEY, $article->id);
+			update_post_meta($postId, CPUB_CONTENT_META_KEY, $article->id);
 			$this->syncPostMetaAndTags($postId, $article);
 			return $postId;
 		}
@@ -206,7 +206,7 @@ class PccSyncManager
 
 	private function getFeaturedImageKey()
 	{
-		return apply_filters('pcc_featured_image_key', 'image');
+		return apply_filters('cpub_featured_image_key', 'image');
 	}
 
 	/**
@@ -262,7 +262,7 @@ class PccSyncManager
 		$imageId = media_sideload_image($featuredImageURL, $postId, null, 'id');
 
 		if (is_int($imageId)) {
-			update_post_meta($imageId, 'pcc_feature_image_url', $featuredImageURL);
+			update_post_meta($imageId, 'cpub_feature_image_url', $featuredImageURL);
 			// Set as the featured image.
 			set_post_thumbnail($postId, $imageId);
 		}
@@ -278,7 +278,7 @@ class PccSyncManager
 	{
 		$args = [
 			'post_type'  => 'attachment', // Ensure we're looking for attachments.
-			'meta_key'   => 'pcc_feature_image_url',
+			'meta_key'   => 'cpub_feature_image_url',
 			'meta_value' => $imageUrl,
 			'fields'     => 'ids', // Return only the IDs.
 			'numberposts' => 1,    // Limit to 1 post.
@@ -348,13 +348,13 @@ class PccSyncManager
 	 */
 	private function getIntegrationPostType()
 	{
-		return get_option(PCC_INTEGRATION_POST_TYPE_OPTION_KEY);
+		return get_option(CPUB_INTEGRATION_POST_TYPE_OPTION_KEY);
 	}
 
 	/**
 	 * Get the default author ID for content created by Content Publisher.
 	 *
-	 * Allows filtering via 'pcc_default_author_id'. The filter receives the
+	 * Allows filtering via 'cpub_default_author_id'. The filter receives the
 	 * computed default ID and the Article (if available). The filter can be
 	 * used to override the default author ID for a given article.
 	 *
@@ -373,7 +373,7 @@ class PccSyncManager
 
 		$defaultId = !empty($adminIds) ? (int) $adminIds[0] : 0;
 
-		return (int) apply_filters('pcc_default_author_id', $defaultId, $article);
+		return (int) apply_filters('cpub_default_author_id', $defaultId, $article);
 	}
 
 	/**
@@ -445,12 +445,12 @@ class PccSyncManager
 	 */
 	public function disconnect()
 	{
-		delete_option(PCC_ACCESS_TOKEN_OPTION_KEY);
-		delete_option(PCC_SITE_ID_OPTION_KEY);
-		delete_option(PCC_ENCODED_SITE_URL_OPTION_KEY);
-		delete_option(PCC_INTEGRATION_POST_TYPE_OPTION_KEY);
-		delete_option(PCC_WEBHOOK_SECRET_OPTION_KEY);
-		delete_option(PCC_API_KEY_OPTION_KEY);
+		delete_option(CPUB_ACCESS_TOKEN_OPTION_KEY);
+		delete_option(CPUB_SITE_ID_OPTION_KEY);
+		delete_option(CPUB_ENCODED_SITE_URL_OPTION_KEY);
+		delete_option(CPUB_INTEGRATION_POST_TYPE_OPTION_KEY);
+		delete_option(CPUB_WEBHOOK_SECRET_OPTION_KEY);
+		delete_option(CPUB_API_KEY_OPTION_KEY);
 
 		$this->removeMetaDataFromPosts();
 	}
@@ -463,7 +463,7 @@ class PccSyncManager
 	private function removeMetaDataFromPosts()
 	{
 		// Delete all post meta entries with the key 'terminate'
-		delete_post_meta_by_key(PCC_CONTENT_META_KEY);
+		delete_post_meta_by_key(CPUB_CONTENT_META_KEY);
 	}
 
 	/**
@@ -473,10 +473,10 @@ class PccSyncManager
 	 */
 	public function isPCCConfigured(): bool
 	{
-		$accessToken = get_option(PCC_ACCESS_TOKEN_OPTION_KEY);
-		$siteId = get_option(PCC_SITE_ID_OPTION_KEY);
-		$encodedSiteURL = get_option(PCC_ENCODED_SITE_URL_OPTION_KEY);
-		$apiKey = get_option(PCC_API_KEY_OPTION_KEY);
+		$accessToken = get_option(CPUB_ACCESS_TOKEN_OPTION_KEY);
+		$siteId = get_option(CPUB_SITE_ID_OPTION_KEY);
+		$encodedSiteURL = get_option(CPUB_ENCODED_SITE_URL_OPTION_KEY);
+		$apiKey = get_option(CPUB_API_KEY_OPTION_KEY);
 
 		if ((!$accessToken && !$apiKey) || !$siteId || !$encodedSiteURL) {
 			return false;
@@ -502,10 +502,10 @@ class PccSyncManager
 		// Original content
 		$content = $article->content;
 
-		// Pattern to match all <style> blocks
+		// Pattern to match all style blocks
 		$stylePattern = '/<style.*?>.*?<\/style>/is';
 
-		// Remove all <style> blocks from the content
+		// Remove all style blocks from the content
 		$content = preg_replace($stylePattern, '', $content);
 
 		$data = [
@@ -541,7 +541,7 @@ class PccSyncManager
 			}
 		}
 		GRAPHQL;
-		$variables = new \ArrayObject(['siteId' => get_option(PCC_SITE_ID_OPTION_KEY)]);
+		$variables = new \ArrayObject(['siteId' => get_option(CPUB_SITE_ID_OPTION_KEY)]);
 		$graphQLQuery = new GraphQLQuery($query, $variables);
 
 		$siteResponse = $siteApi->executeQuery($graphQLQuery);

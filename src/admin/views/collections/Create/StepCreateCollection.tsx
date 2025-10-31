@@ -32,7 +32,7 @@ export default function StepCreateCollection({
   }>({
     mode: "onChange",
     defaultValues: {
-      collectionUrl: window.PCC_BOOTSTRAP.site_url,
+      collectionUrl: window.CPUB_BOOTSTRAP.site_url,
       publishAs: "post",
     },
   });
@@ -101,7 +101,7 @@ export default function StepCreateCollection({
                 label="Collection URL"
                 showLabel={false}
                 className="max-w-xl"
-                placeholder={`${window.PCC_BOOTSTRAP.site_url}`}
+                placeholder={`${window.CPUB_BOOTSTRAP.site_url}`}
                 value={field.value}
                 onChange={(e) => field.onChange(e.target.value)}
                 onBlur={field.onBlur}

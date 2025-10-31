@@ -184,12 +184,12 @@ export default function ConnectCollection() {
               <div className="hidden lg:block shrink-0">
                 <div className="flex flex-col gap-6 items-end">
                   <img
-                    src={`${window.PCC_BOOTSTRAP.assets_url}/images/copy-collection-id.png`}
+                    src={`${window.CPUB_BOOTSTRAP.assets_url}/images/copy-collection-id.png`}
                     alt="Copy collection ID"
                     className="max-h-[220px] object-contain"
                   />
                   <img
-                    src={`${window.PCC_BOOTSTRAP.assets_url}/images/create-access-token.png`}
+                    src={`${window.CPUB_BOOTSTRAP.assets_url}/images/create-access-token.png`}
                     alt="Create management token"
                     className="max-h-[220px] object-contain"
                   />

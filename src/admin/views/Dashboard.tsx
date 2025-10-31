@@ -19,7 +19,7 @@ import { useCollectionData } from "../hooks/useCollectionData";
 import CollectionInfo from "../components/CollectionInfo";
 
 export default function Dashboard() {
-  const { publish_as, webhook } = window.PCC_BOOTSTRAP.configured;
+  const { publish_as, webhook } = window.CPUB_BOOTSTRAP.configured;
   const { collectionName, collectionUrl, collectionId } = useCollectionData();
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -43,8 +43,8 @@ export default function Dashboard() {
       apiClient.put("/webhook-notice", { dismissed: true }),
     onSuccess: () => {
       // Optimistically hide without extra fetch
-      if (window.PCC_BOOTSTRAP.configured.webhook) {
-        window.PCC_BOOTSTRAP.configured.webhook.notice_dismissed = true;
+      if (window.CPUB_BOOTSTRAP.configured.webhook) {
+        window.CPUB_BOOTSTRAP.configured.webhook.notice_dismissed = true;
       }
       setShowDismissConfirmModal(false);
     },
@@ -99,7 +99,7 @@ export default function Dashboard() {
     },
     onSuccess: () => {
       setShowDisconnectModal(false);
-      const baseUrl = window.PCC_BOOTSTRAP.plugin_main_page;
+      const baseUrl = window.CPUB_BOOTSTRAP.plugin_main_page;
       const separator = baseUrl.includes("?") ? "&" : "?";
       window.location.href = `${baseUrl}${separator}src=${SRC_ACTIONS.DISCONNECTED}`;
     },
@@ -134,7 +134,7 @@ export default function Dashboard() {
         <div className="p-6 rounded bg-[#E5E0F8] flex gap-4">
           <div>
             <img
-              src={`${window.PCC_BOOTSTRAP.assets_url}/images/webhooks.png`}
+              src={`${window.CPUB_BOOTSTRAP.assets_url}/images/webhooks.png`}
               alt="Webhook notice"
               className="max-h-[240px] md:block hidden object-contain"
             />
