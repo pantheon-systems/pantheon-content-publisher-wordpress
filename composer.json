@@ -23,11 +23,15 @@
   },
   "require": {
     "php": ">=8",
-    "pantheon-systems/pcc-php-sdk": "1.1.0"
+    "pantheon-systems/pcc-php-sdk": "1.1.1"
   },
   "require-dev": {
     "wp-coding-standards/wpcs": "^3.1",
-    "phpcompatibility/php-compatibility": "^9.3"
+    "phpcompatibility/php-compatibility": "^9.3",
+    "pantheon-systems/wpunit-helpers": "^2.0",
+    "phpunit/phpunit": "^9.6",
+    "yoast/phpunit-polyfills": "^3.1",
+    "php-stubs/wordpress-tests-stubs": "^6.8"
   },
   "repositories": [
     {
@@ -38,11 +42,16 @@
   "scripts": {
     "php:lint:autofix": "vendor/bin/phpcbf --ignore=*/vendor/ --standard=./phpcs.xml ",
     "php:lint:report": "vendor/bin/phpcs --ignore=*/vendor/ --standard=./phpcs.xml; phpcs --ignore=*/vendor/ --standard=./phpcs.xml --extensions=php --report=source",
-    "php-compatibility": "vendor/bin/phpcs -ps * --ignore=*/vendor/ --extensions=php --standard=PHPCompatibility --runtime-set testVersion 8.0-"
+    "php-compatibility": "vendor/bin/phpcs -ps * --ignore=*/vendor/ --extensions=php --standard=PHPCompatibility --runtime-set testVersion 8.0-",
+    "phpunit": "phpunit --do-not-cache-result",
+    "test": "@phpunit",
+    "test:install": "bin/install-local-tests.sh --skip-db=true",
+    "test:install:withdb": "bin/install-local-tests.sh"
   },
   "config": {
     "allow-plugins": {
-      "dealerdirect/phpcodesniffer-composer-installer": true
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "pantheon-systems/wpunit-helpers": true
     }
   }
 }

@@ -1,6 +1,6 @@
 <?php
 
-//phpcs:disable Files.SideEffects.FoundWithSymbols
+//phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
 
 /**
  * Plugin Name: Pantheon Content Publisher
@@ -8,7 +8,7 @@
  * Plugin URI: https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/
  * Author: Pantheon
  * Author URI: https://pantheon.io
- * Version: 1.2.6
+ * Version: 1.3.1
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -16,7 +16,7 @@
 namespace Pantheon\ContentPublisher;
 
 // Exit if accessed directly.
-if (!defined('ABSPATH')) {
+if (!\defined('ABSPATH')) {
 	exit;
 }
 
@@ -34,11 +34,14 @@ define('CPUB_API_NAMESPACE', 'pcc/v1');
 define('CPUB_CONTENT_META_KEY', 'cpub_id');
 define('CPUB_ENDPOINT', 'https://addonapi-gfttxsojwq-uc.a.run.app');
 define('CPUB_WEBHOOK_SECRET_OPTION_KEY', 'cpub_webhook_secret');
+define('CPUB_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY', 'cpub_webhook_notice_dismissed');
+define('CPUB_VERSION', '1.3.1');
 
 call_user_func(static function ($rootPath) {
 	$autoload = "{$rootPath}vendor/autoload.php";
 	if (is_readable($autoload)) {
 		require_once $autoload;
 	}
+	add_action('plugins_loaded', [Migrations\PluginUpgrade::class, 'isUpgradeNeeded'], -20);
 	add_action('plugins_loaded', [Plugin::class, 'getInstance'], -10);
 }, CPUB_PLUGIN_DIR);

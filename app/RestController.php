@@ -9,6 +9,11 @@ namespace Pantheon\ContentPublisher;
 use WP_REST_Request;
 use WP_REST_Response;
 use PccPhpSdk\api\Query\Enums\PublishingLevel;
+use PccPhpSdk\api\SitesApi;
+use PccPhpSdk\core\PccClient;
+use PccPhpSdk\core\PccClientConfig;
+use PccPhpSdk\core\Status\Status;
+use PccPhpSdk\core\Status\StatusOptions;
 
 use function esc_html__;
 
@@ -61,6 +66,11 @@ class RestController
 				'callback' => [$this, 'updateCollection'],
 			],
 			[
+				'route' => '/collection/connect',
+				'method' => 'POST',
+				'callback' => [$this, 'connectCollection'],
+			],
+			[
 				'route' => '/webhook',
 				'method' => 'POST',
 				'callback' => [$this, 'handleWebhook'],
@@ -74,6 +84,11 @@ class RestController
 				'route' => '/disconnect',
 				'method' => 'DELETE',
 				'callback' => [$this, 'disconnect'],
+			],
+			[
+				'route' => '/webhook-notice',
+				'method' => 'PUT',
+				'callback' => [$this, 'updateWebhookNoticeState'],
 			],
 			[
 				'route' => 'api/pantheoncloud/status',
@@ -98,7 +113,24 @@ class RestController
 	 */
 	public function pantheonCloudStatusCheck()
 	{
-		return new WP_REST_Response((object)[]);
+		$pccManager = new PccSyncManager();
+		$config = $pccManager->getClientConfig();
+		$isPCCConfigured = $pccManager->isPCCConfigured();
+
+		$options = new StatusOptions(
+			smartComponents: false,
+			smartComponentsCount: 0,
+			smartComponentPreview: false,
+			metadataGroups: false,
+			metadataGroupIdentifiers: null,
+			resolvePathConfigured: true,
+			notFoundPath: ''
+		);
+		$status = new Status($config, $options);
+
+		$payload = $status->toArray();
+
+		return new WP_REST_Response($payload);
 	}
 
 	/**
@@ -127,7 +159,10 @@ class RestController
 		}
 
 		if (!is_array($payload) || !isset($payload['articleId']) || empty($payload['articleId'])) {
-			return new WP_REST_Response(esc_html__('Invalid article ID in payload', 'pantheon-content-publisher'), 400);
+			return new WP_REST_Response(
+				esc_html__('Invalid article ID in payload', 'pantheon-content-publisher'),
+				400
+			);
 		}
 
 		$articleId = sanitize_text_field($payload['articleId']);
@@ -154,7 +189,7 @@ class RestController
 	public function permissionCallback(WP_REST_Request $request)
 	{
 		$cookie_error = rest_cookie_check_errors(null);
-		if (!empty( $cookie_error)) {
+		if (!empty($cookie_error)) {
 			return $cookie_error;
 		}
 
@@ -210,11 +245,20 @@ class RestController
 	{
 		// Check if you are authorized
 		if (!current_user_can('manage_options')) {
-			return new WP_REST_Response(esc_html__('You are not authorized to perform this action.', 'pantheon-content-publisher'), 401);
+			return new WP_REST_Response(
+				esc_html__(
+					'You are not authorized to perform this action.',
+					'pantheon-content-publisher'
+				),
+				401
+			);
 		}
 		// Check management token is set
 		if (!get_option(CPUB_ACCESS_TOKEN_OPTION_KEY)) {
-			return new WP_REST_Response(esc_html__('Management token is not set yet', 'pantheon-content-publisher'), 401);
+			return new WP_REST_Response(
+				esc_html__('Management token is not set yet', 'pantheon-content-publisher'),
+				401
+			);
 		}
 
 		$siteManager = new PccSiteManager();
@@ -238,25 +282,42 @@ class RestController
 	{
 		// Check management token is set
 		if (!get_option(CPUB_ACCESS_TOKEN_OPTION_KEY)) {
-			return new WP_REST_Response(esc_html__('Management token is not set yet', 'pantheon-content-publisher'), 400);
+			return new WP_REST_Response(
+				esc_html__('Management token is not set yet', 'pantheon-content-publisher'),
+				400
+			);
 		}
 
 		// Check site id is set
 		if (!get_option(CPUB_SITE_ID_OPTION_KEY)) {
-			return new WP_REST_Response(esc_html__('Site is not created yet', 'pantheon-content-publisher'), 400);
+			return new WP_REST_Response(
+				esc_html__('Site is not created yet', 'pantheon-content-publisher'),
+				400
+			);
 		}
 
 		// Check if you are authorized
 		if (!current_user_can('manage_options')) {
-			return new WP_REST_Response(esc_html__('You are not authorized to perform this action.', 'pantheon-content-publisher'), 401);
+			return new WP_REST_Response(
+				esc_html__(
+					'You are not authorized to perform this action.',
+					'pantheon-content-publisher'
+				),
+				401
+			);
 		}
 
 		$siteManager = new PccSiteManager();
 		if ($siteManager->registerWebhook()) {
-			return new WP_REST_Response(esc_html__('Webhook registered', 'pantheon-content-publisher'));
+			return new WP_REST_Response(
+				esc_html__('Webhook registered', 'pantheon-content-publisher')
+			);
 		}
 
-		return new WP_REST_Response(esc_html__('Error while register webhook', 'pantheon-content-publisher'), 400);
+		return new WP_REST_Response(
+			esc_html__('Error while register webhook', 'pantheon-content-publisher'),
+			400
+		);
 	}
 
 	/**
@@ -269,12 +330,21 @@ class RestController
 	{
 		// Check site id is set
 		if (!get_option(CPUB_SITE_ID_OPTION_KEY)) {
-			return new WP_REST_Response(esc_html__('Site is not created yet', 'pantheon-content-publisher'), 400);
+			return new WP_REST_Response(
+				esc_html__('Site is not created yet', 'pantheon-content-publisher'),
+				400
+			);
 		}
 
 		// Check if you are authorized
 		if (!current_user_can('manage_options')) {
-			return new WP_REST_Response(esc_html__('You are not authorized to perform this action.', 'pantheon-content-publisher'), 401);
+			return new WP_REST_Response(
+				esc_html__(
+					'You are not authorized to perform this action.',
+					'pantheon-content-publisher'
+				),
+				401
+			);
 		}
 
 		$siteManager = new PccSiteManager();
@@ -284,7 +354,10 @@ class RestController
 			return new WP_REST_Response(esc_html__('API created', 'pantheon-content-publisher'));
 		}
 
-		return new WP_REST_Response(esc_html__('Error while creating API key', 'pantheon-content-publisher'), 400);
+		return new WP_REST_Response(
+			esc_html__('Error while creating API key', 'pantheon-content-publisher'),
+			400
+		);
 	}
 
 	/**
@@ -318,7 +391,13 @@ class RestController
 	public function saveAccessToken(WP_REST_Request $request): WP_REST_Response
 	{
 		if (!current_user_can('manage_options')) {
-			return new WP_REST_Response(esc_html__('You are not authorized to perform this action.', 'pantheon-content-publisher'), 401);
+			return new WP_REST_Response(
+				esc_html__(
+					'You are not authorized to perform this action.',
+					'pantheon-content-publisher'
+				),
+				401
+			);
 		}
 
 		$accessToken = sanitize_text_field($request->get_param('access_token'));
@@ -326,14 +405,33 @@ class RestController
 		// Validate input field
 		if (empty($accessToken)) {
 			return new WP_REST_Response(
-				esc_html__('Management token cannot be empty.', 'pantheon-content-publisher'),
+				esc_html__(
+					'Management token cannot be empty.',
+					'pantheon-content-publisher'
+				),
+				400
+			);
+		}
+
+		// Validate token with PCC API
+		$siteManager = new PccSiteManager();
+		$isValid = $siteManager->validateManagementToken($accessToken);
+		if (!$isValid) {
+			return new WP_REST_Response(
+				esc_html__(
+					'Management token is invalid. Visit the Content Publisher dashboard to generate a new token.',
+					'pantheon-content-publisher'
+				),
 				400
 			);
 		}
 
 		update_option(CPUB_ACCESS_TOKEN_OPTION_KEY, $accessToken);
 		return new WP_REST_Response(
-			esc_html__('Management token saved.', 'pantheon-content-publisher'),
+			esc_html__(
+				'Management token saved.',
+				'pantheon-content-publisher'
+			),
 			200
 		);
 	}
@@ -346,16 +444,147 @@ class RestController
 	public function disconnect()
 	{
 		if (!current_user_can('manage_options')) {
-			return new WP_REST_Response(esc_html__('You are not authorized to perform this action.', 'pantheon-content-publisher'), 401);
+			return new WP_REST_Response(
+				esc_html__(
+					'You are not authorized to perform this action.',
+					'pantheon-content-publisher'
+				),
+				401
+			);
 		}
 
 		// Disconnect the site
 		$manager = new PccSyncManager();
 		$manager->disconnect();
 
+		// Reset dismissed webhook notice
+		update_option(CPUB_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY, false);
+
 		return new WP_REST_Response(
 			esc_html__('Saved Data deleted.', 'pantheon-content-publisher'),
 			200
 		);
+	}
+
+	/**
+	 * Connect collection to the current WordPress site
+	 *
+	 * @param WP_REST_Request $request
+	 * @return WP_REST_Response
+	 */
+	public function connectCollection(WP_REST_Request $request): WP_REST_Response
+	{
+		if (!current_user_can('manage_options')) {
+			return new WP_REST_Response(
+				esc_html__(
+					'You are not authorized to perform this action.',
+					'pantheon-content-publisher'
+				),
+				401
+			);
+		}
+
+		try {
+			$collectionId = sanitize_text_field($request->get_param('collection_id'));
+			$accessToken = sanitize_text_field($request->get_param('access_token'));
+
+			// Validate input fields
+			if (empty($collectionId) || empty($accessToken)) {
+				return new WP_REST_Response(
+					esc_html__('Missing collection ID or access token', 'pantheon-content-publisher'),
+					400
+				);
+			}
+
+			// Validate collection ID and access token with PCC API
+			try {
+				$client = new PccClient(new PccClientConfig($collectionId, $accessToken));
+				$siteApi = new SitesApi($client);
+				$siteResponse = $siteApi->getSite($collectionId);
+			} catch (\Throwable $e) {
+				error_log('PCC connectCollection API error: ' . $e->getMessage());
+				return new WP_REST_Response(
+					esc_html__('Failed to connect collection. Ensure your collection ID and access token are correct.', 'pantheon-content-publisher'),
+					400
+				);
+			}
+
+			// Parse the JSON response
+			$parsedResponse = json_decode($siteResponse, true);
+
+			if (json_last_error() !== JSON_ERROR_NONE) {
+				error_log('PCC connectCollection JSON decode error: ' . json_last_error_msg());
+				return new WP_REST_Response(
+					esc_html__('Failed to connect collection: Unable to reach Content Publisher API.', 'pantheon-content-publisher'),
+					500
+				);
+			}
+
+			// Check for GraphQL errors
+			if (isset($parsedResponse['errors']) && !empty($parsedResponse['errors'])) {
+				$errorMessage = $parsedResponse['errors'][0]['message'] ?? 'Unknown error';
+				error_log('PCC connectCollection GraphQL error: ' . $errorMessage);
+				return new WP_REST_Response(
+					esc_html__('Failed to connect collection: ' . $errorMessage, 'pantheon-content-publisher'),
+					400
+				);
+			}
+
+			// Check if site data exists
+			$site = $parsedResponse['data']['site'] ?? null;
+			if (!$site || empty($site['id'])) {
+				return new WP_REST_Response(
+					esc_html__('Failed to connect collection: Collection not found.', 'pantheon-content-publisher'),
+					400
+				);
+			}
+
+			// Update with the site id and access token (api key)
+			update_option(CPUB_SITE_ID_OPTION_KEY, $site['id']);
+			update_option(CPUB_ENCODED_SITE_URL_OPTION_KEY, md5(wp_parse_url(site_url())['host']));
+			update_option(CPUB_API_KEY_OPTION_KEY, $accessToken);
+
+			// Ensure webhook notice is not dismissed for newly connected existing collections
+			update_option(CPUB_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY, false);
+
+			// Update with the site id
+			return new WP_REST_Response(esc_html__('Collection connected', 'pantheon-content-publisher'));
+		} catch (\Throwable $e) {
+			error_log('PCC connectCollection unexpected error: ' . $e->getMessage());
+			error_log('PCC connectCollection stack trace: ' . $e->getTraceAsString());
+			return new WP_REST_Response(
+				esc_html__('An unexpected error occurred while connecting the collection. Please try again. Contact support if the issue persists.', 'pantheon-content-publisher'),
+				500
+			);
+		}
+	}
+
+	/**
+	 * Update webhook notice state for current site
+	 */
+	public function updateWebhookNoticeState(WP_REST_Request $request): WP_REST_Response
+	{
+		if (!current_user_can('manage_options')) {
+			return new WP_REST_Response(
+				esc_html__(
+					'You are not authorized to perform this action.',
+					'pantheon-content-publisher'
+				),
+				401
+			);
+		}
+
+		$dismissed = (bool) $request->get_param('dismissed');
+		update_option(CPUB_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY, $dismissed);
+
+		return new WP_REST_Response([
+			'dismissed' => $dismissed,
+		]);
+	}
+
+	private function getPluginVersion(): string
+	{
+		$headers = get_file_data(CPUB_PLUGIN_FILE, ['Version' => 'Version']);
+		return isset($headers['Version']) ? (string) $headers['Version'] : '';
 	}
 }

@@ -38,6 +38,7 @@ class Plugin
 	{
 		new Settings();
 		new RestController();
+		new Admin();
 	}
 
 	/**
