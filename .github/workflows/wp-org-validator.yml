@@ -29,12 +29,15 @@ jobs:
       with:
         path: |
             ~/.composer/cache
-            vendor
+            pantheon-content-publisher/vendor
         key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
             ${{ runner.os }}-composer-
 
     - name: Install dependencies
       run: composer install --no-interaction --no-progress --prefer-dist --no-scripts --no-ansi
+      working-directory: pantheon-content-publisher
     - name: Run plugin check
       uses: wordpress/plugin-check-action@70f38272b2beee386e973f319591baa2fc7dff16 # 1.1.2
+      with:
+        path: pantheon-content-publisher
