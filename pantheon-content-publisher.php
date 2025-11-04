@@ -8,7 +8,7 @@
  * Plugin URI: https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/
  * Author: Pantheon
  * Author URI: https://pantheon.io
- * Version: 1.3.1
+ * Version: 1.3.2
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -35,7 +35,7 @@ define('CPUB_CONTENT_META_KEY', 'cpub_id');
 define('CPUB_ENDPOINT', 'https://addonapi-gfttxsojwq-uc.a.run.app');
 define('CPUB_WEBHOOK_SECRET_OPTION_KEY', 'cpub_webhook_secret');
 define('CPUB_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY', 'cpub_webhook_notice_dismissed');
-define('CPUB_VERSION', '1.3.1');
+define('CPUB_VERSION', '1.3.2');
 
 call_user_func(static function ($rootPath) {
 	$autoload = "{$rootPath}vendor/autoload.php";
