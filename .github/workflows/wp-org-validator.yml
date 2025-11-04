@@ -40,4 +40,4 @@ jobs:
     - name: Run plugin check
       uses: wordpress/plugin-check-action@70f38272b2beee386e973f319591baa2fc7dff16 # 1.1.2
       with:
-        path: pantheon-content-publisher
+        build-dir: pantheon-content-publisher
