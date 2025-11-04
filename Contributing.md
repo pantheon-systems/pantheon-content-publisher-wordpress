@@ -2,7 +2,7 @@
 
 The best way to contribute to the development of this plugin is by participating on the GitHub project:
 
-https://github.com/pantheon-systems/pantheon-content-publisher-wordpress
+<https://github.com/pantheon-systems/pantheon-content-publisher-wordpress>
 
 ## Workflow
 
