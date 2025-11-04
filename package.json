@@ -6,7 +6,7 @@
     "dev": "NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --config=node_modules/laravel-mix/setup/webpack.config.js",
     "watch": "NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --config=node_modules/laravel-mix/setup/webpack.config.js",
     "hot": "NODE_ENV=development webpack-dev-server --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "build": "NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --config=node_modules/laravel-mix/setup/webpack.config.js && npm run build:vite",
+    "build": "NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --config=node_modules/laravel-mix/setup/webpack.config.js composer i && npm i && npm run build:vite",
     "dev:vite": "VITE_DEV_SERVER=1 vite",
     "build:vite": "vite build"
   },
