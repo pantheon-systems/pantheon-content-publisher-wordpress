@@ -10,13 +10,16 @@ INCLUDES=(
     "app"
     "assets"
     "dist"
-    "pantheon-content-publisher-for-wordpress.php"
+    "pantheon-content-publisher.php"
     "vendor"
+    "composer.json"
 )
 
 # Determine repository name from the current directory.
 REPO=$(basename "$(pwd)")
-ZIP="${REPO}.zip"
+# Zip file to match plugin name rather then repo name
+PLUGIN_NAME="pantheon-content-publisher"
+ZIP="${PLUGIN_NAME}.zip"
 
 echo "Starting build process for $REPO..."
 
@@ -27,7 +30,7 @@ echo "Installing NPM dependencies..."
 npm install
 
 echo "Building production assets..."
-npm run prod
+npm run build:vite
 
 echo "Creating release artifact: $ZIP..."
 

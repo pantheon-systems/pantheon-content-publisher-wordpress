@@ -9,17 +9,17 @@ if (!defined('ABSPATH')) {
 	require 'header.php';
 	?>
 	<div class="page-content">
-		<?php require PCC_PLUGIN_DIR . 'admin/templates/partials/spinner.php'; ?>
+		<?php require CPUB_PLUGIN_DIR . 'admin/templates/partials/spinner.php'; ?>
 		<div id="pcc-content">
 			<div class="create-collection-page">
-				<?php require PCC_PLUGIN_DIR . 'admin/templates/partials/error-message.php'; ?>
+				<?php require CPUB_PLUGIN_DIR . 'admin/templates/partials/error-message.php'; ?>
 				<div class="page-grid">
 					<div class="col-span-7 justify-self-start">
 						<h1 class="page-header mt-[1.875rem]">
 							<?php
 							esc_html_e(
 								'Create your first content collection',
-								'pantheon-content-publisher-for-wordpress'
+								'pantheon-content-publisher'
 							)
 							?>
 						</h1>
@@ -29,12 +29,12 @@ if (!defined('ABSPATH')) {
 						A content collection is a set of content for your WordPress site.
 						Connected to Google Workspace,
 						it helps you organize and manage your site content in Google Docs.',
-								'pantheon-content-publisher-for-wordpress'
+								'pantheon-content-publisher'
 							) ?>
 						</p>
 						<p class="text-with-border mb-[1.875rem]"><?php echo esc_url(site_url()) ?></p>
 						<p class="text-lg font-bold mb-[1.25rem]">
-							<?php esc_html_e('Publish your document as:', 'pantheon-content-publisher-for-wordpress') ?>
+							<?php esc_html_e('Publish your document as:', 'pantheon-content-publisher') ?>
 						</p>
 						<div class="inputs-container">
 							<div class='input-wrapper'>
@@ -42,7 +42,7 @@ if (!defined('ABSPATH')) {
 									value="post"
 									id="radio-post"
 									<?php
-									checked(get_option(PCC_INTEGRATION_POST_TYPE_OPTION_KEY), 'post');
+									checked(get_option(CPUB_INTEGRATION_POST_TYPE_OPTION_KEY), 'post');
 									?>>
 								<label class="text-base" for="radio-post">
 									<?php
@@ -56,7 +56,7 @@ if (!defined('ABSPATH')) {
 									value='page'
 									id='radio-page'
 									<?php
-									checked(get_option(PCC_INTEGRATION_POST_TYPE_OPTION_KEY), 'page');
+									checked(get_option(CPUB_INTEGRATION_POST_TYPE_OPTION_KEY), 'page');
 									?>>
 								<label class="text-base" for="radio-page">
 									<?php
@@ -67,21 +67,21 @@ if (!defined('ABSPATH')) {
 							</div>
 						</div>
 						<a class="primary-button" id="pcc-create-site" href="#">
-							<?php esc_html_e('Create collection', 'pantheon-content-publisher-for-wordpress') ?>
+							<?php esc_html_e('Create collection', 'pantheon-content-publisher') ?>
 						</a>
 						<div class="mb-10">
 							<a class="secondary-button self-start justify-self-end" id="pcc-disconnect" href="#">
 								<?php
 								esc_html_e(
 									'Reset your Google Workspace authentication',
-									'pantheon-content-publisher-for-wordpress'
+									'pantheon-content-publisher'
 								)
 								?>
 							</a>
 						</div>
 					</div>
 					<div class="col-span-5 justify-self-end">
-						<img src="<?php echo esc_url(PCC_PLUGIN_DIR_URL . 'assets/images/collection-image.png') ?>"
+						<img src="<?php echo esc_url(CPUB_PLUGIN_DIR_URL . 'assets/images/collection-image.png') ?>"
 							alt="collection-image">
 					</div>
 				</div>

@@ -48,25 +48,25 @@ class PccPostsListTable extends \WP_Posts_List_Table
 
 
 	/**
-	 * Checks if the post has the 'pcc_id' meta-key.
+	 * Checks if the post has the 'cpub_id' meta-key.
 	 *
 	 * This method determines if the custom condition is met based on the existence
 	 * of a specific post-meta key.
 	 *
 	 * @param   WP_Post  $post  The current WP_Post object.
 	 *
-	 * @return bool Whether the 'pcc_id' meta-key exists.
+	 * @return bool Whether the 'cpub_id' meta-key exists.
 	 */
 	protected function isLinkedPost($post)
 	{
-		return (bool) get_post_meta($post->ID, PCC_CONTENT_META_KEY, true);
+		return (bool) get_post_meta($post->ID, CPUB_CONTENT_META_KEY, true);
 	}
 
 	/**
 	 * Generates the HTML for the PCC post logo.
 	 *
 	 * This method returns the HTML string for the SVG logo to be displayed
-	 * when the post has the 'pcc_id' meta-key.
+	 * when the post has the 'cpub_id' meta-key.
 	 *
 	 * @return string The HTML for the SVG logo.
 	 */

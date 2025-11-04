@@ -1,0 +1,30 @@
+# Directories
+/.circleci
+/.git
+/.github
+/.wordpress-org
+/tests
+/node_modules
+/bin
+
+# Files
+/.DS_Store
+/Thumbs.db
+/.editorconfig
+/.gitattributes
+/.gitignore
+/CODEOWNERS
+/composer.lock
+/CONTRIBUTING.md
+/gulpfile.mjs
+/package-lock.json
+/package.json
+/phpcs.xml
+/README.md
+/CODE_OF_CONDUCT.md
+/catalog-info.yaml
+/tailwind.config.js
+/webpack.mix.js
+/SECURITY.md
+/.distignore
+/LICENSE

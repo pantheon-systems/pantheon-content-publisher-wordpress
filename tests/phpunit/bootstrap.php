@@ -36,7 +36,7 @@ require $_tests_dir . '/includes/functions.php';
 
 if (function_exists('tests_add_filter')) {
 	tests_add_filter('muplugins_loaded', function () use ($projectRoot) {
-		require $projectRoot . '/pantheon-content-publisher-for-wordpress.php';
+		require $projectRoot . '/pantheon-content-publisher.php';
 	});
 }
 
