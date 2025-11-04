@@ -35,6 +35,7 @@ jobs:
     - name: Install dependencies
       run: |
         composer install --no-interaction --no-progress --prefer-dist --no-scripts --no-ansi
+        npm ci
         npm run build
 
     - name: Create Dist Archive for wp.org validation
