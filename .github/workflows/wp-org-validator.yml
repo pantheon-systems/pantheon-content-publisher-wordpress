@@ -34,7 +34,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        composer install --no-interaction --no-progress --prefer-dist --no-scripts --no-ansi
+        composer install --no-dev --no-interaction --no-progress --prefer-dist --no-scripts --no-ansi
         npm ci
         npm run build
 
