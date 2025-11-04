@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+input:focus-visible,
+input:focus {
+  box-shadow: none;
+}
