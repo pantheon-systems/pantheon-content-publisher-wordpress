@@ -63,7 +63,7 @@ All posts/pages created with Pantheon Content Publisher will remain on your Word
 == Changelog ==
 
 = 1.3.2 =
-* Fix: White screen bug
+* Fix: Resolved issue loading Content Publisher admin screen
 
 = 1.3.1 =
 * Add migration script to update post metadata and wp options with the new cpub_ prefix
