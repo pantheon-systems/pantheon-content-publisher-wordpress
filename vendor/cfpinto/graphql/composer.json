@@ -1,0 +1,41 @@
+{
+  "name": "cfpinto/graphql",
+  "description": "A GraphQL query builder class",
+  "type": "library",
+  "keywords": [
+    "GraphQL",
+    "Query Builder"
+  ],
+  "homepage": "https://github.com/cfpinto/graphql",
+  "authors": [
+    {
+      "name": "Claudio Pinto",
+      "email": "me@cfpinto.com"
+    }
+  ],
+  "license": "MIT",
+  "require": {
+    "php": "8.*",
+    "ext-json": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "GraphQL\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit tests/ --whitelist src/ --coverage-clover build/coverage/xml"
+},
+  "require-dev": {
+    "symfony/var-dumper": "^6.2",
+    "squizlabs/php_codesniffer": "^3.7",
+    "phpmd/phpmd": "^2.13",
+    "spatie/phpunit-watcher": "^1.23",
+    "phpunit/phpunit": "^9.5"
+  }
+}
