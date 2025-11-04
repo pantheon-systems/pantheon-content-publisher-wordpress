@@ -42,7 +42,7 @@ jobs:
       run: |
         wp package install wp-cli/dist-archive-command
         wp dist-archive . --plugin-dirname=pantheon-content-publisher --filename-format=pantheon-content-publisher-dist
-        unzip pantheon-content-publisher-dist.zip -d pantheon-content-publisher
+        unzip ../pantheon-content-publisher-dist.zip
 
     - name: Run plugin check
       uses: wordpress/plugin-check-action@70f38272b2beee386e973f319591baa2fc7dff16 # 1.1.2
