@@ -1,6 +1,6 @@
 # Pantheon Content Publisher for WordPress
 
-**Contributors:** [getpantheon](https://profiles.wordpress.org/getpantheon/) # TODO: Add more contributors.  
+**Contributors:** [getpantheon](https://profiles.wordpress.org/getpantheon/) <!-- TODO: Add more contributors. -->   
 **Tags:** pantheon, content, google docs  
 **Requires at least:** 5.7  
 **Tested up to:** 6.8.1  
