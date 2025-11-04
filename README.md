@@ -7,7 +7,7 @@
 **Stable tag:** 1.3.1  
 **Requires PHP:** 8.0.0  
 **License:** GPLv2 or later  
-**License URI:** http://www.gnu.org/licenses/gpl-2.0.html
+**License URI:** <http://www.gnu.org/licenses/gpl-2.0.html>
 
 [![Actively Maintained](https://img.shields.io/badge/Pantheon-Actively_Maintained-yellow?logo=pantheon&color=FFDC28)](https://pantheon.io/docs/oss-support-levels#actively-maintained-support)
 
