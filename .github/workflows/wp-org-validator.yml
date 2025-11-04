@@ -15,8 +15,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-      with:
-        path: pantheon-content-publisher
     - name: Setup PHP 8.4
       uses: shivammathur/setup-php@20529878ed81ef8e78ddf08b480401e6101a850f # v2.35.3
       with:
@@ -29,7 +27,7 @@ jobs:
       with:
         path: |
             ~/.composer/cache
-            pantheon-content-publisher/vendor
+            vendor
         key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
             ${{ runner.os }}-composer-
@@ -39,7 +37,12 @@ jobs:
         composer install --no-interaction --no-progress --prefer-dist --no-scripts --no-ansi
         npm run build
         npm run build:vite
-      working-directory: pantheon-content-publisher
+
+    - name: Create Dist Archive for wp.org validation
+      run: |
+        wp dist-archive . --format=zip --create_targe=false --filename=pantheon-content-publisher-dist.zip
+        unzip pantheon-content-publisher-dist.zip -d pantheon-content-publisher
+
     - name: Run plugin check
       uses: wordpress/plugin-check-action@70f38272b2beee386e973f319591baa2fc7dff16 # 1.1.2
       with:
