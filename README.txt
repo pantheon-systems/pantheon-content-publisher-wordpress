@@ -3,7 +3,7 @@ Contributors: getpantheon
 Tags: pantheon
 Requires at least: 5.7
 Tested up to: 6.8.1
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 Requires PHP: 8.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -13,6 +13,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Perfect for editorial teams who collaborate on content within Google Docs, this plugin ensures a smooth transition from document creation to web publishing, facilitating real-time previews and direct publishing options.
 
 == Features ==
+
 = Real-time Preview =
 Experience seamless document previews within your WordPress environment as they would appear live on the web.
 
@@ -25,15 +26,13 @@ Choose to publish as either a WordPress post or page, adapting to your site's co
 For more information, please check [Pantheon Content Publisher documentation](https://docs.content.pantheon.io).
 
 == Installation ==
-Download the Content Publisher WordPress plugin zip file.
 
-Navigate to Plugins > Add New in your WordPress admin dashboard.
+The Pantheon Content Publisher plugin can be installed like any other WordPress Plugin, from your WordPress Dashboard, go to Plugins -> Add Plugin and search for: Pantheon Content Publisher, click the Install Now button and then click Activate. 
 
-Click “Upload Plugin,” select the downloaded zip file, then “Install Now” and activate the plugin.
-
-Set up your connection to Pantheon Content Publisher and Google Drive via the settings page in the WordPress admin dashboard.
+After the plugin is active, set up your connection to Pantheon Content Publisher and Google Drive via the settings page in the WordPress admin dashboard.
 
 == Integration with Third-Party Services ==
+
 = Important Disclosure =
 This plugin integrates with Google Drive and Google Docs to facilitate document publishing to WordPress.
 When enabled, it will access documents from these services for the purposes of rendering previews and enabling publishing functionality via the [Pantheon Content Publisher service](https://docs.content.pantheon.io). These services are not processing any data or content originating from WordPress or the plugin itself and no other third-party service is used to process data. 
@@ -62,6 +61,9 @@ The connection will be established automatically.
 All posts/pages created with Pantheon Content Publisher will remain on your WordPress site. However, you will no longer be able to edit them from Google Docs.
 
 == Changelog ==
+
+= 1.3.2 =
+* Fix: Resolved issue loading Content Publisher admin screen
 
 = 1.3.1 =
 * Add migration script to update post metadata and wp options with the new cpub_ prefix
