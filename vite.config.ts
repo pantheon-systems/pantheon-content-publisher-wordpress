@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => ({
   build: {
     manifest: true,
     sourcemap: mode !== "production",
-    outDir: "dist/build",
+    outDir: "assets/dist/build",
     assetsDir: "",
     rollupOptions: {
       input: { "admin-app": "src/admin/main.tsx" },

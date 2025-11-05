@@ -4,7 +4,7 @@
 **Tags:** pantheon, content, google docs  
 **Requires at least:** 5.7  
 **Tested up to:** 6.8.1  
-**Stable tag:** 1.3.2  
+**Stable tag:** 1.3.3  
 **Requires PHP:** 8.0.0  
 **License:** GPLv2 or later  
 **License URI:** <http://www.gnu.org/licenses/gpl-2.0.html>
@@ -51,7 +51,11 @@
 
 ## Quick start
 
-This is a WordPress plugin. It can be installed via the usual WordPress Dashboard workflow.
+The Pantheon Content Publisher plugin can be installed like any other WordPress Plugin, from your WordPress Dashboard, go to Plugins -> Add Plugin and search for: Pantheon Content Publisher, click the Install Now button and then click Activate. 
+
+After the plugin is active, set up your connection to Pantheon Content Publisher and Google Drive via the settings page in the WordPress admin dashboard.
+
+Alternately you can download and install the plugin manually:
 
 - [Download the latest release.](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/releases/)
 
