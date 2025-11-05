@@ -27,4 +27,8 @@
 /webpack.mix.js
 /SECURITY.md
 /.distignore
-/LICENSE
+/.eslint.config.js
+/.prettierrc
+/phpunit.xml
+/tsconfig.json
+/vite.config.ts
