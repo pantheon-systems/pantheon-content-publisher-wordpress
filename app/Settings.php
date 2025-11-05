@@ -707,17 +707,17 @@ class Settings
 	{
 		wp_enqueue_script(
 			'pantheon-content-publisher',
-			CPUB_PLUGIN_DIR_URL . 'dist/app.js',
+			CPUB_PLUGIN_DIR_URL . 'assets/dist/app.js',
 			[],
-			filemtime(CPUB_PLUGIN_DIR . 'dist/app.js'),
+			filemtime(CPUB_PLUGIN_DIR . 'assets/dist/app.js'),
 			true
 		);
 
 		wp_enqueue_style(
 			'pantheon-content-publisher',
-			CPUB_PLUGIN_DIR_URL . 'dist/app.css',
+			CPUB_PLUGIN_DIR_URL . 'assets/dist/app.css',
 			[],
-			filemtime(CPUB_PLUGIN_DIR . 'dist/app.css')
+			filemtime(CPUB_PLUGIN_DIR . 'assets/dist/app.css')
 		);
 
 		wp_localize_script(
@@ -749,9 +749,9 @@ class Settings
 
 		wp_enqueue_script(
 			'pantheon-content-publisher',
-			CPUB_PLUGIN_DIR_URL . 'dist/pcc-front.js',
+			CPUB_PLUGIN_DIR_URL . 'assets/dist/pcc-front.js',
 			[],
-			filemtime(CPUB_PLUGIN_DIR . 'dist/pcc-front.js'),
+			filemtime(CPUB_PLUGIN_DIR . 'assets/dist/pcc-front.js'),
 			true
 		);
 
