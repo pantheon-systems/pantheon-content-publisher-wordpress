@@ -15,7 +15,7 @@
 /.gitignore
 /CODEOWNERS
 /composer.lock
-/Contributing.md
+/CONTRIBUTING.md
 /gulpfile.mjs
 /package-lock.json
 /package.json
