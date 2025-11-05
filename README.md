@@ -51,7 +51,11 @@
 
 ## Quick start
 
-This is a WordPress plugin. It can be installed via the usual WordPress Dashboard workflow.
+The Pantheon Content Publisher plugin can be installed like any other WordPress Plugin, from your WordPress Dashboard, go to Plugins -> Add Plugin and search for: Pantheon Content Publisher, click the Install Now button and then click Activate. 
+
+After the plugin is active, set up your connection to Pantheon Content Publisher and Google Drive via the settings page in the WordPress admin dashboard.
+
+Alternately you can download and install the plugin manually:
 
 - [Download the latest release.](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/releases/)
 
