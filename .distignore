@@ -15,7 +15,7 @@
 /.gitignore
 /CODEOWNERS
 /composer.lock
-/CONTRIBUTING.md
+/Contributing.md
 /gulpfile.mjs
 /package-lock.json
 /package.json
@@ -27,4 +27,8 @@
 /webpack.mix.js
 /SECURITY.md
 /.distignore
-/LICENSE
+/.eslint.config.js
+/.prettierrc
+/phpunit.xml
+/tsconfig.json
+/vite.config.ts
