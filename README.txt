@@ -62,7 +62,7 @@ All posts/pages created with Pantheon Content Publisher will remain on your Word
 
 == Changelog ==
 
-= 1.3.3 =
+= 1.3.3 (5 November 2025) =
 * Fix: Fixed plugin not loading on WordPress.org due to missing build files
 
 = 1.3.2 =
