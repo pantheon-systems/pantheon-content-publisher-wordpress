@@ -1,5 +1,5 @@
 === Pantheon Content Publisher ===
-Contributors: getpantheon
+Contributors: getpantheon, anaispantheor, roshnykunjappan, mklasen, jazzs3quence
 Tags: pantheon
 Requires at least: 5.7
 Tested up to: 6.8.1
