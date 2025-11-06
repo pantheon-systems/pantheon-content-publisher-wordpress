@@ -3,7 +3,7 @@ Contributors: getpantheon
 Tags: pantheon
 Requires at least: 5.7
 Tested up to: 6.8.1
-Stable tag: 1.3.3
+Stable tag: 1.3.4-dev
 Requires PHP: 8.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -61,6 +61,8 @@ The connection will be established automatically.
 All posts/pages created with Pantheon Content Publisher will remain on your WordPress site. However, you will no longer be able to edit them from Google Docs.
 
 == Changelog ==
+
+= 1.3.4-dev =
 
 = 1.3.3 (5 November 2025) =
 * Fix: Fixed plugin not loading on WordPress.org due to missing build files
