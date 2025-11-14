@@ -504,7 +504,10 @@ class RestController
 			} catch (\Throwable $e) {
 				error_log('PCC connectCollection API error: ' . $e->getMessage());
 				return new WP_REST_Response(
-					esc_html__('Failed to connect collection. Ensure your collection ID and access token are correct.', 'pantheon-content-publisher'),
+					esc_html__(
+						'Failed to connect collection. Ensure your collection ID and access token are correct.',
+						'pantheon-content-publisher'
+					),
 					400
 				);
 			}
@@ -515,7 +518,10 @@ class RestController
 			if (json_last_error() !== JSON_ERROR_NONE) {
 				error_log('PCC connectCollection JSON decode error: ' . json_last_error_msg());
 				return new WP_REST_Response(
-					esc_html__('Failed to connect collection: Unable to reach Content Publisher API.', 'pantheon-content-publisher'),
+					esc_html__(
+						'Failed to connect collection: Unable to reach Content Publisher API.',
+						'pantheon-content-publisher'
+					),
 					500
 				);
 			}
@@ -553,7 +559,11 @@ class RestController
 			error_log('PCC connectCollection unexpected error: ' . $e->getMessage());
 			error_log('PCC connectCollection stack trace: ' . $e->getTraceAsString());
 			return new WP_REST_Response(
-				esc_html__('An unexpected error occurred while connecting the collection. Please try again. Contact support if the issue persists.', 'pantheon-content-publisher'),
+				esc_html__(
+					'An unexpected error occurred while connecting the collection. ' .
+					'Please try again. Contact support if the issue persists.',
+					'pantheon-content-publisher'
+				),
 				500
 			);
 		}

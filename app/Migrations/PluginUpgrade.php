@@ -33,8 +33,8 @@ class PluginUpgrade
 		if (
 			version_compare($from_version, '1.3.1', '<') &&
 			version_compare(CPUB_VERSION, '1.3.1', '>=')
-			) {
-				Upgrade_131::run();
-			}
+		) {
+				Upgrade131::run();
+		}
 	}
 }
