@@ -126,6 +126,7 @@ class Admin
 			error_log('Manifest file not found');
 			return;
 		}
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 		$manifest = json_decode((string) file_get_contents($manifestPath), true);
 		$entry = reset($manifest) ?? null;
 		if (!$entry) {
