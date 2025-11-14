@@ -12,8 +12,9 @@ jobs:
     name: PHP ${{ matrix.php-version }} Unit Tests
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        php-version: ["8.0", "8.1", "8.2", "8.3", "8.4", "8.5"]
+        php-version: ["8.1", "8.2", "8.3", "8.4", "8.5"]
     services:
       database:
         image: mysql:latest
