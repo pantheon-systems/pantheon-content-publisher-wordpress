@@ -117,10 +117,15 @@ class RestController
 		$config = $pccManager->getClientConfig();
 		$isPCCConfigured = $pccManager->isPCCConfigured();
 
+		// Get smart component count from filter
+		$components = [];
+		$components = apply_filters('cpub_smart_components', $components);
+		$componentCount = count($components);
+
 		$options = new StatusOptions(
-			smartComponents: false,
-			smartComponentsCount: 0,
-			smartComponentPreview: false,
+			smartComponents: $componentCount > 0,
+			smartComponentsCount: $componentCount,
+			smartComponentPreview: true, // Preview is always available
 			metadataGroups: false,
 			metadataGroupIdentifiers: null,
 			resolvePathConfigured: true,

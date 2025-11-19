@@ -517,6 +517,22 @@ class Settings
 				? PublishingLevel::DRAFT
 				: PublishingLevel::REALTIME;
 
+			// Fetch raw article data to get pcc-component tags
+			$rawArticle = $articlesApi->getArticleById(
+				$documentId,
+				[
+					'id',
+					'slug',
+					'title',
+					'tags',
+					'content',
+					'metadata',
+				],
+				$publishingLevel,
+				null,
+				$versionId ?: null
+			);
+
 			// Fetch the article data needed for prerendering the
 			// preview page. This also serves as a guard to ensure
 			// the document is valid and the grant is valid.
@@ -537,6 +553,14 @@ class Settings
 			// return the original posts array. WP will handle it (e.g., show draft, 404).
 			if (!$article) {
 				return $posts;
+			}
+
+			// Process smart components
+			if ($rawArticle && $rawArticle->content) {
+				$article->content = \Pantheon\ContentPublisher\SmartComponents\ComponentConverter::processContent(
+					$rawArticle->content,
+					$article->content
+				);
 			}
 
 			// Apply updates to the in-memory post object
@@ -747,13 +771,13 @@ class Settings
 			return;
 		}
 
-		wp_enqueue_script(
-			'pantheon-content-publisher',
-			CPUB_PLUGIN_DIR_URL . 'assets/dist/pcc-front.js',
-			[],
-			filemtime(CPUB_PLUGIN_DIR . 'assets/dist/pcc-front.js'),
-			true
-		);
+		// wp_enqueue_script(
+		// 	'pantheon-content-publisher',
+		// 	CPUB_PLUGIN_DIR_URL . 'assets/dist/pcc-front.js',
+		// 	[],
+		// 	filemtime(CPUB_PLUGIN_DIR . 'assets/dist/pcc-front.js'),
+		// 	true
+		// );
 
 		wp_localize_script(
 			'pantheon-content-publisher',

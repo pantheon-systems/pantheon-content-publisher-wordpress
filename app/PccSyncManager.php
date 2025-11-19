@@ -2,6 +2,7 @@
 
 namespace Pantheon\ContentPublisher;
 
+use Pantheon\ContentPublisher\SmartComponents\ComponentConverter;
 use PccPhpSdk\api\ArticlesApi;
 use PccPhpSdk\api\Query\Enums\ContentType;
 use PccPhpSdk\api\Query\Enums\PublishingLevel;
@@ -44,6 +45,23 @@ class PccSyncManager
 		?string $versionId = null
 	): int {
 		$articlesApi = new ArticlesApi($pccClient ?? $this->pccClient());
+
+		$rawArticle = $articlesApi->getArticleById(
+			$documentId,
+			[
+				'id',
+				'slug',
+				'title',
+				'tags',
+				'content',
+				'metadata',
+			],
+			$publishingLevel,
+			null, // No content type - get raw data
+			$versionId
+		);
+
+		// Get processed article with TREE_PANTHEON_V2
 		$article = $articlesApi->getArticleById(
 			$documentId,
 			[
@@ -58,6 +76,10 @@ class PccSyncManager
 			ContentType::TREE_PANTHEON_V2,
 			$versionId
 		);
+
+		if ($article && $rawArticle && $rawArticle->content) {
+			$article->content = ComponentConverter::processContent($rawArticle->content, $article->content);
+		}
 
 		return $article ? $this->storeArticle($article, $isDraft) : 0;
 	}
@@ -149,18 +171,27 @@ class PccSyncManager
 			'post_type' => $this->getIntegrationPostType(),
 		];
 
+		// Temporarily disable kses filters to preserve embed HTML
+		kses_remove_filters();
+
 		if (!$postId) {
 			$insertData = $data;
 			$insertData['post_author'] = $this->getDefaultAuthorId($article);
 			$postId = wp_insert_post($insertData);
 			update_post_meta($postId, CPUB_CONTENT_META_KEY, $article->id);
 			$this->syncPostMetaAndTags($postId, $article);
+
+			// Re-enable kses filters
+			kses_init_filters();
 			return $postId;
 		}
 
 		$data['ID'] = $postId;
 		wp_update_post($data);
 		$this->syncPostMetaAndTags($postId, $article);
+
+		// Re-enable kses filters
+		kses_init_filters();
 		return $postId;
 	}
 
