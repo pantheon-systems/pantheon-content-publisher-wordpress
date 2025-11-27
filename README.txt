@@ -2,7 +2,7 @@
 Contributors: getpantheon, a11rew, anaispantheor, roshnykunjappan, mklasen, jazzs3quence, swb1192
 Tags: pantheon
 Requires at least: 5.7
-Tested up to: 6.8.1
+Tested up to: 6.9
 Stable tag: 1.3.4-dev
 Requires PHP: 8.1.0
 License: GPLv2 or later

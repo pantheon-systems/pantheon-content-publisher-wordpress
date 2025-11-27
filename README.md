@@ -3,7 +3,7 @@
 **Contributors:** [getpantheon](https://profiles.wordpress.org/getpantheon/), [a11rew](https://profiles.wordpress.org/a11rew), [anaispantheor](https://profiles.wordpress.org/anaispantheor/), [roshnykunjappan](https://profiles.wordpress.org/roshnykunjappan/), [mklasen](https://profiles.wordpress.org/mklasen/), [jazzs3quence](https://profiles.wordpress.org/jazzs3quence/), [swb1192](https://profiles.wordpress.org/swb1192)
 **Tags:** pantheon, content, google docs  
 **Requires at least:** 5.7  
-**Tested up to:** 6.8.1  
+**Tested up to:** 6.9  
 **Stable tag:** 1.3.4-dev  
 **Requires PHP:** 8.1.0  
 **License:** GPLv2 or later  
