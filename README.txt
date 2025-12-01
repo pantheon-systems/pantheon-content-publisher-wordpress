@@ -2,7 +2,7 @@
 Contributors: getpantheon, a11rew, anaispantheor, roshnykunjappan, mklasen, jazzs3quence, swb1192
 Tags: pantheon
 Requires at least: 5.7
-Tested up to: 6.8.1
+Tested up to: 6.9
 Stable tag: 1.3.4-dev
 Requires PHP: 8.1.0
 License: GPLv2 or later
@@ -63,6 +63,7 @@ All posts/pages created with Pantheon Content Publisher will remain on your Word
 == Changelog ==
 
 = 1.3.4-dev =
+* Compatibility: Supports Wordpress 6.9 [#178](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/178)
 
 = 1.3.3 (5 November 2025) =
 * Fix: Fixed plugin not loading on WordPress.org due to missing build files
