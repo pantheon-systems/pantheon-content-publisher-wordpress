@@ -63,7 +63,7 @@ All posts/pages created with Pantheon Content Publisher will remain on your Word
 == Changelog ==
 
 = 1.3.4-dev =
-* Compatibility: Supports Wordpress 6.9
+* Compatibility: Supports Wordpress 6.9 [#178](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/178)
 
 = 1.3.3 (5 November 2025) =
 * Fix: Fixed plugin not loading on WordPress.org due to missing build files
