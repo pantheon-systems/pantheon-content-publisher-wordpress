@@ -4,7 +4,7 @@
 **Tags:** pantheon, content, google docs  
 **Requires at least:** 5.7  
 **Tested up to:** 6.9  
-**Stable tag:** 1.3.4-dev  
+**Stable tag:** 1.3.4  
 **Requires PHP:** 8.1.0  
 **License:** GPLv2 or later  
 **License URI:** <http://www.gnu.org/licenses/gpl-2.0.html>
