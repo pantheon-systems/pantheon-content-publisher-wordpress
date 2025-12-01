@@ -1,11 +1,11 @@
 # Pantheon Content Publisher for WordPress
 
-**Contributors:** [getpantheon](https://profiles.wordpress.org/getpantheon/) <!-- TODO: Add more contributors. -->   
+**Contributors:** [getpantheon](https://profiles.wordpress.org/getpantheon/), [a11rew](https://profiles.wordpress.org/a11rew), [anaispantheor](https://profiles.wordpress.org/anaispantheor/), [roshnykunjappan](https://profiles.wordpress.org/roshnykunjappan/), [mklasen](https://profiles.wordpress.org/mklasen/), [jazzs3quence](https://profiles.wordpress.org/jazzs3quence/), [swb1192](https://profiles.wordpress.org/swb1192)
 **Tags:** pantheon, content, google docs  
 **Requires at least:** 5.7  
-**Tested up to:** 6.8.1  
-**Stable tag:** 1.3.3  
-**Requires PHP:** 8.0.0  
+**Tested up to:** 6.9  
+**Stable tag:** 1.3.4  
+**Requires PHP:** 8.1.0  
 **License:** GPLv2 or later  
 **License URI:** <http://www.gnu.org/licenses/gpl-2.0.html>
 
@@ -106,7 +106,7 @@ Examples: _(read the config files for full configuration)_
 
 Pantheon Content Publisher is dependent on:
 
-- Minimum **PHP** version **8.0**
+- Minimum **PHP** version **8.1**
 - Minimum **WordPress** version **5.7**
 
 ## Bugs and feature requests
