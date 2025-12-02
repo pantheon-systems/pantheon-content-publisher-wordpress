@@ -3,7 +3,7 @@ Contributors: getpantheon, a11rew, anaispantheor, roshnykunjappan, mklasen, jazz
 Tags: pantheon
 Requires at least: 5.7
 Tested up to: 6.9
-Stable tag: 1.3.4
+Stable tag: 1.3.5-dev
 Requires PHP: 8.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -61,6 +61,8 @@ The connection will be established automatically.
 All posts/pages created with Pantheon Content Publisher will remain on your WordPress site. However, you will no longer be able to edit them from Google Docs.
 
 == Changelog ==
+
+= 1.3.5-dev =
 
 = 1.3.4 (1 December 2025) =
 * Compatibility: Supports Wordpress 6.9 [#178](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/178)

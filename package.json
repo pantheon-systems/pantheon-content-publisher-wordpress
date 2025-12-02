@@ -1,6 +1,6 @@
 {
   "name": "pantheon-content-publisher",
-  "version": "1.3.4",
+  "version": "= 1.3.5-dev",
   "description": "Publish WordPress content from Google Docs with Pantheon Content Cloud.",
   "scripts": {
     "dev": "NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --config=node_modules/laravel-mix/setup/webpack.config.js",
