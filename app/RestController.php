@@ -139,10 +139,28 @@ class RestController
 	 */
 	public function handleWebhook(WP_REST_Request $request)
 	{
-		if (get_option(CPUB_WEBHOOK_SECRET_OPTION_KEY) !== $request->get_header('x-pcc-webhook-secret')) {
+		// Timing-safe secret comparison
+		$expected_secret = (string) get_option(PCC_WEBHOOK_SECRET_OPTION_KEY);
+		$provided_secret = (string) $request->get_header('x-pcc-webhook-secret');
+
+		// prevent empty secret or header
+		// 1. Protection against unconfigured secrets
+		if ( '' === $expected_secret ) {
+			return new WP_REST_Response( 'Webhook configuration missing', 500 );
+		}
+
+		// provide the user-supplied string as the second parameter, rather than the first.
+		if (!hash_equals($expected_secret, $provided_secret)) {
+			error_log(
+				sprintf( 'PCC Webhook: Unauthorized attempt from IP %s at %s',
+					$ip,
+					current_time('mysql'))
+			);
 			return new WP_REST_Response(
-				esc_html__('You are not authorized to perform this action', 'pantheon-content-publisher'),
-				401
+				esc_html__(
+					'You are not authorized to perform this action',
+					'pantheon-content-publisher-for-wordpress'),
+					401
 			);
 		}
 
