@@ -1,8 +1,6 @@
 <?php
 // Exit if accessed directly.
-if (!defined('ABSPATH')) {
-	exit;
-}
+if ( ! defined( 'ABSPATH' ) ) exit;
 ?>
 <div class="pcc-content notice pcc-notice is-dismissible">
 	<div class="page-content">

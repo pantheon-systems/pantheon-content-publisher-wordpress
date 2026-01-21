@@ -16,9 +16,7 @@
 namespace Pantheon\ContentPublisher;
 
 // Exit if accessed directly.
-if (!\defined('ABSPATH')) {
-	exit;
-}
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 define('CPUB_PLUGIN_FILE', __FILE__);
 define('CPUB_PLUGIN_DIR', plugin_dir_path(CPUB_PLUGIN_FILE));
