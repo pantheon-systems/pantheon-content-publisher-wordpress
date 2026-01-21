@@ -9,6 +9,8 @@
 
 namespace Pantheon\ContentPublisher\Tests;
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 use Pantheon\ContentPublisher\PccSyncManager;
 use PccPhpSdk\api\Response\Article;
 use WP_UnitTestCase;
