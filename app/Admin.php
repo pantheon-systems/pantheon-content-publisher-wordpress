@@ -90,7 +90,7 @@ class Admin
 
 	private function enqueueProdAssets(string $handle): void
 	{
-		$manifestPath = CPUB_PLUGIN_DIR . 'dist/build/.vite/manifest.json';
+		$manifestPath = CPUB_PLUGIN_DIR . 'assets/dist/build/.vite/manifest.json';
 		if (!file_exists($manifestPath)) {
 			error_log('Manifest file not found');
 			return;
@@ -105,11 +105,11 @@ class Admin
 		$jsFile = $entry['file'] ?? null;
 		$cssFiles = $entry['css'] ?? [];
 		if ($jsFile) {
-			wp_enqueue_script_module($handle, CPUB_PLUGIN_DIR_URL . 'dist/build/' . $jsFile, [], null, true);
+			wp_enqueue_script_module($handle, CPUB_PLUGIN_DIR_URL . 'assets/dist/build/' . $jsFile, [], null, ['in_footer' => true]);
 			$this->addBootstrap();
 		}
 		foreach ($cssFiles as $css) {
-			wp_enqueue_style($handle, CPUB_PLUGIN_DIR_URL . 'dist/build/' . $css, [], null);
+			wp_enqueue_style($handle, CPUB_PLUGIN_DIR_URL . 'assets/dist/build/' . $css, [], null);
 		}
 	}
 

@@ -25,7 +25,7 @@ mix.options({
       child_process: false
     }
   }
-}).js('assets/js/app.js', 'dist').js('assets/js/pcc-front.js', 'dist').postCss('assets/css/app.css', 'dist', [
+}).js('assets/src/js/pcc-front.js', 'assets/dist').postCss('assets/src/css/app.css', 'assets/dist', [
   tailwindcss('./tailwind.config.js'),
   postCssPrefixSelector({
     prefix: '.pcc-content', // Replace with your desired class

@@ -12,7 +12,7 @@ Before opening:
   code to avoid
   common problems
 - Read
-  the [contributing guidelines](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/primary/.github/CONTRIBUTING.md)
+  the [contributing guidelines](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/main/.github/CONTRIBUTING.md)
 
 Bug reports must include:
 

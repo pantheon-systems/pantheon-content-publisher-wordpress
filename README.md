@@ -1,11 +1,11 @@
 # Pantheon Content Publisher for WordPress
 
-**Contributors:** [getpantheon](https://profiles.wordpress.org/getpantheon/) <!-- TODO: Add more contributors. -->   
+**Contributors:** [getpantheon](https://profiles.wordpress.org/getpantheon/), [a11rew](https://profiles.wordpress.org/a11rew), [anaispantheor](https://profiles.wordpress.org/anaispantheor/), [roshnykunjappan](https://profiles.wordpress.org/roshnykunjappan/), [mklasen](https://profiles.wordpress.org/mklasen/), [jazzs3quence](https://profiles.wordpress.org/jazzs3quence/), [swb1192](https://profiles.wordpress.org/swb1192)
 **Tags:** pantheon, content, google docs  
 **Requires at least:** 5.7  
-**Tested up to:** 6.8.1  
-**Stable tag:** 1.3.2  
-**Requires PHP:** 8.0.0  
+**Tested up to:** 6.9  
+**Stable tag:** 1.3.5-dev  
+**Requires PHP:** 8.1.0  
 **License:** GPLv2 or later  
 **License URI:** <http://www.gnu.org/licenses/gpl-2.0.html>
 
@@ -51,7 +51,11 @@
 
 ## Quick start
 
-This is a WordPress plugin. It can be installed via the usual WordPress Dashboard workflow.
+The Pantheon Content Publisher plugin can be installed like any other WordPress Plugin, from your WordPress Dashboard, go to Plugins -> Add Plugin and search for: Pantheon Content Publisher, click the Install Now button and then click Activate. 
+
+After the plugin is active, set up your connection to Pantheon Content Publisher and Google Drive via the settings page in the WordPress admin dashboard.
+
+Alternately you can download and install the plugin manually:
 
 - [Download the latest release.](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/releases/)
 
@@ -74,18 +78,18 @@ below_**
 2. `npm run watch` / `npm run dev` / `npm run prod` to build assets.
 Since version 1.3.0 `npm run build:vite` to build assets and dist/build folder.
 3. Read through
-   our [contributing guidelines](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/primary/.github/CONTRIBUTING.md)
+   our [contributing guidelines](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/main/.github/CONTRIBUTING.md)
    for additional information. Included are directions for opening issues, coding standards and miscellaneous notes.
 
 ## Repository Actions
 
 This repository takes advantage of the following workflows to automate the release & testing processes:
 
-- [PHPCS](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/primary/.github/workflows/php-style-lint.yml)
-- [PHPCompatibility](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/primary/.github/workflows/php-version-compatibility.yml)
+- [PHPCS](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/main/.github/workflows/php-style-lint.yml)
+- [PHPCompatibility](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/main/.github/workflows/php-version-compatibility.yml)
 - [Release Drafter](https://github.com/marketplace/actions/release-drafter)
 - [PR Labeler](https://github.com/marketplace/actions/pr-labeler)
-- [A custom workflow that builds release artifacts](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/primary/.github/workflows/release-artifact.yml)
+- [A custom workflow that builds release artifacts](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/main/.github/workflows/release-artifact.yml)
 
 These workflows will build a release draft and keep it up-to-date as new PRs are merged. Once a release is published, a
 ready-to-install zip file will be generated and attached to the newly-published release.
@@ -102,13 +106,13 @@ Examples: _(read the config files for full configuration)_
 
 Pantheon Content Publisher is dependent on:
 
-- Minimum **PHP** version **8.0**
+- Minimum **PHP** version **8.1**
 - Minimum **WordPress** version **5.7**
 
 ## Bugs and feature requests
 
 Have a bug or a feature request? Please first read
-the [issue guidelines](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/primary/.github/CONTRIBUTING.md#using-the-issue-tracker)
+the [issue guidelines](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/main/.github/CONTRIBUTING.md#using-the-issue-tracker)
 and search for existing and closed issues. If your problem or idea is not addressed
 yet, [please open a new issue](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/issues/new).
 

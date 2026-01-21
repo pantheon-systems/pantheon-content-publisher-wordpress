@@ -52,13 +52,6 @@ class Settings
 	 */
 	private const CPUB_DOCUMENT_EDIT_URL = 'https://docs.google.com/document/d/%s/edit';
 
-	private $pages = [
-		'connected-collection' => CPUB_PLUGIN_DIR . 'admin/templates/partials/connected-collection.php',
-		'create-collection' => CPUB_PLUGIN_DIR . 'admin/templates/partials/create-collection.php',
-		'disconnect-confirmation' => CPUB_PLUGIN_DIR . 'admin/templates/partials/disconnect-confirmation.php',
-		'setup' => CPUB_PLUGIN_DIR . 'admin/templates/partials/setup.php',
-	];
-
 	public function __construct()
 	{
 		$this->addHooks();
@@ -78,6 +71,10 @@ class Settings
 		add_action(
 			'wp_enqueue_scripts',
 			[$this, 'enqueueFrontAssets']
+		);
+		add_action(
+			'admin_enqueue_scripts',
+			[$this, 'enqueueAdminAssets']
 		);
 		add_action('admin_menu', [$this, 'pluginAdminNotice']);
 		add_filter('post_row_actions', [$this, 'addRowActions'], 10, 2);
@@ -635,24 +632,6 @@ class Settings
 	}
 
 	/**
-	 * Register settings page.
-	 *
-	 * @return void
-	 */
-	public function addMenu(): void
-	{
-		add_menu_page(
-			esc_html__('Pantheon Content Publisher', 'pantheon-content-publisher'),
-			esc_html__('Pantheon Content Publisher', 'pantheon-content-publisher'),
-			'manage_options',
-			'pantheon-content-publisher',
-			[$this, 'renderSettingsPage'],
-			$this->pccMenuIcon(),
-			20
-		);
-	}
-
-	/**
 	 * Build menu icon url.
 	 * @return string
 	 */
@@ -662,74 +641,17 @@ class Settings
 	}
 
 	/**
-	 * Render settings page.
-	 *
-	 * @return void
-	 */
-	public function renderSettingsPage(): void
-	{
-
-		$view = sanitize_text_field(filter_input(INPUT_GET, 'view')) ?: '';
-
-		if ($view !== '') {
-			$nonce = sanitize_text_field(wp_unslash(filter_input(INPUT_GET, '_wpnonce')));
-			if (!$nonce || !wp_verify_nonce($nonce, 'pcc_view')) {
-				$view = '';
-			}
-		}
-
-		if ($view && isset($this->pages[$view])) {
-			require $this->pages[$view];
-
-			return;
-		}
-
-		// Site id is set and access token is set
-		if ($this->getSiteId() && $this->getAccessToken()) {
-			require $this->pages['connected-collection'];
-
-			return;
-		}
-		if ($this->getAccessToken()) {
-			require $this->pages['create-collection'];
-
-			return;
-		}
-		require $this->pages['setup'];
-	}
-
-	/**
 	 * Enqueue plugin assets on the WP Admin Dashboard.
 	 *
 	 * @return void
 	 */
 	public function enqueueAdminAssets(): void
 	{
-		wp_enqueue_script(
-			'pantheon-content-publisher',
-			CPUB_PLUGIN_DIR_URL . 'dist/app.js',
-			[],
-			filemtime(CPUB_PLUGIN_DIR . 'dist/app.js'),
-			true
-		);
-
 		wp_enqueue_style(
 			'pantheon-content-publisher',
-			CPUB_PLUGIN_DIR_URL . 'dist/app.css',
+			CPUB_PLUGIN_DIR_URL . 'assets/dist/app.css',
 			[],
-			filemtime(CPUB_PLUGIN_DIR . 'dist/app.css')
-		);
-
-		wp_localize_script(
-			'pantheon-content-publisher',
-			'PCCAdmin',
-			[
-				'rest_url' => get_rest_url(get_current_blog_id(), CPUB_API_NAMESPACE),
-				'nonce' => wp_create_nonce('wp_rest'),
-				'plugin_main_page' => menu_page_url('pantheon-content-publisher', false),
-				'site_url' => site_url(),
-				'view_nonce' => wp_create_nonce('pcc_view'),
-			]
+			filemtime(CPUB_PLUGIN_DIR . 'assets/dist/app.css')
 		);
 	}
 
@@ -749,9 +671,9 @@ class Settings
 
 		wp_enqueue_script(
 			'pantheon-content-publisher',
-			CPUB_PLUGIN_DIR_URL . 'dist/pcc-front.js',
+			CPUB_PLUGIN_DIR_URL . 'assets/dist/pcc-front.js',
 			[],
-			filemtime(CPUB_PLUGIN_DIR . 'dist/pcc-front.js'),
+			filemtime(CPUB_PLUGIN_DIR . 'assets/dist/pcc-front.js'),
 			true
 		);
 

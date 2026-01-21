@@ -22,7 +22,7 @@
     }
   },
   "require": {
-    "php": ">=8",
+    "php": ">=8.1",
     "pantheon-systems/pcc-php-sdk": "1.1.1"
   },
   "require-dev": {
@@ -42,7 +42,7 @@
   "scripts": {
     "php:lint:autofix": "vendor/bin/phpcbf --ignore=*/vendor/ --standard=./phpcs.xml ",
     "php:lint:report": "vendor/bin/phpcs --ignore=*/vendor/ --standard=./phpcs.xml; phpcs --ignore=*/vendor/ --standard=./phpcs.xml --extensions=php --report=source",
-    "php-compatibility": "vendor/bin/phpcs -ps * --ignore=*/vendor/ --extensions=php --standard=PHPCompatibility --runtime-set testVersion 8.0-",
+    "php-compatibility": "vendor/bin/phpcs -ps * --ignore=*/vendor/ --extensions=php --standard=PHPCompatibility --runtime-set testVersion 8.1-",
     "phpunit": "phpunit --do-not-cache-result",
     "test": "@phpunit",
     "test:install": "bin/install-local-tests.sh --skip-db=true",
