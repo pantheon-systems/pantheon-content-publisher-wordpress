@@ -7,6 +7,8 @@
 
 namespace Pantheon\ContentPublisher;
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * The main class
  */

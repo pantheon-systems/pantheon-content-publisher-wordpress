@@ -2,6 +2,8 @@
 
 namespace Pantheon\ContentPublisher;
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 use WP_Error;
 use WP_HTTP_Requests_Response;
 
