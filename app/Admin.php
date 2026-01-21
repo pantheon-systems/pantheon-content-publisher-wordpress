@@ -119,7 +119,7 @@ class Admin
 		$jsFile = $entry['file'] ?? null;
 		$cssFiles = $entry['css'] ?? [];
 		if ($jsFile) {
-			wp_enqueue_script_module($handle, CPUB_PLUGIN_DIR_URL . 'assets/dist/build/' . $jsFile, [], null, true);
+			wp_enqueue_script_module($handle, CPUB_PLUGIN_DIR_URL . 'assets/dist/build/' . $jsFile, [], null, ['in_footer' => true]);
 			$this->addBootstrap();
 		}
 		foreach ($cssFiles as $css) {
