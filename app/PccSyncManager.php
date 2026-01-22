@@ -2,7 +2,9 @@
 
 namespace Pantheon\ContentPublisher;
 
-if ( ! defined( 'ABSPATH' ) ) exit;
+if (!defined('ABSPATH')) {
+	exit;
+}
 
 use PccPhpSdk\api\ArticlesApi;
 use PccPhpSdk\api\Query\Enums\ContentType;

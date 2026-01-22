@@ -6,7 +6,9 @@
 
 namespace Pantheon\ContentPublisher;
 
-if ( ! defined( 'ABSPATH' ) ) exit;
+if (!defined('ABSPATH')) {
+	exit;
+}
 
 use WP_REST_Request;
 use WP_REST_Response;
@@ -528,7 +530,10 @@ class RestController
 				error_log('PCC connectCollection GraphQL error: ' . $errorMessage);
 				return new WP_REST_Response(
 					/* translators: %s: Error message from the Content Publisher API */
-					sprintf(esc_html__('Failed to connect collection: %s', 'pantheon-content-publisher'), $errorMessage),
+					sprintf(
+					esc_html__('Failed to connect collection: %s', 'pantheon-content-publisher'),
+					$errorMessage
+				),
 					400
 				);
 			}
