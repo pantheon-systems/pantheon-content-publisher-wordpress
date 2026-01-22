@@ -380,9 +380,7 @@ class Settings
 						);
 					} catch (Exception $ex) {
 						wp_die(esc_html__(
-							// translators: Error message when preview link has expired
-						'Content Publisher: Failed to preview this document. Your preview link may have expired. ' .
-						'Try previewing this document again from Content Publisher.',
+							'Content Publisher: Failed to preview this document. Your preview link may have expired. Try previewing this document again from Content Publisher.',
 							'pantheon-content-publisher'
 						));
 						$postId = 0;
@@ -391,9 +389,7 @@ class Settings
 
 				if (empty($postId) || !is_numeric($postId) || $postId <= 0) {
 					wp_die(esc_html__(
-						// translators: Error message when document cannot be previewed
-					'Content Publisher: Failed to preview this document. Confirm that this document is ' .
-					'connected to your collection. Reach out to support if the issue persists.',
+						'Content Publisher: Failed to preview this document. Confirm that this document is connected to your collection. Reach out to support if the issue persists.',
 						'pantheon-content-publisher'
 					));
 					exit;
@@ -452,7 +448,7 @@ class Settings
 		if (static::CPUB_STATUS_ENDPOINT === $wp->request) {
 			$url = rest_url(CPUB_API_NAMESPACE . '/' . static::CPUB_STATUS_ENDPOINT);
 
-			return wp_redirect($url);
+			return wp_safe_redirect($url);
 		}
 	}
 

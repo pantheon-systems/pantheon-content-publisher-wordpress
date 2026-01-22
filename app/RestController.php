@@ -528,12 +528,12 @@ class RestController
 			if (isset($parsedResponse['errors']) && !empty($parsedResponse['errors'])) {
 				$errorMessage = $parsedResponse['errors'][0]['message'] ?? 'Unknown error';
 				error_log('PCC connectCollection GraphQL error: ' . $errorMessage);
+				// translators: %s: Error message from the Content Publisher API
 				return new WP_REST_Response(
-					/* translators: %s: Error message from the Content Publisher API */
-					sprintf(
-					esc_html__('Failed to connect collection: %s', 'pantheon-content-publisher'),
-					$errorMessage
-				),
+						sprintf(
+						esc_html__('Failed to connect collection: %s', 'pantheon-content-publisher'),
+						$errorMessage
+					),
 					400
 				);
 			}
