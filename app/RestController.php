@@ -530,10 +530,10 @@ class RestController
 				error_log('PCC connectCollection GraphQL error: ' . $errorMessage);
 				// translators: %s: Error message from the Content Publisher API
 				return new WP_REST_Response(
-						sprintf(
-						esc_html__('Failed to connect collection: %s', 'pantheon-content-publisher'),
-						$errorMessage
-					),
+					sprintf(
+							esc_html__('Failed to connect collection: %s', 'pantheon-content-publisher'),
+							$errorMessage
+						),
 					400
 				);
 			}
