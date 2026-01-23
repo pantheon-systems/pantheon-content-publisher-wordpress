@@ -530,13 +530,14 @@ class RestController
 				error_log('PCC connectCollection GraphQL error: ' . $errorMessage);
 				// translators: %s: Error message from the Content Publisher API
 				return new WP_REST_Response(
-					sprintf(
-							esc_html__('Failed to connect collection: %s', 'pantheon-content-publisher'),
+					esc_html(
+						sprintf(
+							__( 'Failed to connect collection: %s', 'pantheon-content-publisher' ),
 							$errorMessage
-						),
+						)
+					),
 					400
 				);
-			}
 
 			// Check if site data exists
 			$site = $parsedResponse['data']['site'] ?? null;
