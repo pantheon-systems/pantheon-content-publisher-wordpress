@@ -406,7 +406,7 @@ class Settings
 						esc_html__(
 							'Content Publisher: Failed to preview this document. Confirm that this document is connected to your collection. Reach out to support if the issue persists.',
 							'pantheon-content-publisher'
-						) 
+						)
 					);
 					exit;
 				}

@@ -549,8 +549,8 @@ class RestController
 				return new WP_REST_Response(
 					sprintf(
 						// translators: %s: Error message from the Content Publisher API
-						esc_html__( 'Failed to connect collection: %s', 'pantheon-content-publisher' ),
-						esc_html( $errorMessage )
+						esc_html__('Failed to connect collection: %s', 'pantheon-content-publisher'),
+						esc_html($errorMessage)
 					),
 					400
 				);
