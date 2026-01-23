@@ -2,6 +2,10 @@
 
 namespace Pantheon\ContentPublisher\Migrations;
 
+if (!defined('ABSPATH')) {
+	exit;
+}
+
 class Upgrade_131
 {
 	/**

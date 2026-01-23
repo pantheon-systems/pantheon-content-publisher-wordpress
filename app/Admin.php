@@ -2,6 +2,10 @@
 
 namespace Pantheon\ContentPublisher;
 
+if (!defined('ABSPATH')) {
+	exit;
+}
+
 use function add_action;
 use function add_menu_page;
 use function file_exists;

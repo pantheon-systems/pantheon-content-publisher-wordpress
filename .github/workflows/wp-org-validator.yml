@@ -1,0 +1,50 @@
+name: WordPress.org Plugin Check
+on: # rebuild any PRs and main branch changes
+  pull_request:
+  push:
+    branches:
+    - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate Plugin
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+    - name: Setup PHP 8.4
+      uses: shivammathur/setup-php@20529878ed81ef8e78ddf08b480401e6101a850f # v2.35.3
+      with:
+        php-version: "8.4"
+        extensions: mysqli
+        tools: composer,wp-cli
+
+    - name: Cache Composer dependencies
+      uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
+      with:
+        path: |
+            ~/.composer/cache
+            vendor
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+            ${{ runner.os }}-composer-
+
+    - name: Install dependencies
+      run: |
+        composer install --no-dev --no-interaction --no-progress --prefer-dist --no-scripts --no-ansi
+        npm ci
+        npm run build
+
+    - name: Create Dist Archive for wp.org validation
+      run: |
+        wp package install wp-cli/dist-archive-command
+        wp dist-archive . --plugin-dirname=pantheon-content-publisher --filename-format=pantheon-content-publisher-dist
+        unzip ../pantheon-content-publisher-dist.zip
+
+    - name: Run plugin check
+      uses: wordpress/plugin-check-action@6f5a57e173c065a394b78688f75df543e4011902 # 1.1.5
+      with:
+        build-dir: pantheon-content-publisher

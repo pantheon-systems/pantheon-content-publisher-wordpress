@@ -6,6 +6,10 @@
 
 namespace Pantheon\ContentPublisher;
 
+if (!defined('ABSPATH')) {
+	exit;
+}
+
 use WP_REST_Request;
 use WP_REST_Response;
 use PccPhpSdk\api\Query\Enums\PublishingLevel;
@@ -537,7 +541,11 @@ class RestController
 				$errorMessage = $parsedResponse['errors'][0]['message'] ?? 'Unknown error';
 				error_log('PCC connectCollection GraphQL error: ' . $errorMessage);
 				return new WP_REST_Response(
-					esc_html__('Failed to connect collection: ' . $errorMessage, 'pantheon-content-publisher'),
+					sprintf(
+						// translators: %s: Error message from the Content Publisher API
+						esc_html__( 'Failed to connect collection: %s', 'pantheon-content-publisher' ),
+						esc_html( $errorMessage )
+					),
 					400
 				);
 			}
