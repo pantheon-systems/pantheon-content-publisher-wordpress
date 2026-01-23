@@ -550,6 +550,7 @@ class RestController
 					),
 					400
 				);
+			}
 
 			// Check if site data exists
 			$site = $parsedResponse['data']['site'] ?? null;
