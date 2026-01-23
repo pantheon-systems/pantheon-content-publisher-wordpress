@@ -31,7 +31,8 @@
     "pantheon-systems/wpunit-helpers": "^2.0",
     "phpunit/phpunit": "^9.6",
     "yoast/phpunit-polyfills": "^3.1",
-    "php-stubs/wordpress-tests-stubs": "^6.8"
+    "php-stubs/wordpress-tests-stubs": "^6.8",
+    "pantheon-systems/pantheon-wp-coding-standards": "^3.0"
   },
   "repositories": [
     {
