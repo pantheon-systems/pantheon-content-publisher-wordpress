@@ -31,7 +31,8 @@
     "pantheon-systems/wpunit-helpers": "^2.0",
     "phpunit/phpunit": "^9.6",
     "yoast/phpunit-polyfills": "^3.1",
-    "php-stubs/wordpress-tests-stubs": "^6.8"
+    "php-stubs/wordpress-tests-stubs": "^6.8",
+    "pantheon-systems/pantheon-wp-coding-standards": "^3.0"
   },
   "repositories": [
     {
@@ -41,7 +42,7 @@
   ],
   "scripts": {
     "php:lint:autofix": "vendor/bin/phpcbf --ignore=*/vendor/ --standard=./phpcs.xml ",
-    "php:lint:report": "vendor/bin/phpcs -n --ignore=*/vendor/ --standard=./phpcs.xml; phpcs -n --ignore=*/vendor/ --standard=./phpcs.xml --extensions=php --report=source",
+    "php:lint:report": "vendor/bin/phpcs --runtime-set ignore_warnings_on_exit 1 --ignore=*/vendor/ --standard=./phpcs.xml; phpcs --runtime-set ignore_warnings_on_exit 1 --ignore=*/vendor/ --standard=./phpcs.xml --extensions=php --report=source",
     "php-compatibility": "vendor/bin/phpcs -ps * --ignore=*/vendor/ --extensions=php --standard=PHPCompatibility --runtime-set testVersion 8.1-",
     "phpunit": "phpunit --do-not-cache-result",
     "test": "@phpunit",
