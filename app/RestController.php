@@ -153,7 +153,7 @@ class RestController
 		if (!hash_equals($expected_secret, $provided_secret)) {
 			error_log('PCC Webhook: Unauthorized attempt at ' . current_time('mysql'));
 			return new WP_REST_Response(
-				esc_html__( 'You are not authorized to perform this action', 'pantheon-content-publisher' ),
+				esc_html__('You are not authorized to perform this action', 'pantheon-content-publisher'),
 				401
 			);
 		}
