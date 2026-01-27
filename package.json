@@ -36,17 +36,17 @@
     "tailwindcss": "^3.4.4",
     "tls": "^0.0.1",
     "typescript": "^5.9.2",
-    "vite": "^7.1.4"
+    "vite": "^7.3.1"
   },
   "dependencies": {
     "@pantheon-systems/pcc-sdk-core": "3.11.3",
     "@pantheon-systems/pds-toolkit-react": "^1.0.0-dev.273",
     "@tanstack/react-query": "^5.87.1",
-    "axios": "^1.7.2",
+    "axios": "^1.12.0",
     "google-auth-library": "^9.10.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.62.0",
-    "react-router": "^7.8.2"
+    "react-router": "^7.13.0"
   }
 }
