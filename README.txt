@@ -27,9 +27,52 @@ For more information, please check [Pantheon Content Publisher documentation](ht
 
 == Installation ==
 
-The Pantheon Content Publisher plugin can be installed like any other WordPress Plugin, from your WordPress Dashboard, go to Plugins -> Add Plugin and search for: Pantheon Content Publisher, click the Install Now button and then click Activate. 
+== Installing the Pantheon Content Publisher plugin to your WordPress site ==
 
-After the plugin is active, set up your connection to Pantheon Content Publisher and Google Drive via the settings page in the WordPress admin dashboard.
+The Pantheon Content Publisher plugin can be installed like any other WordPress Plugin, from your WordPress Dashboard, go to Plugins -> Add Plugin and search for: Pantheon Content Publisher, click the **Install Now** button and then click **Activate**.
+
+== Connecting your WordPress site to a Content Publisher collection ==
+
+After the plugin is active, go to the ‘Pantheon Content Publisher’ tab in the WordPress admin sidebar to configure the plugin. 
+
+On the ‘Pantheon Content Publisher’ page, click on ‘Generate management token in Content Publisher.' This will prompt you to login or create a Content Publisher account in a new tab. Once you’ve logged in, you can:
+
+= Connect to a new collection: =
+
+1. In the [Content Publisher dashboard](https://content.pantheon.io/dashboard) and click on **Tokens** in the sidebar.
+2. In the Tokens page, click on the **Create access token** button in the upper right hand corner.
+3. In the pop-up, select the collection in the dropdown that you would like to connect your WordPress plugin to.
+4. Enter a **Key name** and **Description** (optional) and click **Create token**.
+5. In the *New token created* pop-up, copy the token (this is important!). 
+6. Go back to the WordPress admin dashboard in the *Pantheon Content Publisher* page and paste the token in the **Management token** field.
+7. Click **Connect**.
+
+= Connect to an existing collection: =
+
+1. In the [Content Publisher dashboard](https://content.pantheon.io/dashboard), click on the collection you want to connect your WordPress plugin to.
+2. Copy the **Collection ID**.
+3. Go back to the Go back to the WordPress admin dashboard in the *Pantheon Content Publisher* page and paste the collection ID in the **Enter your Collection ID** field.
+4. Go back to the [Content Publisher dashboard](https://content.pantheon.io/dashboard) and click on **Tokens** in the sidebar.
+5. In the *Tokens* page, click on the **Create access token** button in the upper right hand corner.
+6. In the pop-up, select the collection in the dropdown that you would like to connect your WordPress plugin to.
+7. Enter a **Key name** and **Description** (optional) and click **Create token**.
+8. In the *New token created* pop-up, copy the token (this is important!). 
+9. Go back to the WordPress admin dashboard in the **Pantheon Content Publisher** page and paste the token in the **Enter access token** field.
+10. Click **Continue**.
+
+== Connecting your Content Publisher account to a Google account ==
+
+Once your WordPress site is connected to your Content Publisher account, it’s time to [install Content Publisher](https://workspace.google.com/marketplace/app/content_publisher/432998952749) on your Google account. 
+
+*Note: Make sure your Google account is the same account used for your Content Publisher account.*
+
+== Publishing a document from a Google doc to your Wordpress website ==
+
+Back in the WordPress Getting Started Tutorial, visit the [Publish a new post in WordPress from Google Docs](https://docs.content.pantheon.io/wordpress-tutorial#h.vw3ugar60c4b) for instructions.
+
+– 
+
+For more details, view the full [Content Publisher documentation](https://docs.content.pantheon.io/).
 
 == Integration with Third-Party Services ==
 
