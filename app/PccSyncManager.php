@@ -604,6 +604,7 @@ class PccSyncManager
 	 *
 	 * @param array $sizes Array of thumbnail sizes
 	 * @return array Empty array
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
 	public function skipThumbnailGeneration($_sizes)
 	{
@@ -616,6 +617,7 @@ class PccSyncManager
 	 *
 	 * @param int $threshold The pixel threshold
 	 * @return bool False to disable scaling
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
 	public function skipImageScaling($_threshold)
 	{
@@ -629,6 +631,7 @@ class PccSyncManager
 	 * @param array $metadata Attachment metadata
 	 * @param int $attachment_id Attachment ID
 	 * @return array Minimal metadata to prevent processing
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
 	public function skipMetadataGeneration($metadata, $_attachment_id)
 	{
