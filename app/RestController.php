@@ -144,7 +144,7 @@ class RestController
 	public function handleWebhook(WP_REST_Request $request)
 	{
 		// Timing-safe secret comparison
-		$expected_secret = (string) get_option(PCC_WEBHOOK_SECRET_OPTION_KEY);
+		$expected_secret = (string) get_option(CPUB_WEBHOOK_SECRET_OPTION_KEY);
 		$provided_secret = (string) $request->get_header('x-pcc-webhook-secret');
 
 		// prevent empty secret or header
