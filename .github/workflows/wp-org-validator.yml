@@ -20,7 +20,10 @@ jobs:
       with:
         php-version: "8.4"
         extensions: mysqli
-        tools: composer,wp-cli:latest
+        tools: composer
+
+    - name: Setup WP-CLI
+      uses: godaddy-wordpress/setup-wp-cli@1
 
     - name: Cache Composer dependencies
       uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7 # v5.0.2
