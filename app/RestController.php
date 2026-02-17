@@ -147,6 +147,9 @@ class RestController
 		$expected_secret = (string) get_option(CPUB_WEBHOOK_SECRET_OPTION_KEY);
 		$provided_secret = (string) $request->get_header('x-pcc-webhook-secret');
 
+		// TODO: Temporarily disabled - webhook secrets not yet implemented in PCC
+		// See PR description for roadmap and migration plan
+		/*
 		// prevent empty secret or header
 		// Protection against unconfigured secrets
 		if ('' === $expected_secret) {
@@ -161,6 +164,7 @@ class RestController
 				401
 			);
 		}
+		*/
 
 		$event = $request->get_param('event');
 		$payload = $request->get_param('payload');
