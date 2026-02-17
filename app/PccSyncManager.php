@@ -643,29 +643,17 @@ class PccSyncManager
 	}
 
 	/**
-	 * Trigger asynchronous thumbnail generation for an image via non-blocking HTTP request.
-	 * This fires a separate request to our REST endpoint that handles thumbnail generation
-	 * in a separate PHP process, allowing the current request to complete immediately.
+	 * Schedule asynchronous thumbnail generation for an image using WP-Cron.
+	 * The full-size image is available immediately; thumbnails will be generated
+	 * within a few minutes via WordPress's cron system.
 	 *
 	 * @param int $imageId The attachment ID to generate thumbnails for
 	 */
 	private function scheduleAsyncThumbnailGeneration($imageId)
 	{
-		$rest_url = rest_url(CPUB_API_NAMESPACE . '/generate-thumbnails');
-
-		// Make a non-blocking HTTP request to trigger thumbnail generation
-		// This spawns a separate PHP process that handles the work
-		$response = wp_remote_post($rest_url, [
-			'body' => ['image_id' => $imageId],
-			'timeout' => 0.01, // Don't wait for response
-			'blocking' => false, // Fire and forget - don't wait for completion
-			'sslverify' => false, // Allow self-signed certs in dev environments
-		]);
-
-		if (is_wp_error($response)) {
-			$error_msg = 'Pantheon Content Publisher: Non-blocking thumbnail request failed - ';
-			error_log($error_msg . $response->get_error_message());
-		}
+		// Schedule thumbnail generation to run in 1 minute
+		// WP-Cron will process this on the next page load after the scheduled time
+		wp_schedule_single_event(time() + 60, 'cpub_generate_thumbnails', [$imageId]);
 	}
 
 	/**

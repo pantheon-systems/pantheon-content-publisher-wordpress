@@ -99,11 +99,6 @@ class RestController
 				'method' => 'GET',
 				'callback' => [$this, 'pantheonCloudStatusCheck'],
 			],
-			[
-				'route' => '/generate-thumbnails',
-				'method' => 'POST',
-				'callback' => [$this, 'generateThumbnails'],
-			],
 		];
 
 		foreach ($endpoints as $endpoint) {
@@ -611,35 +606,5 @@ class RestController
 	{
 		$headers = get_file_data(CPUB_PLUGIN_FILE, ['Version' => 'Version']);
 		return isset($headers['Version']) ? (string) $headers['Version'] : '';
-	}
-
-	/**
-	 * REST endpoint to generate thumbnails asynchronously.
-	 * This is called via non-blocking HTTP request after image upload.
-	 *
-	 * @param WP_REST_Request $request
-	 * @return WP_REST_Response
-	 * @SuppressWarnings(PHPMD.StaticAccess)
-	 */
-	public function generateThumbnails(WP_REST_Request $request): WP_REST_Response
-	{
-		$imageId = $request->get_param('image_id');
-
-		if (!$imageId || !is_numeric($imageId)) {
-			return new WP_REST_Response([
-				'success' => false,
-				'error' => 'Invalid image_id parameter'
-			], 400);
-		}
-
-		// Generate thumbnails synchronously in this separate request
-		// This runs in a separate PHP process, so the original request is already complete
-		// Static call is intentional - method doesn't require instance state
-		PccSyncManager::generateThumbnailsAsync((int) $imageId);
-
-		return new WP_REST_Response([
-			'success' => true,
-			'image_id' => (int) $imageId
-		]);
 	}
 }
