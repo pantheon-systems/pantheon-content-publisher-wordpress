@@ -278,7 +278,8 @@ class PccSyncManager
 
 			// Check if image download returned an error
 			if (is_wp_error($imageId)) {
-				error_log('Pantheon Content Publisher: Failed to download featured image - ' . $imageId->get_error_message());
+				$error_msg = 'Pantheon Content Publisher: Failed to download featured image - ';
+			error_log($error_msg . $imageId->get_error_message());
 				// Mark post as having a failed featured image for admin attention
 				update_post_meta($postId, '_pcc_featured_image_failed', [
 					'url' => $featuredImageURL,
@@ -604,7 +605,7 @@ class PccSyncManager
 	 * @param array $sizes Array of thumbnail sizes
 	 * @return array Empty array
 	 */
-	public function skipThumbnailGeneration($sizes)
+	public function skipThumbnailGeneration($_sizes)
 	{
 		return [];
 	}
@@ -616,7 +617,7 @@ class PccSyncManager
 	 * @param int $threshold The pixel threshold
 	 * @return bool False to disable scaling
 	 */
-	public function skipImageScaling($threshold)
+	public function skipImageScaling($_threshold)
 	{
 		return false;
 	}
@@ -629,7 +630,7 @@ class PccSyncManager
 	 * @param int $attachment_id Attachment ID
 	 * @return array Minimal metadata to prevent processing
 	 */
-	public function skipMetadataGeneration($metadata, $attachment_id)
+	public function skipMetadataGeneration($metadata, $_attachment_id)
 	{
 		// Return minimal metadata to prevent any image processing
 		// Full metadata will be generated async later
@@ -662,7 +663,8 @@ class PccSyncManager
 		]);
 
 		if (is_wp_error($response)) {
-			error_log('Pantheon Content Publisher: Non-blocking thumbnail request failed - ' . $response->get_error_message());
+			$error_msg = 'Pantheon Content Publisher: Non-blocking thumbnail request failed - ';
+			error_log($error_msg . $response->get_error_message());
 		}
 	}
 
@@ -678,7 +680,8 @@ class PccSyncManager
 
 		$file_path = get_attached_file($imageId);
 		if (!$file_path || !file_exists($file_path)) {
-			error_log('Pantheon Content Publisher: File not found for async thumbnail generation, image ID: ' . $imageId);
+			$error_msg = 'Pantheon Content Publisher: File not found for async thumbnail generation, ';
+			error_log($error_msg . 'image ID: ' . $imageId);
 			return;
 		}
 
@@ -686,7 +689,8 @@ class PccSyncManager
 		$metadata = wp_generate_attachment_metadata($imageId, $file_path);
 
 		if (is_wp_error($metadata)) {
-			error_log('Pantheon Content Publisher: Thumbnail generation failed for image ' . $imageId . ' - ' . $metadata->get_error_message());
+			$error_msg = 'Pantheon Content Publisher: Thumbnail generation failed for image ';
+			error_log($error_msg . $imageId . ' - ' . $metadata->get_error_message());
 			return;
 		}
 

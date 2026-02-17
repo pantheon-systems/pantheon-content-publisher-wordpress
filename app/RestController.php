@@ -619,6 +619,7 @@ class RestController
 	 *
 	 * @param WP_REST_Request $request
 	 * @return WP_REST_Response
+	 * @SuppressWarnings(PHPMD.StaticAccess)
 	 */
 	public function generateThumbnails(WP_REST_Request $request): WP_REST_Response
 	{
@@ -633,6 +634,7 @@ class RestController
 
 		// Generate thumbnails synchronously in this separate request
 		// This runs in a separate PHP process, so the original request is already complete
+		// Static call is intentional - method doesn't require instance state
 		PccSyncManager::generateThumbnailsAsync((int) $imageId);
 
 		return new WP_REST_Response([
