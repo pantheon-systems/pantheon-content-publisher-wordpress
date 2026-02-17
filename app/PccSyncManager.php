@@ -256,19 +256,47 @@ class PccSyncManager
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 			require_once ABSPATH . 'wp-admin/includes/image.php';
 			if (!function_exists('media_sideload_image')) {
-				error_log('media_sideload_image does not exist after includes, returning');
-				// has to fail silently
+				error_log('Pantheon Content Publisher: media_sideload_image does not exist after includes');
 				return;
 			}
 		}
 
-		// Download and attach the new image.
-		$imageId = media_sideload_image($featuredImageURL, $postId, null, 'id');
+		// Skip ALL image processing during upload to prevent PHP-FPM timeout
+		// Thumbnails will be generated asynchronously after upload completes
+		add_filter('intermediate_image_sizes_advanced', [$this, 'skipThumbnailGeneration']);
+		add_filter('big_image_size_threshold', [$this, 'skipImageScaling']);
+		add_filter('wp_generate_attachment_metadata', [$this, 'skipMetadataGeneration'], 10, 2);
 
-		if (is_int($imageId)) {
-			update_post_meta($imageId, 'cpub_feature_image_url', $featuredImageURL);
-			// Set as the featured image.
-			set_post_thumbnail($postId, $imageId);
+		try {
+			// Download and attach the new image (without thumbnail generation)
+			$imageId = media_sideload_image($featuredImageURL, $postId, null, 'id');
+
+			// Re-enable image processing for other uploads
+			remove_filter('intermediate_image_sizes_advanced', [$this, 'skipThumbnailGeneration']);
+			remove_filter('big_image_size_threshold', [$this, 'skipImageScaling']);
+			remove_filter('wp_generate_attachment_metadata', [$this, 'skipMetadataGeneration'], 10);
+
+			// Check if image download returned an error
+			if (is_wp_error($imageId)) {
+				error_log('Pantheon Content Publisher: Failed to download featured image - ' . $imageId->get_error_message());
+				// Mark post as having a failed featured image for admin attention
+				update_post_meta($postId, '_pcc_featured_image_failed', [
+					'url' => $featuredImageURL,
+					'error' => $imageId->get_error_message(),
+					'timestamp' => current_time('mysql')
+				]);
+				return;
+			}
+
+			if (is_int($imageId)) {
+				update_post_meta($imageId, 'cpub_feature_image_url', $featuredImageURL);
+				// Set as the featured image - thumbnails were skipped, so this is fast
+				set_post_thumbnail($postId, $imageId);
+				// Trigger async thumbnail generation via non-blocking HTTP request
+				$this->scheduleAsyncThumbnailGeneration($imageId);
+			}
+		} catch (\Exception $e) {
+			error_log('Pantheon Content Publisher: Exception processing featured image - ' . $e->getMessage());
 		}
 	}
 
@@ -567,5 +595,102 @@ class PccSyncManager
 		}
 
 		return $site;
+	}
+
+	/**
+	 * Skip thumbnail generation during image upload to prevent timeout.
+	 * Returns empty array to prevent WordPress from creating any thumbnail sizes.
+	 *
+	 * @param array $sizes Array of thumbnail sizes
+	 * @return array Empty array
+	 */
+	public function skipThumbnailGeneration($sizes)
+	{
+		return [];
+	}
+
+	/**
+	 * Prevent WordPress from creating a "scaled" version of large images.
+	 * The scaled version is created when images exceed the threshold (default 2560px).
+	 *
+	 * @param int $threshold The pixel threshold
+	 * @return bool False to disable scaling
+	 */
+	public function skipImageScaling($threshold)
+	{
+		return false;
+	}
+
+	/**
+	 * Skip metadata generation during image upload.
+	 * Returns minimal metadata to prevent thumbnail generation from happening.
+	 *
+	 * @param array $metadata Attachment metadata
+	 * @param int $attachment_id Attachment ID
+	 * @return array Minimal metadata to prevent processing
+	 */
+	public function skipMetadataGeneration($metadata, $attachment_id)
+	{
+		// Return minimal metadata to prevent any image processing
+		// Full metadata will be generated async later
+		return [
+			'file' => isset($metadata['file']) ? $metadata['file'] : '',
+			'width' => isset($metadata['width']) ? $metadata['width'] : 0,
+			'height' => isset($metadata['height']) ? $metadata['height'] : 0,
+			'filesize' => isset($metadata['filesize']) ? $metadata['filesize'] : 0,
+		];
+	}
+
+	/**
+	 * Trigger asynchronous thumbnail generation for an image via non-blocking HTTP request.
+	 * This fires a separate request to our REST endpoint that handles thumbnail generation
+	 * in a separate PHP process, allowing the current request to complete immediately.
+	 *
+	 * @param int $imageId The attachment ID to generate thumbnails for
+	 */
+	private function scheduleAsyncThumbnailGeneration($imageId)
+	{
+		$rest_url = rest_url(CPUB_API_NAMESPACE . '/generate-thumbnails');
+
+		// Make a non-blocking HTTP request to trigger thumbnail generation
+		// This spawns a separate PHP process that handles the work
+		$response = wp_remote_post($rest_url, [
+			'body' => ['image_id' => $imageId],
+			'timeout' => 0.01, // Don't wait for response
+			'blocking' => false, // Fire and forget - don't wait for completion
+			'sslverify' => false, // Allow self-signed certs in dev environments
+		]);
+
+		if (is_wp_error($response)) {
+			error_log('Pantheon Content Publisher: Non-blocking thumbnail request failed - ' . $response->get_error_message());
+		}
+	}
+
+	/**
+	 * Generate thumbnails for an image asynchronously.
+	 * This is called by the REST endpoint in a separate PHP process.
+	 *
+	 * @param int $imageId The attachment ID to generate thumbnails for
+	 */
+	public static function generateThumbnailsAsync($imageId)
+	{
+		require_once ABSPATH . 'wp-admin/includes/image.php';
+
+		$file_path = get_attached_file($imageId);
+		if (!$file_path || !file_exists($file_path)) {
+			error_log('Pantheon Content Publisher: File not found for async thumbnail generation, image ID: ' . $imageId);
+			return;
+		}
+
+		// Generate all thumbnail sizes
+		$metadata = wp_generate_attachment_metadata($imageId, $file_path);
+
+		if (is_wp_error($metadata)) {
+			error_log('Pantheon Content Publisher: Thumbnail generation failed for image ' . $imageId . ' - ' . $metadata->get_error_message());
+			return;
+		}
+
+		// Update attachment metadata with new thumbnail info
+		wp_update_attachment_metadata($imageId, $metadata);
 	}
 }
