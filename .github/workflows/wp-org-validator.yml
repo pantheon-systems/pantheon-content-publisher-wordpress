@@ -20,10 +20,7 @@ jobs:
       with:
         php-version: "8.4"
         extensions: mysqli
-        tools: composer
-
-    - name: Setup WP-CLI
-      uses: godaddy-wordpress/setup-wp-cli@1
+        tools: composer,wp-cli
 
     - name: Cache Composer dependencies
       uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7 # v5.0.2
@@ -43,7 +40,7 @@ jobs:
 
     - name: Create Dist Archive for wp.org validation
       run: |
-        wp package install wp-cli/dist-archive-command
+        wp package install wp-cli/dist-archive-command:@stable
         wp dist-archive . --plugin-dirname=pantheon-content-publisher --filename-format=pantheon-content-publisher-dist
         unzip ../pantheon-content-publisher-dist.zip
 
