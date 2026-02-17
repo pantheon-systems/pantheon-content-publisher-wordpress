@@ -20,7 +20,14 @@ jobs:
       with:
         php-version: "8.4"
         extensions: mysqli
-        tools: composer,wp-cli
+        tools: composer
+
+    - name: Install WP-CLI (latest stable)
+      run: |
+        curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+        chmod +x wp-cli.phar
+        sudo mv wp-cli.phar /usr/local/bin/wp
+        wp --info
 
     - name: Cache Composer dependencies
       uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7 # v5.0.2
