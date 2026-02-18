@@ -150,7 +150,7 @@ class PccSyncManager
 			'post_excerpt' => $preparedData['post_excerpt'],
 			'post_status' => $isDraft ? 'draft' : 'publish',
 			'post_name' => $article->slug,
-			'post_type' => $this->getIntegrationPostType(),
+			'post_type' => $this->getIntegrationPostType($article),
 		];
 
 		if (!$postId) {
@@ -348,11 +348,33 @@ class PccSyncManager
 	/**
 	 * Get selected integration post type.
 	 *
-	 * @return false|mixed|null
+	 * If the configured post type is 'author_choice', reads the 'wp-post-type'
+	 * metadata field from the article. Falls back to 'post' if:
+	 * - No article is provided
+	 * - The metadata field is missing
+	 * - The specified post type doesn't exist or isn't public
+	 *
+	 * @param Article|null $article The article to get the post type from (for author_choice mode)
+	 * @return string The post type to use
 	 */
-	private function getIntegrationPostType()
+	private function getIntegrationPostType(?Article $article = null): string
 	{
-		return get_option(CPUB_INTEGRATION_POST_TYPE_OPTION_KEY);
+		$configuredType = get_option(CPUB_INTEGRATION_POST_TYPE_OPTION_KEY, 'post');
+
+		if ($configuredType !== 'author_choice') {
+			return PostTypes::validated($configuredType);
+		}
+
+		if (!$article || !isset($article->metadata) || !is_array($article->metadata)) {
+			return 'post';
+		}
+
+		$authorPostType = $article->metadata['wp-post-type'] ?? null;
+		if (empty($authorPostType)) {
+			return 'post';
+		}
+
+		return PostTypes::validated($authorPostType);
 	}
 
 	/**
@@ -385,11 +407,21 @@ class PccSyncManager
 	 */
 	public function storeArticles()
 	{
-		if (!$this->getIntegrationPostType()) {
+		// Check if integration is configured (any post type set, including author_choice)
+		$configuredType = get_option(CPUB_INTEGRATION_POST_TYPE_OPTION_KEY);
+		if (!$configuredType) {
 			return;
 		}
 		$articlesApi = new ArticlesApi($this->pccClient());
-		$articles = $articlesApi->getAllArticles();
+		// Fetch only the fields we need; metadata is required for author_choice post type resolution.
+		$articles = $articlesApi->getAllArticles(null, null, [
+			'id',
+			'slug',
+			'title',
+			'tags',
+			'content',
+			'metadata',
+		]);
 		/** @var Article $article */
 		foreach ($articles->articles as $article) {
 			$this->storeArticle($article);
