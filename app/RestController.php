@@ -143,9 +143,17 @@ class RestController
 	 */
 	public function handleWebhook(WP_REST_Request $request)
 	{
-		// TODO: Implement webhook secret validation when PCC backend supports it
-		// The x-pcc-webhook-secret header is not currently sent by PCC backend
-		// See: https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/195
+		// Webhook secrets are optional per PCC UI. If configured, validate them.
+		// If not configured, allow webhooks through (optional security feature).
+		$expected_secret = (string) get_option(CPUB_WEBHOOK_SECRET_OPTION_KEY);
+		$provided_secret = (string) $request->get_header('x-pcc-webhook-secret');
+
+		// Only validate if user opted-in to webhook secrets
+		if (!empty($expected_secret)) {
+			if (!hash_equals($expected_secret, $provided_secret)) {
+				return new WP_REST_Response('Unauthorized', 401);
+			}
+		}
 
 		$event = $request->get_param('event');
 		$payload = $request->get_param('payload');
