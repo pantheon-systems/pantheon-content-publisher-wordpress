@@ -46,6 +46,11 @@ jobs:
         npm ci
         npm run build
 
+    - name: Install WP-CLI framework globally for Composer
+      run: |
+        composer global config --no-plugins allow-plugins.wp-cli/wp-cli true
+        composer global require wp-cli/wp-cli-bundle
+
     - name: Create Dist Archive for wp.org validation
       run: |
         wp package install wp-cli/dist-archive-command:@stable
