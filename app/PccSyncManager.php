@@ -261,17 +261,19 @@ class PccSyncManager
 			}
 		}
 
-		// Skip thumbnail generation during upload to prevent PHP-FPM timeout
-		// The full-size image is uploaded immediately, thumbnails generated asynchronously via WP-Cron
+		// WordPress's media_sideload_image() normally generates thumbnails during upload (10-60+ seconds).
+		// This causes PHP-FPM timeout on Pantheon. We use filters to prevent thumbnail generation NOW,
+		// and defer it to WP-Cron instead. These filters intercept WordPress's internal calls and skip
+		// the expensive operations, allowing only the full-size image to upload (fast ~1-2s).
 		add_filter('intermediate_image_sizes_advanced', [$this, 'skipThumbnailGeneration']);
 		add_filter('big_image_size_threshold', [$this, 'skipImageScaling']);
 		add_filter('wp_generate_attachment_metadata', [$this, 'skipMetadataGeneration'], 10, 2);
 
 		try {
-			// Download and attach the new image (without thumbnail generation)
+			// Upload full-size image only (filters above prevent the timeout-causing thumbnail generation)
 			$imageId = media_sideload_image($featuredImageURL, $postId, null, 'id');
 
-			// Re-enable image processing for other uploads
+			// Remove filters immediately - only this specific image should skip thumbnails, not subsequent uploads
 			remove_filter('intermediate_image_sizes_advanced', [$this, 'skipThumbnailGeneration']);
 			remove_filter('big_image_size_threshold', [$this, 'skipImageScaling']);
 			remove_filter('wp_generate_attachment_metadata', [$this, 'skipMetadataGeneration'], 10);
@@ -291,9 +293,10 @@ class PccSyncManager
 
 			if (is_int($imageId)) {
 				update_post_meta($imageId, 'cpub_feature_image_url', $featuredImageURL);
-				// Set as the featured image - thumbnails were skipped, so this is fast
+				// Set full-size image as featured image (thumbnails don't exist yet, but full-size displays correctly)
 				set_post_thumbnail($postId, $imageId);
-				// Trigger async thumbnail generation via non-blocking HTTP request
+				// Schedule WP-Cron to generate the skipped thumbnails in background (~1 min delay).
+				// Thumbnails that would timeout NOW (10-60s) run safely later via WP-Cron.
 				$this->scheduleAsyncThumbnailGeneration($imageId);
 			}
 		} catch (\Exception $e) {
