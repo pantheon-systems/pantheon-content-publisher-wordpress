@@ -261,8 +261,8 @@ class PccSyncManager
 			}
 		}
 
-		// Skip ALL image processing during upload to prevent PHP-FPM timeout
-		// Thumbnails will be generated asynchronously after upload completes
+		// Skip thumbnail generation during upload to prevent PHP-FPM timeout
+		// The full-size image is uploaded immediately, thumbnails generated asynchronously via WP-Cron
 		add_filter('intermediate_image_sizes_advanced', [$this, 'skipThumbnailGeneration']);
 		add_filter('big_image_size_threshold', [$this, 'skipImageScaling']);
 		add_filter('wp_generate_attachment_metadata', [$this, 'skipMetadataGeneration'], 10, 2);
