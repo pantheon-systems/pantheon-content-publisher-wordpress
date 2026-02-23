@@ -650,21 +650,26 @@ class PccSyncManager
 
 	/**
 	 * Schedule asynchronous thumbnail generation for an image using WP-Cron.
-	 * The full-size image is available immediately; thumbnails will be generated
-	 * within a few minutes via WordPress's cron system.
+	 *
+	 * The full-size image is available immediately; thumbnails are deferred to avoid
+	 * PHP-FPM timeouts during the publish request. On hosts with WP-Cron enabled,
+	 * this runs on the next page load after the 60-second delay. On Pantheon, where
+	 * WP-Cron page-load triggers are disabled (DISABLE_WP_CRON), the event runs on
+	 * the next hourly Pantheon Cron cycle via `wp cron event run --due-now`.
+	 *
+	 * Images are never broken in either case — WordPress serves the full-size image
+	 * until thumbnails are generated.
 	 *
 	 * @param int $imageId The attachment ID to generate thumbnails for
 	 */
 	private function scheduleAsyncThumbnailGeneration($imageId)
 	{
-		// Schedule thumbnail generation to run in 1 minute
-		// WP-Cron will process this on the next page load after the scheduled time
 		wp_schedule_single_event(time() + 60, 'cpub_generate_thumbnails', [$imageId]);
 	}
 
 	/**
 	 * Generate thumbnails for an image asynchronously.
-	 * This is called by the REST endpoint in a separate PHP process.
+	 * Called by the 'cpub_generate_thumbnails' WP-Cron event.
 	 *
 	 * @param int $imageId The attachment ID to generate thumbnails for
 	 */
