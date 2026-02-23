@@ -63,6 +63,7 @@ All posts/pages created with Pantheon Content Publisher will remain on your Word
 == Changelog ==
 
 = 1.3.5-dev =
+* Fix: Async thumbnail generation for featured images to prevent PHP-FPM timeouts on Pantheon [#196](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/196)
 
 = 1.3.4 (1 December 2025) =
 * Compatibility: Supports Wordpress 6.9 [#178](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/178)
