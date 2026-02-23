@@ -3,7 +3,7 @@ Contributors: getpantheon, a11rew, anaispantheor, roshnykunjappan, mklasen, jazz
 Tags: pantheon
 Requires at least: 5.7
 Tested up to: 6.9
-Stable tag: 1.3.5-dev
+Stable tag: 1.3.5
 Requires PHP: 8.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -62,7 +62,7 @@ All posts/pages created with Pantheon Content Publisher will remain on your Word
 
 == Changelog ==
 
-= 1.3.5-dev =
+= 1.3.5 (23 February 2026) =
 * Fix: Async thumbnail generation for featured images to prevent PHP-FPM timeouts on Pantheon [#196](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/196)
 
 = 1.3.4 (1 December 2025) =
