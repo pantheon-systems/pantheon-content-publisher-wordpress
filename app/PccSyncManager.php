@@ -281,7 +281,7 @@ class PccSyncManager
 			// Check if image download returned an error
 			if (is_wp_error($imageId)) {
 				$error_msg = 'Pantheon Content Publisher: Failed to download featured image - ';
-			error_log($error_msg . $imageId->get_error_message());
+				error_log($error_msg . $imageId->get_error_message());
 				// Mark post as having a failed featured image for admin attention
 				update_post_meta($postId, '_pcc_featured_image_failed', [
 					'url' => $featuredImageURL,
