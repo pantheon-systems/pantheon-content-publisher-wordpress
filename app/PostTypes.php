@@ -21,7 +21,7 @@ class PostTypes
 	 *
 	 * @return array<int, array{name: string, label: string}>
 	 */
-	public static function getAvailable(): array
+	public function getAvailable(): array
 	{
 		$postTypes = get_post_types(['public' => true], 'objects');
 		$result = [];
@@ -31,7 +31,7 @@ class PostTypes
 				continue;
 			}
 			$result[] = [
-				'name' => $postType->name,
+				'name'  => $postType->name,
 				'label' => $postType->labels->singular_name,
 			];
 		}
@@ -45,7 +45,7 @@ class PostTypes
 	 * @param string $postType The post type slug to validate.
 	 * @return bool
 	 */
-	public static function isValid(string $postType): bool
+	public function isValid(string $postType): bool
 	{
 		$validTypes = get_post_types(['public' => true], 'names');
 		return isset($validTypes[$postType])
@@ -59,8 +59,8 @@ class PostTypes
 	 * @param string $fallback The fallback post type if validation fails.
 	 * @return string The validated post type or the fallback.
 	 */
-	public static function validated(string $postType, string $fallback = 'post'): string
+	public function validated(string $postType, string $fallback = 'post'): string
 	{
-		return self::isValid($postType) ? $postType : $fallback;
+		return $this->isValid($postType) ? $postType : $fallback;
 	}
 }

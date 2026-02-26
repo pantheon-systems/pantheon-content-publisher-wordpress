@@ -159,7 +159,7 @@ class RestController
 			);
 		}
 
-		return new WP_REST_Response(PostTypes::getAvailable());
+		return new WP_REST_Response((new PostTypes())->getAvailable());
 	}
 
 	/**

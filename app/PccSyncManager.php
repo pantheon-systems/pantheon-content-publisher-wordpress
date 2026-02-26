@@ -362,7 +362,7 @@ class PccSyncManager
 		$configuredType = get_option(CPUB_INTEGRATION_POST_TYPE_OPTION_KEY, 'post');
 
 		if ($configuredType !== 'author_choice') {
-			return PostTypes::validated($configuredType);
+			return (new PostTypes())->validated($configuredType);
 		}
 
 		if (!$article || !isset($article->metadata) || !is_array($article->metadata)) {
@@ -374,7 +374,7 @@ class PccSyncManager
 			return 'post';
 		}
 
-		return PostTypes::validated($authorPostType);
+		return (new PostTypes())->validated($authorPostType);
 	}
 
 	/**
