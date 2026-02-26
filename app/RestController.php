@@ -121,10 +121,11 @@ class RestController
 		$config = $pccManager->getClientConfig();
 		$isPCCConfigured = $pccManager->isPCCConfigured();
 
+		$smartComponents = SmartComponents::getInstance();
 		$options = new StatusOptions(
-			smartComponents: false,
-			smartComponentsCount: 0,
-			smartComponentPreview: false,
+			smartComponents: $smartComponents->count() > 0,
+			smartComponentsCount: $smartComponents->count(),
+			smartComponentPreview: $smartComponents->count() > 0,
 			metadataGroups: false,
 			metadataGroupIdentifiers: null,
 			resolvePathConfigured: true,

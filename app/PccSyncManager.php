@@ -24,6 +24,23 @@ class PccSyncManager
 	private string $siteId;
 	private string $apiKey;
 
+	/**
+	 * Post ID being saved in the current sync operation.
+	 * Used by the kses filter in Settings::allowStyleTags() to resolve the post
+	 * in REST/webhook context where get_the_ID() returns 0.
+	 *
+	 * @var int
+	 */
+	private static int $savingPostId = 0;
+
+	/**
+	 * Return the post ID currently being saved, or 0 if none.
+	 */
+	public static function getSavingPostId(): int
+	{
+		return self::$savingPostId;
+	}
+
 	public function __construct()
 	{
 		$this->siteId = get_option(CPUB_SITE_ID_OPTION_KEY);
@@ -62,6 +79,29 @@ class PccSyncManager
 			ContentType::TREE_PANTHEON_V2,
 			$versionId
 		);
+
+		// Smart components (e.g. Media Embed) require a dual-fetch approach.
+		// The TREE_PANTHEON_V2 content contains only bare <component></component>
+		// placeholders — it does not include the component type or attributes.
+		// Those live in the raw content (null content type) as <pcc-component>
+		// tags with base64-encoded attrs. We fetch the raw content only when
+		// placeholders are detected, extract the component metadata, and render
+		// each component into the processed HTML.
+		if ($article && SmartComponents::contentHasComponents($article->content)) {
+			$rawArticle = $articlesApi->getArticleById(
+				$documentId,
+				['id', 'content'],
+				$publishingLevel,
+				null,
+				$versionId
+			);
+			if ($rawArticle && $rawArticle->content) {
+				$article->content = SmartComponents::getInstance()->processContent(
+					$article->content,
+					$rawArticle->content
+				);
+			}
+		}
 
 		return $article ? $this->storeArticle($article, $isDraft) : 0;
 	}
@@ -156,19 +196,38 @@ class PccSyncManager
 		if (!$postId) {
 			$insertData = $data;
 			$insertData['post_author'] = $this->getDefaultAuthorId($article);
-			$postId = wp_insert_post($insertData);
+			$postId = $this->savePost($insertData);
 			update_post_meta($postId, CPUB_CONTENT_META_KEY, $article->id);
 			$this->syncPostMetaAndTags($postId, $article);
 			return $postId;
 		}
 
 		$data['ID'] = $postId;
-		wp_update_post($data);
+		$this->savePost($data);
 		$this->syncPostMetaAndTags($postId, $article);
 		return $postId;
 	}
 
 	/**
+	 * Insert or update a WordPress post, exposing the post ID via a static
+	 * property so that the kses filter in Settings::allowStyleTags() can
+	 * resolve which post is being saved in REST/webhook context (where
+	 * get_the_ID() returns 0).
+	 *
+	 * @param array $data wp_insert_post / wp_update_post args.
+	 * @return int The saved post ID.
+	 */
+	private function savePost(array $data): int
+	{
+		self::$savingPostId = $data['ID'] ?? 0;
+		$postId = isset($data['ID'])
+			? (int) wp_update_post($data)
+			: (int) wp_insert_post($data);
+		self::$savingPostId = 0;
+		return $postId;
+	}
+
+		/**
 	 * Update post tags.
 	 *
 	 * @param $postId

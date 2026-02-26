@@ -42,6 +42,7 @@ class Plugin
 	{
 		new Settings();
 		new RestController();
+		new ComponentEndpoints();
 		new Admin();
 	}
 
