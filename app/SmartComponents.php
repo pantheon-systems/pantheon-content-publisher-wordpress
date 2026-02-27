@@ -2,10 +2,6 @@
 
 namespace Pantheon\ContentPublisher;
 
-if (!defined('ABSPATH')) {
-	exit;
-}
-
 use Pantheon\ContentPublisher\Components\MediaEmbed;
 use Pantheon\ContentPublisher\Interfaces\SmartComponentInterface;
 
@@ -27,13 +23,6 @@ class SmartComponents
 	 */
 	private array $components = [];
 
-	/**
-	 * Singleton instance.
-	 *
-	 * @var ?SmartComponents
-	 */
-	private static ?SmartComponents $instance = null;
-
 	public function __construct()
 	{
 		$this->register(new MediaEmbed());
@@ -51,20 +40,6 @@ class SmartComponents
 		 * @param SmartComponents $registry The smart components registry.
 		 */
 		do_action('cpub_register_smart_components', $this);
-	}
-
-	/**
-	 * Get singleton instance.
-	 *
-	 * @return SmartComponents
-	 */
-	public static function getInstance(): SmartComponents
-	{
-		if (!self::$instance) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
 	}
 
 	/**
@@ -151,7 +126,7 @@ class SmartComponents
 	 * @param string $content TREE_PANTHEON_V2 HTML content.
 	 * @return bool
 	 */
-	public static function contentHasComponents(string $content): bool
+	public function contentHasComponents(string $content): bool
 	{
 		return (bool) preg_match('/<component[\s>]/i', $content);
 	}
@@ -165,7 +140,7 @@ class SmartComponents
 	 * @param string $rawContent Raw HTML from PCC (null content type).
 	 * @return array Array of component data with 'type' and 'attrs' keys.
 	 */
-	public static function extractFromRawContent(string $rawContent): array
+	public function extractFromRawContent(string $rawContent): array
 	{
 		$components = [];
 		$pattern = '/<pcc-component\s+[^>]*?type="([^"]+)"[^>]*?attrs="([^"]+)"[^>]*><\/pcc-component>/i';
@@ -242,7 +217,7 @@ class SmartComponents
 			return $processedContent;
 		}
 
-		$components = self::extractFromRawContent($rawContent);
+		$components = $this->extractFromRawContent($rawContent);
 		if (empty($components)) {
 			return $processedContent;
 		}

@@ -40,9 +40,10 @@ class Plugin
 	 */
 	private function init(): void
 	{
-		new Settings();
-		new RestController();
-		new ComponentEndpoints();
+		$smartComponents = new SmartComponents();
+		new Settings($smartComponents);
+		new RestController($smartComponents);
+		new ComponentEndpoints($smartComponents);
 		new Admin();
 	}
 

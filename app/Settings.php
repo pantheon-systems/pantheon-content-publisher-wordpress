@@ -35,6 +35,9 @@ use const CPUB_PLUGIN_DIR_URL;
  */
 class Settings
 {
+	private SmartComponents $smartComponents;
+	private PccSyncManager $pccSyncManager;
+
 	/**
 	 * Pantheon menu icon in base64
 	 */
@@ -56,8 +59,10 @@ class Settings
 	 */
 	private const CPUB_DOCUMENT_EDIT_URL = 'https://docs.google.com/document/d/%s/edit';
 
-	public function __construct()
+	public function __construct(SmartComponents $smartComponents)
 	{
+		$this->smartComponents = $smartComponents;
+		$this->pccSyncManager = new PccSyncManager();
 		$this->addHooks();
 	}
 
@@ -238,15 +243,15 @@ class Settings
 	public function allowStyleTags($allowedTags)
 	{
 		// Resolve post ID. In REST/webhook context get_the_ID() returns 0;
-		// PccSyncManager::getSavingPostId() exposes the ID being saved in that case.
-		$postId = get_the_ID() ?: PccSyncManager::getSavingPostId();
+		// PccSyncManager exposes the ID being saved in that case.
+		$postId = get_the_ID() ?: $this->pccSyncManager->getSavingPostId();
 
 		// Check if this is a Content Publisher document.
 		if ($postId && get_post_meta($postId, CPUB_CONTENT_META_KEY, true)) {
 			$allowedTags['style'] = [];
 
 			// Collect allowed tags (e.g. iframe for MediaEmbed).
-			foreach (SmartComponents::getInstance()->getAllowedHtmlTags() as $tag => $attrs) {
+			foreach ($this->smartComponents->getAllowedHtmlTags() as $tag => $attrs) {
 				$allowedTags[$tag] = array_merge($allowedTags[$tag] ?? [], $attrs);
 			}
 		}
@@ -551,7 +556,7 @@ class Settings
 			}
 
 			// Process smart components (e.g. Media Embed) if present.
-			if (SmartComponents::contentHasComponents($article->content)) {
+			if ($this->smartComponents->contentHasComponents($article->content)) {
 				$rawArticle = $articlesApi->getArticleById(
 					$documentId,
 					['id', 'content'],
@@ -560,7 +565,7 @@ class Settings
 					$versionId ?: null
 				);
 				if ($rawArticle && $rawArticle->content) {
-					$article->content = SmartComponents::getInstance()->processContent(
+					$article->content = $this->smartComponents->processContent(
 						$article->content,
 						$rawArticle->content
 					);

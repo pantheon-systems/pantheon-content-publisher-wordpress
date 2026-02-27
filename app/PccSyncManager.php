@@ -36,7 +36,7 @@ class PccSyncManager
 	/**
 	 * Return the post ID currently being saved, or 0 if none.
 	 */
-	public static function getSavingPostId(): int
+	public function getSavingPostId(): int
 	{
 		return self::$savingPostId;
 	}
@@ -87,7 +87,8 @@ class PccSyncManager
 		// tags with base64-encoded attrs. We fetch the raw content only when
 		// placeholders are detected, extract the component metadata, and render
 		// each component into the processed HTML.
-		if ($article && SmartComponents::contentHasComponents($article->content)) {
+		$smartComponents = new SmartComponents();
+		if ($article && $smartComponents->contentHasComponents($article->content)) {
 			$rawArticle = $articlesApi->getArticleById(
 				$documentId,
 				['id', 'content'],
@@ -96,7 +97,7 @@ class PccSyncManager
 				$versionId
 			);
 			if ($rawArticle && $rawArticle->content) {
-				$article->content = SmartComponents::getInstance()->processContent(
+				$article->content = $smartComponents->processContent(
 					$article->content,
 					$rawArticle->content
 				);

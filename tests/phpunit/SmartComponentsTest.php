@@ -52,6 +52,9 @@ class StubComponent implements SmartComponentInterface
 	}
 }
 
+/**
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ */
 class SmartComponentsTest extends WP_UnitTestCase
 {
 	private SmartComponents $registry;
@@ -139,29 +142,29 @@ class SmartComponentsTest extends WP_UnitTestCase
 	public function testContentHasComponentsReturnsTrueWhenPresent(): void
 	{
 		$content = '<p>Hello</p><component></component><p>World</p>';
-		$this->assertTrue(SmartComponents::contentHasComponents($content));
+		$this->assertTrue($this->registry->contentHasComponents($content));
 	}
 
 	public function testContentHasComponentsReturnsTrueWithAttributes(): void
 	{
 		$content = '<p>Hello</p><component id="c1" data-type="test"></component>';
-		$this->assertTrue(SmartComponents::contentHasComponents($content));
+		$this->assertTrue($this->registry->contentHasComponents($content));
 	}
 
 	public function testContentHasComponentsReturnsFalseWhenAbsent(): void
 	{
-		$this->assertFalse(SmartComponents::contentHasComponents('<p>Hello World</p>'));
+		$this->assertFalse($this->registry->contentHasComponents('<p>Hello World</p>'));
 	}
 
 	public function testContentHasComponentsReturnsFalseForEmptyString(): void
 	{
-		$this->assertFalse(SmartComponents::contentHasComponents(''));
+		$this->assertFalse($this->registry->contentHasComponents(''));
 	}
 
 	public function testContentHasComponentsReturnsFalseForSubstring(): void
 	{
 		$content = '<mycomponent>test</mycomponent>';
-		$this->assertFalse(SmartComponents::contentHasComponents($content));
+		$this->assertFalse($this->registry->contentHasComponents($content));
 	}
 
 	// ── extractFromRawContent() ─────────────────────────────────────
@@ -172,7 +175,7 @@ class SmartComponentsTest extends WP_UnitTestCase
 		$raw = '<p>Text</p>'
 			. '<pcc-component id="c1" type="MEDIA_EMBED" attrs="' . $attrs . '"></pcc-component>';
 
-		$components = SmartComponents::extractFromRawContent($raw);
+		$components = $this->registry->extractFromRawContent($raw);
 
 		$this->assertCount(1, $components);
 		$this->assertSame('MEDIA_EMBED', $components[0]['type']);
@@ -187,7 +190,7 @@ class SmartComponentsTest extends WP_UnitTestCase
 			. '<p>Middle</p>'
 			. '<pcc-component id="c2" type="MEDIA_EMBED" attrs="' . $attrs2 . '"></pcc-component>';
 
-		$components = SmartComponents::extractFromRawContent($raw);
+		$components = $this->registry->extractFromRawContent($raw);
 
 		$this->assertCount(2, $components);
 		$this->assertSame('https://youtube.com/watch?v=1', $components[0]['attrs']['url']);
@@ -196,13 +199,13 @@ class SmartComponentsTest extends WP_UnitTestCase
 
 	public function testExtractReturnsEmptyForNoComponents(): void
 	{
-		$this->assertEmpty(SmartComponents::extractFromRawContent('<p>No components here</p>'));
+		$this->assertEmpty($this->registry->extractFromRawContent('<p>No components here</p>'));
 	}
 
 	public function testExtractHandlesInvalidBase64(): void
 	{
 		$raw = '<pcc-component id="c1" type="MEDIA_EMBED" attrs="not-valid-base64!!!"></pcc-component>';
-		$components = SmartComponents::extractFromRawContent($raw);
+		$components = $this->registry->extractFromRawContent($raw);
 
 		$this->assertCount(1, $components);
 		$this->assertSame('MEDIA_EMBED', $components[0]['type']);
@@ -213,7 +216,7 @@ class SmartComponentsTest extends WP_UnitTestCase
 	{
 		$attrs = base64_encode('not json');
 		$raw = '<pcc-component id="c1" type="MEDIA_EMBED" attrs="' . $attrs . '"></pcc-component>';
-		$components = SmartComponents::extractFromRawContent($raw);
+		$components = $this->registry->extractFromRawContent($raw);
 
 		$this->assertCount(1, $components);
 		$this->assertEmpty($components[0]['attrs']);
@@ -228,7 +231,7 @@ class SmartComponentsTest extends WP_UnitTestCase
 		]));
 		$raw = '<pcc-component id="c1" type="MEDIA_EMBED" attrs="' . $attrs . '"></pcc-component>';
 
-		$components = SmartComponents::extractFromRawContent($raw);
+		$components = $this->registry->extractFromRawContent($raw);
 
 		$this->assertSame('80%', $components[0]['attrs']['width']);
 		$this->assertSame('350px', $components[0]['attrs']['height']);

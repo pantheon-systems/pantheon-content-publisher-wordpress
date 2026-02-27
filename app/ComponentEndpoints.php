@@ -26,9 +26,9 @@ class ComponentEndpoints
 	 */
 	private SmartComponents $smartComponents;
 
-	public function __construct()
+	public function __construct(SmartComponents $smartComponents)
 	{
-		$this->smartComponents = SmartComponents::getInstance();
+		$this->smartComponents = $smartComponents;
 
 		add_action('rest_api_init', [$this, 'registerRoutes']);
 		add_action('template_redirect', [$this, 'handleRedirects']);
