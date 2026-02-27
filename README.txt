@@ -20,8 +20,8 @@ Experience seamless document previews within your WordPress environment as they 
 = One-click Publishing =
 Enable direct publishing from Google Docs to WordPress, simplifying content management and streamlining workflows.
 
-= Post or Page Support =
-Choose to publish as either a WordPress post or page, adapting to your site's content structure.
+= Custom Post Type Support =
+Publish content to any public post type registered on your WordPress site, including custom post types. Authors can also specify the target post type per document via metadata.
 
 For more information, please check [Pantheon Content Publisher documentation](https://docs.content.pantheon.io).
 
@@ -63,6 +63,7 @@ All posts/pages created with Pantheon Content Publisher will remain on your Word
 == Changelog ==
 
 = 1.3.5-dev =
+* Feature: Add support for publishing to custom post types with author-choice mode via `wp-post-type` metadata field [#193](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/193)
 * Fix: Async thumbnail generation for featured images to prevent PHP-FPM timeouts on Pantheon [#196](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/196)
 
 = 1.3.4 (1 December 2025) =

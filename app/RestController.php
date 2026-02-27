@@ -99,6 +99,11 @@ class RestController
 				'method' => 'GET',
 				'callback' => [$this, 'pantheonCloudStatusCheck'],
 			],
+			[
+				'route' => '/post-types',
+				'method' => 'GET',
+				'callback' => [$this, 'getPostTypes'],
+			],
 		];
 
 		foreach ($endpoints as $endpoint) {
@@ -135,6 +140,26 @@ class RestController
 		$payload = $status->toArray();
 
 		return new WP_REST_Response($payload);
+	}
+
+	/**
+	 * Get all available public post types.
+	 *
+	 * @return WP_REST_Response
+	 */
+	public function getPostTypes(): WP_REST_Response
+	{
+		if (!current_user_can('manage_options')) {
+			return new WP_REST_Response(
+				esc_html__(
+					'You are not authorized to perform this action.',
+					'pantheon-content-publisher'
+				),
+				401
+			);
+		}
+
+		return new WP_REST_Response((new PostTypes())->getAvailable());
 	}
 
 	/**

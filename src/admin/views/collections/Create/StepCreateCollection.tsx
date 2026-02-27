@@ -1,13 +1,14 @@
 import {
   Button,
-  RadioGroup,
+  Select,
   SectionMessage,
   TextInput,
 } from "@pantheon-systems/pds-toolkit-react";
 import { useMutation } from "@tanstack/react-query";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, type ControllerRenderProps } from "react-hook-form";
 import { apiClient } from "../../../api/client";
 import { getErrorMessage } from "../../../lib/errors";
+import { usePostTypeOptions } from "../../../hooks/usePostTypeOptions";
 
 interface Props {
   onDone: () => void;
@@ -22,13 +23,15 @@ export default function StepCreateCollection({
   onLoadingChange,
   onLoadingStepChange,
 }: Props) {
+  const postTypeOptions = usePostTypeOptions();
+
   const {
     control,
     handleSubmit,
     formState: { isValid },
   } = useForm<{
     collectionUrl: string;
-    publishAs: "post" | "page";
+    publishAs: string;
   }>({
     mode: "onChange",
     defaultValues: {
@@ -38,7 +41,7 @@ export default function StepCreateCollection({
   });
 
   const createCollectionFlow = useMutation({
-    mutationFn: async (type: "post" | "page") => {
+    mutationFn: async (type: string) => {
       onLoadingStepChange("Creating your collection...");
       const siteResp = await apiClient.post<string>("/site");
       const siteId = siteResp.data;
@@ -68,10 +71,7 @@ export default function StepCreateCollection({
     },
   });
 
-  const onSubmit = (data: {
-    collectionUrl: string;
-    publishAs: "post" | "page";
-  }) => {
+  const onSubmit = (data: { collectionUrl: string; publishAs: string }) => {
     if (createCollectionFlow.isPending) return;
     createCollectionFlow.mutate(data.publishAs);
   };
@@ -112,17 +112,14 @@ export default function StepCreateCollection({
             <Controller
               name="publishAs"
               control={control}
-              render={({ field }) => (
-                <RadioGroup
+              render={({ field }: { field: ControllerRenderProps<{ collectionUrl: string; publishAs: string }, "publishAs"> }) => (
+                <Select
                   id="publish-as"
                   label="Publish your document as:"
-                  options={[
-                    { label: "Post", value: "post" },
-                    { label: "Page", value: "page" },
-                  ]}
+                  options={postTypeOptions}
                   value={field.value}
-                  onValueChange={field.onChange}
-                  onBlur={field.onBlur}
+                  onOptionSelect={(option) => field.onChange(option.value)}
+                  onBlur={() => field.onBlur()}
                 />
               )}
             />
@@ -131,7 +128,7 @@ export default function StepCreateCollection({
           <SectionMessage
             type="info"
             className="mt-4"
-            message="You can find Content Publisher documents under the 'Posts' or 'Pages' menu in WordPress, depending on your selection at the time of publishing."
+            message="Select a post type to publish your documents as. Choose 'Chosen by the author' to let document authors specify the post type via the 'wp-post-type' metadata field."
           />
         </div>
       </div>

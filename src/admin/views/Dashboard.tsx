@@ -1,6 +1,6 @@
 import {
   Button,
-  RadioGroup,
+  Select,
   SectionMessage,
   Modal,
   useToast,
@@ -10,17 +10,19 @@ import {
   ClipboardButton,
 } from "@pantheon-systems/pds-toolkit-react";
 import { useMemo, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, type ControllerRenderProps } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { apiClient } from "../api/client";
 import { getErrorMessage } from "../lib/errors";
 import { SRC_ACTIONS } from "../lib/constants";
 import { useCollectionData } from "../hooks/useCollectionData";
+import { usePostTypeOptions } from "../hooks/usePostTypeOptions";
 import CollectionInfo from "../components/CollectionInfo";
 
 export default function Dashboard() {
   const { publish_as, webhook } = window.CPUB_BOOTSTRAP.configured;
   const { collectionName, collectionUrl, collectionId } = useCollectionData();
+  const postTypeOptions = usePostTypeOptions();
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showDisconnectModal, setShowDisconnectModal] = useState(false);
@@ -67,7 +69,7 @@ export default function Dashboard() {
     reset,
     getValues,
   } = useForm<{
-    publishAs: "post" | "page";
+    publishAs: string;
   }>({
     mode: "onChange",
     defaultValues: {
@@ -76,7 +78,7 @@ export default function Dashboard() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async (publishAs: "post" | "page") => {
+    mutationFn: async (publishAs: string) => {
       return apiClient.put("/collection", {
         post_type: publishAs,
       });
@@ -111,7 +113,7 @@ export default function Dashboard() {
     },
   });
 
-  const onSubmit = (values: { publishAs: "post" | "page" }) => {
+  const onSubmit = (values: { publishAs: string }) => {
     updateMutation.mutate(values.publishAs);
   };
 
@@ -258,17 +260,14 @@ export default function Dashboard() {
           <Controller
             name="publishAs"
             control={control}
-            render={({ field }) => (
-              <RadioGroup
+            render={({ field }: { field: ControllerRenderProps<{ publishAs: string }, "publishAs"> }) => (
+              <Select
                 id="publish-as"
                 label="Publish your document as:"
-                options={[
-                  { label: "Post", value: "post" },
-                  { label: "Page", value: "page" },
-                ]}
+                options={postTypeOptions}
                 value={field.value}
-                onValueChange={field.onChange}
-                onBlur={field.onBlur}
+                onOptionSelect={(option) => field.onChange(option.value)}
+                onBlur={() => field.onBlur()}
               />
             )}
           />
@@ -276,7 +275,7 @@ export default function Dashboard() {
 
         <SectionMessage
           type="info"
-          message="You can find Content Publisher documents under the 'Posts' or 'Pages' menu in WordPress, depending on your selection at the time of publishing."
+          message="Select a post type to publish your documents as. Choose 'Chosen by the author' to let document authors specify the post type via the 'wp-post-type' metadata field."
         />
 
         <div className="pds-button-group mt-4">
