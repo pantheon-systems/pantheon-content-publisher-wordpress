@@ -2,9 +2,10 @@
 <ruleset name="PSR12-based Coding Standards">
 	<description>Custom variant of PSR12 with WordPress security checks for PHP development</description>
 
-	<!-- Default ruleset is PSR12 with one exception - tabs instead of spaces is allowed and preferred -->
+	<!-- Default ruleset is PSR12 with exceptions for WordPress patterns -->
 	<rule ref="PSR12">
 		<exclude name="Generic.WhiteSpace.DisallowTabIndent"/>
+		<exclude name="PSR1.Files.SideEffects.FoundWithSymbols"/>
 	</rule>
 	<rule ref="Generic.WhiteSpace.DisallowSpaceIndent"/>
 
