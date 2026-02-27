@@ -114,9 +114,9 @@ class SmartComponents
 			foreach ($component->allowedHtmlTags() as $tag => $attrs) {
 				if (!isset($tags[$tag])) {
 					$tags[$tag] = $attrs;
-				} else {
-					$tags[$tag] = array_merge($tags[$tag], $attrs);
+					continue;
 				}
+				$tags[$tag] = array_merge($tags[$tag], $attrs);
 			}
 		}
 

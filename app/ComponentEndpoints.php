@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) {
 use WP_REST_Request;
 use WP_REST_Response;
 
-/**s
+/**
  * REST API endpoints for smart component schema and preview.
  *
  * The Google Docs add-on fetches the component schema to know what
@@ -70,6 +70,10 @@ class ComponentEndpoints
 
 	/**
 	 * Redirect pretty URLs to REST API equivalents.
+	 *
+	 * @SuppressWarnings(PHPMD.ShortVariable) -- $wp is the WordPress global.
+	 * @SuppressWarnings(PHPMD.Superglobals) -- $_SERVER access required by WordPress.
+	 * @SuppressWarnings(PHPMD.ExitExpression) -- exit after wp_safe_redirect is required by WordPress.
 	 */
 	public function handleRedirects(): void
 	{
@@ -80,15 +84,22 @@ class ComponentEndpoints
 			exit;
 		}
 
-		if (preg_match('#^' . self::COMPONENT_PATH . '/([a-zA-Z0-9_-]+)#', $wp->request, $matches)) {
-			$queryString = isset($_SERVER['QUERY_STRING']) ? sanitize_text_field(wp_unslash($_SERVER['QUERY_STRING'])) : '';
-			$url = rest_url(CPUB_API_NAMESPACE . '/' . self::COMPONENT_PATH . '/' . $matches[1]);
-			if ($queryString) {
-				$url .= '?' . $queryString;
-			}
-			wp_safe_redirect($url);
-			exit;
+		$pattern = '#^' . self::COMPONENT_PATH . '/([a-zA-Z0-9_-]+)#';
+		if (!preg_match($pattern, $wp->request, $matches)) {
+			return;
 		}
+
+		$queryString = isset($_SERVER['QUERY_STRING'])
+			? sanitize_text_field(wp_unslash($_SERVER['QUERY_STRING']))
+			: '';
+		$url = rest_url(
+			CPUB_API_NAMESPACE . '/' . self::COMPONENT_PATH . '/' . $matches[1]
+		);
+		if ($queryString) {
+			$url .= '?' . $queryString;
+		}
+		wp_safe_redirect($url);
+		exit;
 	}
 
 	/**
@@ -113,6 +124,8 @@ class ComponentEndpoints
 	 * Handle a component preview request.
 	 *
 	 * @param WP_REST_Request $request
+	 *
+	 * @SuppressWarnings(PHPMD.ExitExpression) -- Raw HTML output bypasses REST serialization.
 	 */
 	public function handleComponentPreview(WP_REST_Request $request): void
 	{
@@ -131,22 +144,13 @@ class ComponentEndpoints
 
 		header('Access-Control-Allow-Origin: *');
 		header('Content-Type: text/html; charset=UTF-8');
-		?>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>body { margin: 0; padding: 16px; }</style>
-</head>
-<body>
-<?php
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is pre-escaped by the component's render method
-		echo $html;
-?>
-</body>
-</html>
-		<?php
-		exit;
+		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- pre-escaped by component render()
+		echo '<!DOCTYPE html><html><head>'
+			. '<meta charset="utf-8">'
+			. '<meta name="viewport" content="width=device-width, initial-scale=1.0">'
+			. '<style>body { margin: 0; padding: 16px; }</style>'
+			. '</head><body>' . $html . '</body></html>';
+		// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
+		exit; // Required: bypass REST API JSON serialization for raw HTML preview.
 	}
 }
