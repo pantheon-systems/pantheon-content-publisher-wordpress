@@ -35,6 +35,8 @@ define('CPUB_CONTENT_META_KEY', 'cpub_id');
 define('CPUB_ENDPOINT', 'https://addonapi-gfttxsojwq-uc.a.run.app');
 define('CPUB_WEBHOOK_SECRET_OPTION_KEY', 'cpub_webhook_secret');
 define('CPUB_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY', 'cpub_webhook_notice_dismissed');
+define('CPUB_ACF_FIELD_MAPPINGS_OPTION_KEY', 'cpub_acf_field_mappings');
+define('CPUB_ACF_USER_MATCH_BY_OPTION_KEY', 'cpub_acf_user_match_by');
 define('CPUB_VERSION', '1.3.5-dev');
 
 call_user_func(static function ($rootPath) {

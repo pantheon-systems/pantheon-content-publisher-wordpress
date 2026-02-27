@@ -99,6 +99,21 @@ class RestController
 				'method' => 'GET',
 				'callback' => [$this, 'pantheonCloudStatusCheck'],
 			],
+			[
+				'route' => '/acf-mappings',
+				'method' => 'GET',
+				'callback' => [$this, 'getAcfMappings'],
+			],
+			[
+				'route' => '/acf-mappings',
+				'method' => 'PUT',
+				'callback' => [$this, 'updateAcfMappings'],
+			],
+			[
+				'route' => '/acf-fields',
+				'method' => 'GET',
+				'callback' => [$this, 'getAcfFields'],
+			],
 		];
 
 		foreach ($endpoints as $endpoint) {
@@ -606,5 +621,87 @@ class RestController
 	{
 		$headers = get_file_data(CPUB_PLUGIN_FILE, ['Version' => 'Version']);
 		return isset($headers['Version']) ? (string) $headers['Version'] : '';
+	}
+
+	/**
+	 * GET /acf-mappings — return all stored mappings and ACF availability.
+	 */
+	public function getAcfMappings(WP_REST_Request $request): WP_REST_Response
+	{
+		if (!current_user_can('manage_options')) {
+			return new WP_REST_Response(
+				esc_html__(
+					'You are not authorized to perform this action.',
+					'pantheon-content-publisher'
+				),
+				401
+			);
+		}
+
+		$mapper = (new AcfFieldMapper());
+		return new WP_REST_Response([
+			'acf_active' => $mapper->isAcfActive(),
+			'mappings' => $mapper->getMappings(),
+			'user_match_by' => $mapper->getUserMatchBy(),
+			'errors' => $mapper->consumeErrors(),
+		]);
+	}
+
+	/**
+	 * PUT /acf-mappings — validate and persist a new mapping set.
+	 */
+	public function updateAcfMappings(WP_REST_Request $request): WP_REST_Response
+	{
+		if (!current_user_can('manage_options')) {
+			return new WP_REST_Response(
+				esc_html__(
+					'You are not authorized to perform this action.',
+					'pantheon-content-publisher'
+				),
+				401
+			);
+		}
+
+		$mappings = $request->get_param('mappings');
+		if (!is_array($mappings)) {
+			return new WP_REST_Response(
+				['message' => 'The "mappings" parameter must be an array.'],
+				400
+			);
+		}
+
+		$userMatchBy = sanitize_key((string) ($request->get_param('user_match_by') ?: 'login'));
+
+		try {
+			(new AcfFieldMapper())->saveMappings($mappings, $userMatchBy);
+		} catch (\InvalidArgumentException $e) {
+			return new WP_REST_Response(['message' => $e->getMessage()], 400);
+		}
+
+		$mapper = (new AcfFieldMapper());
+		return new WP_REST_Response([
+			'mappings' => $mapper->getMappings(),
+			'user_match_by' => $mapper->getUserMatchBy(),
+		]);
+	}
+
+	/**
+	 * GET /acf-fields?post_type=post — list ACF fields for a given post type.
+	 */
+	public function getAcfFields(WP_REST_Request $request): WP_REST_Response
+	{
+		if (!current_user_can('manage_options')) {
+			return new WP_REST_Response(
+				esc_html__(
+					'You are not authorized to perform this action.',
+					'pantheon-content-publisher'
+				),
+				401
+			);
+		}
+
+		$postType = sanitize_key((string) $request->get_param('post_type'));
+		$fields = (new AcfFieldMapper())->getAcfFields($postType ?: null);
+		return new WP_REST_Response(['fields' => $fields]);
 	}
 }

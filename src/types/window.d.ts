@@ -6,6 +6,7 @@ interface Window {
     assets_url: string;
     plugin_main_page: string;
     is_pcc_configured: boolean;
+    acf_active: boolean;
     configured: {
       collection_url: string;
       collection_id: string;

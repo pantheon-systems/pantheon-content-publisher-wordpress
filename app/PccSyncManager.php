@@ -206,6 +206,13 @@ class PccSyncManager
 				update_post_meta($postId, '_yoast_wpseo_metadesc', $article->metadata['description']);
 			}
 		}
+
+		// Apply ACF field mappings when configured.
+		(new AcfFieldMapper())->applyMappings(
+			$postId,
+			$this->getIntegrationPostType(),
+			(array) $article->metadata
+		);
 	}
 
 	private function getFeaturedImageKey()

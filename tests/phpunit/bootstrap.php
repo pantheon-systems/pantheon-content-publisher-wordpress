@@ -42,3 +42,19 @@ if (function_exists('tests_add_filter')) {
 
 // Start up the WP testing environment.
 require $_tests_dir . '/includes/bootstrap.php';
+
+// Stub ACF functions for testing when ACF is not installed.
+// $GLOBALS['_acf_test_field_types'] allows tests to control per-field type responses.
+if (!function_exists('update_field')) {
+	function update_field($field, $value, $postId)
+	{
+		return update_post_meta($postId, $field, $value);
+	}
+}
+if (!function_exists('get_field_object')) {
+	function get_field_object($field, $postId)
+	{
+		$type = $GLOBALS['_acf_test_field_types'][$field] ?? 'text';
+		return ['type' => $type];
+	}
+}
