@@ -10,7 +10,7 @@ import {
   ClipboardButton,
 } from "@pantheon-systems/pds-toolkit-react";
 import { useMemo, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, type ControllerRenderProps } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { apiClient } from "../api/client";
 import { getErrorMessage } from "../lib/errors";
@@ -260,7 +260,7 @@ export default function Dashboard() {
           <Controller
             name="publishAs"
             control={control}
-            render={({ field }) => (
+            render={({ field }: { field: ControllerRenderProps<{ publishAs: string }, "publishAs"> }) => (
               <Select
                 id="publish-as"
                 label="Publish your document as:"
