@@ -92,7 +92,7 @@ class Settings
 		add_filter('the_content', [$this, 'addPreviewContainer']);
 		// TODO: Decide if we need to verify the collection URL given a site can have multiple domains
 		// add_filter('admin_init', [$this, 'verifyCollectionUrl']);
-		add_filter('wp_kses_allowed_html', [$this, 'allowStyleTags'], PHP_INT_MAX);
+		add_filter('wp_kses_allowed_html', [$this, 'extendAllowedHtmlTags'], PHP_INT_MAX);
 		add_filter('get_the_excerpt', [$this, 'stripExcerptTags'], -PHP_INT_MAX);
 	}
 
@@ -235,12 +235,12 @@ class Settings
 	}
 
 	/**
-	 * Allow style tags in the content.
+	 * Extend allowed HTML tags for Content Publisher posts.
 	 *
 	 * @param $allowedTags
 	 * @return mixed
 	 */
-	public function allowStyleTags($allowedTags)
+	public function extendAllowedHtmlTags($allowedTags)
 	{
 		// Resolve post ID. In REST/webhook context get_the_ID() returns 0;
 		// PccSyncManager exposes the ID being saved in that case.
