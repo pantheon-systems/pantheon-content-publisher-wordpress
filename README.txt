@@ -23,6 +23,9 @@ Enable direct publishing from Google Docs to WordPress, simplifying content mana
 = Post or Page Support =
 Choose to publish as either a WordPress post or page, adapting to your site's content structure.
 
+= Smart Components =
+Embed rich media (YouTube, Vimeo, etc.) directly from Google Docs using the Content Publisher add-on. Components are rendered as native WordPress embeds on publish.
+
 For more information, please check [Pantheon Content Publisher documentation](https://docs.content.pantheon.io).
 
 == Installation ==
@@ -63,6 +66,7 @@ All posts/pages created with Pantheon Content Publisher will remain on your Word
 == Changelog ==
 
 = 1.3.5-dev =
+* Feature: Smart Components foundation with Media Embed support for embedding videos and media via Google Docs add-on [#200](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/200)
 * Fix: Async thumbnail generation for featured images to prevent PHP-FPM timeouts on Pantheon [#196](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/196)
 
 = 1.3.4 (1 December 2025) =
