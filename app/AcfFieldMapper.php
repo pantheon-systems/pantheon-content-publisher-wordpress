@@ -267,10 +267,13 @@ class AcfFieldMapper
 	 */
 	private function getMappingsForPostType(string $postType): array
 	{
-		return array_values(array_filter(
-			$this->getMappings(),
-			static fn(array $m): bool => $m['post_type'] === $postType
-		));
+		$result = [];
+		foreach ($this->getMappings() as $mapping) {
+			if ($mapping['post_type'] === $postType) {
+				$result[] = $mapping;
+			}
+		}
+		return $result;
 	}
 
 	/**
