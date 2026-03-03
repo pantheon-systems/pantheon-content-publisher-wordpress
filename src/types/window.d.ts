@@ -16,7 +16,7 @@ interface Window {
     configured: {
       collection_url: string;
       collection_id: string;
-      publish_as: "post" | "page";
+      publish_as: string;
       webhook?: {
         url: string;
         notice_dismissed: boolean;
