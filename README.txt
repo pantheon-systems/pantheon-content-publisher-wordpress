@@ -23,6 +23,9 @@ Enable direct publishing from Google Docs to WordPress, simplifying content mana
 = Custom Post Type Support =
 Publish content to any public post type registered on your WordPress site, including custom post types. Authors can also specify the target post type per document via metadata.
 
+= Smart Components =
+Embed rich media (YouTube, Vimeo, etc.) directly from Google Docs using the Content Publisher add-on. Components are rendered as native WordPress embeds on publish.
+
 For more information, please check [Pantheon Content Publisher documentation](https://docs.content.pantheon.io).
 
 == Installation ==
@@ -63,6 +66,7 @@ All posts/pages created with Pantheon Content Publisher will remain on your Word
 == Changelog ==
 
 = 1.3.5-dev =
+* Feature: Smart Components foundation with Media Embed support for embedding videos and media via Google Docs add-on [#200](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/200)
 * Feature: Add support for publishing to custom post types with author-choice mode via `wp-post-type` metadata field [#193](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/193)
 * Fix: Async thumbnail generation for featured images to prevent PHP-FPM timeouts on Pantheon [#196](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/196)
 
