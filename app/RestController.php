@@ -619,7 +619,7 @@ class RestController
 	/**
 	 * GET /acf-mappings — return all stored mappings and ACF availability.
 	 */
-	public function getAcfMappings(WP_REST_Request $request): WP_REST_Response
+	public function getAcfMappings(): WP_REST_Response
 	{
 		if (!current_user_can('manage_options')) {
 			return new WP_REST_Response(
