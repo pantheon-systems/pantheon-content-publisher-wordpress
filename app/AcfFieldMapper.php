@@ -113,47 +113,9 @@ class AcfFieldMapper
 		$userMatchBy = $this->getUserMatchBy();
 
 		foreach ($mappings as $mapping) {
-			$acfField = $mapping['acf_field'];
-			$cpubField = $mapping['cpub_field'];
-
-			if (!array_key_exists($cpubField, $metadata)) {
-				$errors[] = sprintf(
-					'ACF mapping skipped: Content Publisher field %s not present in document metadata ' .
-					'(post %d, acf_field: %s).',
-					$cpubField,
-					$postId,
-					$acfField
-				);
-				continue;
-			}
-
-			$value = $metadata[$cpubField];
-
-			// Detect the ACF field type so we can apply special handling.
-			$fieldObj = function_exists('get_field_object')
-				? get_field_object($acfField, $postId)
-				: null;
-
-			$fieldType = is_array($fieldObj) ? ($fieldObj['type'] ?? '') : '';
-
-			if ($fieldType === 'user') {
-				$resolved = $this->resolveUserField((string) $value, $userMatchBy);
-				if ($resolved === null) {
-					$errors[] = sprintf(
-						'ACF user field %s: could not find WordPress user matching %s %s (post %d).',
-						$acfField,
-						$userMatchBy,
-						$value,
-						$postId
-					);
-					continue;
-				}
-				// ACF stores user fields as the user ID integer.
-				update_post_meta($postId, $acfField, $resolved);
-			} elseif (function_exists('update_field')) {
-				update_field($acfField, $value, $postId);
-			} else {
-				update_post_meta($postId, $acfField, $value);
+			$error = $this->applySingleMapping($postId, $mapping, $metadata, $userMatchBy);
+			if ($error !== null) {
+				$errors[] = $error;
 			}
 		}
 
@@ -163,6 +125,62 @@ class AcfFieldMapper
 			}
 			$this->storeErrors($errors);
 		}
+	}
+
+	/**
+	 * Apply a single ACF field mapping. Returns an error string on failure, null on success.
+	 *
+	 * @param int $postId
+	 * @param array $mapping
+	 * @param array $metadata
+	 * @param string $userMatchBy
+	 * @return string|null
+	 */
+	private function applySingleMapping(int $postId, array $mapping, array $metadata, string $userMatchBy): ?string
+	{
+		$acfField = $mapping['acf_field'];
+		$cpubField = $mapping['cpub_field'];
+
+		if (!array_key_exists($cpubField, $metadata)) {
+			return sprintf(
+				'ACF mapping skipped: Content Publisher field %s not present in document metadata ' .
+				'(post %d, acf_field: %s).',
+				$cpubField,
+				$postId,
+				$acfField
+			);
+		}
+
+		$value = $metadata[$cpubField];
+
+		$fieldObj = function_exists('get_field_object')
+			? get_field_object($acfField, $postId)
+			: null;
+
+		$fieldType = is_array($fieldObj) ? ($fieldObj['type'] ?? '') : '';
+
+		if ($fieldType === 'user') {
+			$resolved = $this->resolveUserField((string) $value, $userMatchBy);
+			if ($resolved === null) {
+				return sprintf(
+					'ACF user field %s: could not find WordPress user matching %s %s (post %d).',
+					$acfField,
+					$userMatchBy,
+					$value,
+					$postId
+				);
+			}
+			update_post_meta($postId, $acfField, $resolved);
+			return null;
+		}
+
+		if (function_exists('update_field')) {
+			update_field($acfField, $value, $postId);
+			return null;
+		}
+
+		update_post_meta($postId, $acfField, $value);
+		return null;
 	}
 
 	/**
