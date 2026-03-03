@@ -115,6 +115,8 @@ class RestController
 				'route' => '/acf-fields',
 				'method' => 'GET',
 				'callback' => [$this, 'getAcfFields'],
+			],
+			[
 				'route' => '/post-types',
 				'method' => 'GET',
 				'callback' => [$this, 'getPostTypes'],
