@@ -632,11 +632,22 @@ class RestController
 		}
 
 		$mapper = (new AcfFieldMapper());
+
+		$postTypesWithFields = [];
+		if ($mapper->isAcfActive()) {
+			foreach ((new PostTypes())->getAvailable() as $pt) {
+				if (!empty($mapper->getAcfFields($pt['name']))) {
+					$postTypesWithFields[] = $pt;
+				}
+			}
+		}
+
 		return new WP_REST_Response([
 			'acf_active' => $mapper->isAcfActive(),
 			'mappings' => $mapper->getMappings(),
 			'user_match_by' => $mapper->getUserMatchBy(),
 			'errors' => $mapper->consumeErrors(),
+			'post_types_with_fields' => $postTypesWithFields,
 		]);
 	}
 
