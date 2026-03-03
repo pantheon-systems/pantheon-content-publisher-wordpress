@@ -39,7 +39,7 @@ interface AcfMappingsResponse {
 interface FieldRowProps {
   field: AcfField;
   cpubValue: string;
-  onChange: (acfFieldName: string, cpubField: string) => void;
+  onChange: (_acfFieldName: string, _cpubField: string) => void;
 }
 
 function FieldRow({ field, cpubValue, onChange }: FieldRowProps) {
@@ -53,7 +53,7 @@ function FieldRow({ field, cpubValue, onChange }: FieldRowProps) {
         <input
           type="text"
           value={cpubValue}
-          onChange={(e) => onChange(field.name, e.target.value)}
+          onChange={(e) => { onChange(field.name, e.target.value); }}
           placeholder={`e.g. ${field.label || field.name}`}
           className="w-full border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
         />
@@ -65,8 +65,8 @@ function FieldRow({ field, cpubValue, onChange }: FieldRowProps) {
 interface FieldTableProps {
   postType: string;
   cpubValues: Record<string, string>;
-  onChangeField: (acfName: string, cpubField: string) => void;
-  onFieldsLoaded: (postType: string, fields: AcfField[]) => void;
+  onChangeField: (_acfName: string, _cpubField: string) => void;
+  onFieldsLoaded: (_postType: string, _fields: AcfField[]) => void;
 }
 
 function FieldTable({ postType, cpubValues, onChangeField, onFieldsLoaded }: FieldTableProps) {
@@ -145,7 +145,7 @@ export default function AcfMappings() {
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["acf-mappings"] });
+      void queryClient.invalidateQueries({ queryKey: ["acf-mappings"] });
     },
   });
   const acfActive = window.CPUB_BOOTSTRAP.acf_active;
@@ -167,18 +167,17 @@ export default function AcfMappings() {
   useEffect(() => {
     if (data && !syncedFromServer) {
       setSyncedFromServer(true);
-      setUserMatchBy(data.user_match_by ?? "login");
+      setUserMatchBy(data.user_match_by);
       const grouped: Record<string, Record<string, string>> = {};
-      data.mappings.forEach((m) => {
-        if (!grouped[m.post_type]) {
-          grouped[m.post_type] = {};
-        }
-        grouped[m.post_type][m.acf_field] = m.cpub_field;
+      data.mappings.forEach((mapping) => {
+        grouped[mapping.post_type] ??= {};
+        grouped[mapping.post_type][mapping.acf_field] = mapping.cpub_field;
       });
       setLocalMappings((prev) => {
-        const merged = { ...prev };
+        const merged: Record<string, Record<string, string>> = { ...prev };
         for (const [pt, fields] of Object.entries(grouped)) {
-          merged[pt] = { ...(merged[pt] ?? {}), ...fields };
+          const existing = merged[pt] ?? {};
+          merged[pt] = { ...existing, ...fields };
         }
         return merged;
       });
@@ -186,13 +185,10 @@ export default function AcfMappings() {
   }, [data, syncedFromServer]);
 
   const handleFieldChange = useCallback((postType: string, acfName: string, cpubField: string) => {
-    setLocalMappings((prev) => ({
-      ...prev,
-      [postType]: {
-        ...(prev[postType] ?? {}),
-        [acfName]: cpubField,
-      },
-    }));
+    setLocalMappings((prev) => {
+      const existing = prev[postType] ?? {};
+      return { ...prev, [postType]: { ...existing, [acfName]: cpubField } };
+    });
   }, []);
 
   const handleFieldsLoaded = useCallback((postType: string, fields: AcfField[]) => {
@@ -270,7 +266,7 @@ export default function AcfMappings() {
     <FieldTable
       postType={pt.name}
       cpubValues={localMappings[pt.name] ?? {}}
-      onChangeField={(acfName, cpubField) => handleFieldChange(pt.name, acfName, cpubField)}
+      onChangeField={(acfName, cpubField) => { handleFieldChange(pt.name, acfName, cpubField); }}
       onFieldsLoaded={handleFieldsLoaded}
     />
   );
