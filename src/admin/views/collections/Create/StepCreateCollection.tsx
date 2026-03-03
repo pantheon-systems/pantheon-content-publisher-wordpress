@@ -5,7 +5,7 @@ import {
   TextInput,
 } from "@pantheon-systems/pds-toolkit-react";
 import { useMutation } from "@tanstack/react-query";
-import { Controller, useForm, type ControllerRenderProps } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { apiClient } from "../../../api/client";
 import { getErrorMessage } from "../../../lib/errors";
 import { usePostTypeOptions } from "../../../hooks/usePostTypeOptions";
@@ -112,7 +112,7 @@ export default function StepCreateCollection({
             <Controller
               name="publishAs"
               control={control}
-              render={({ field }: { field: ControllerRenderProps<{ collectionUrl: string; publishAs: string }, "publishAs"> }) => (
+              render={({ field }) => (
                 <Select
                   id="publish-as"
                   label="Publish your document as:"
