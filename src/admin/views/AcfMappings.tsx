@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   useQuery,
   useMutation,
@@ -7,6 +7,7 @@ import {
 import {
   Button,
   SectionMessage,
+  Tabs,
   useToast,
   ToastType,
 } from "@pantheon-systems/pds-toolkit-react";
@@ -32,6 +33,7 @@ interface AcfMappingsResponse {
   mappings: AcfMapping[];
   user_match_by: "login" | "email";
   errors: string[];
+  post_types_with_fields: PostTypeOption[];
 }
 
 interface FieldRowProps {
@@ -64,7 +66,7 @@ interface FieldTableProps {
   postType: string;
   cpubValues: Record<string, string>;
   onChangeField: (acfName: string, cpubField: string) => void;
-  onFieldsLoaded: (fields: AcfField[]) => void;
+  onFieldsLoaded: (postType: string, fields: AcfField[]) => void;
 }
 
 function FieldTable({ postType, cpubValues, onChangeField, onFieldsLoaded }: FieldTableProps) {
@@ -82,9 +84,9 @@ function FieldTable({ postType, cpubValues, onChangeField, onFieldsLoaded }: Fie
   // Notify parent of loaded fields for user-type detection
   useEffect(() => {
     if (fields.length > 0) {
-      onFieldsLoaded(fields);
+      onFieldsLoaded(postType, fields);
     }
-  }, [fields, onFieldsLoaded]);
+  }, [fields, onFieldsLoaded, postType]);
 
   if (isLoading) {
     return <p className="text-sm text-gray-500 py-2">Loading ACF fields…</p>;
@@ -148,28 +150,17 @@ export default function AcfMappings() {
   });
   const acfActive = window.CPUB_BOOTSTRAP.acf_active;
 
-  const configuredPostType =
-    (window.CPUB_BOOTSTRAP.configured.publish_as as string) ?? "post";
+  const postTypesWithFields = data?.post_types_with_fields ?? [];
 
-  // Local state: acf_field_name → cpub_field
-  const [localMappings, setLocalMappings] = useState<Record<string, string>>(() => {
-    const initial: Record<string, string> = {};
-    if (data) {
-      data.mappings
-        .filter((m) => m.post_type === configuredPostType)
-        .forEach((m) => {
-          initial[m.acf_field] = m.cpub_field;
-        });
-    }
-    return initial;
-  });
+  // Local state: post_type → acf_field_name → cpub_field
+  const [localMappings, setLocalMappings] = useState<Record<string, Record<string, string>>>({});
 
   const [userMatchBy, setUserMatchBy] = useState<"login" | "email">(
     data?.user_match_by ?? "login"
   );
 
-  // Track loaded ACF fields for user-type detection
-  const [loadedFields, setLoadedFields] = useState<AcfField[]>([]);
+  // Track loaded ACF fields per post type for user-type detection
+  const [loadedFieldsByType, setLoadedFieldsByType] = useState<Record<string, AcfField[]>>({});
 
   // Sync remote data into local state once loaded
   const [syncedFromServer, setSyncedFromServer] = useState(false);
@@ -177,29 +168,51 @@ export default function AcfMappings() {
     if (data && !syncedFromServer) {
       setSyncedFromServer(true);
       setUserMatchBy(data.user_match_by ?? "login");
-      const synced: Record<string, string> = {};
-      data.mappings
-        .filter((m) => m.post_type === configuredPostType)
-        .forEach((m) => {
-          synced[m.acf_field] = m.cpub_field;
-        });
-      setLocalMappings((prev) => ({ ...prev, ...synced }));
+      const grouped: Record<string, Record<string, string>> = {};
+      data.mappings.forEach((m) => {
+        if (!grouped[m.post_type]) {
+          grouped[m.post_type] = {};
+        }
+        grouped[m.post_type][m.acf_field] = m.cpub_field;
+      });
+      setLocalMappings((prev) => {
+        const merged = { ...prev };
+        for (const [pt, fields] of Object.entries(grouped)) {
+          merged[pt] = { ...(merged[pt] ?? {}), ...fields };
+        }
+        return merged;
+      });
     }
-  }, [data, syncedFromServer, configuredPostType]);
+  }, [data, syncedFromServer]);
 
-  const handleFieldChange = (acfName: string, cpubField: string) => {
-    setLocalMappings((prev) => ({ ...prev, [acfName]: cpubField }));
-  };
+  const handleFieldChange = useCallback((postType: string, acfName: string, cpubField: string) => {
+    setLocalMappings((prev) => ({
+      ...prev,
+      [postType]: {
+        ...(prev[postType] ?? {}),
+        [acfName]: cpubField,
+      },
+    }));
+  }, []);
+
+  const handleFieldsLoaded = useCallback((postType: string, fields: AcfField[]) => {
+    setLoadedFieldsByType((prev) => ({ ...prev, [postType]: fields }));
+  }, []);
 
   const handleSave = () => {
-    // Build flat mappings array, omitting empty cpub fields
-    const mappings: AcfMapping[] = Object.entries(localMappings)
-      .filter(([, cpubField]) => cpubField.trim())
-      .map(([acfField, cpubField]) => ({
-        post_type: configuredPostType,
-        acf_field: acfField,
-        cpub_field: cpubField.trim(),
-      }));
+    // Build flat mappings array across all post types, omitting empty cpub fields
+    const mappings: AcfMapping[] = [];
+    for (const [postType, fields] of Object.entries(localMappings)) {
+      for (const [acfField, cpubField] of Object.entries(fields)) {
+        if (cpubField.trim()) {
+          mappings.push({
+            post_type: postType,
+            acf_field: acfField,
+            cpub_field: cpubField.trim(),
+          });
+        }
+      }
+    }
 
     saveMutation.mutate(
       { mappings, user_match_by: userMatchBy },
@@ -249,7 +262,18 @@ export default function AcfMappings() {
     );
   }
 
-  const hasUserFields = loadedFields.some((f) => f.type === "user");
+  const hasUserFields = Object.values(loadedFieldsByType).some(
+    (fields) => fields.some((f) => f.type === "user")
+  );
+
+  const renderFieldTable = (pt: PostTypeOption) => (
+    <FieldTable
+      postType={pt.name}
+      cpubValues={localMappings[pt.name] ?? {}}
+      onChangeField={(acfName, cpubField) => handleFieldChange(pt.name, acfName, cpubField)}
+      onFieldsLoaded={handleFieldsLoaded}
+    />
+  );
 
   return (
     <div className="space-y-6">
@@ -272,13 +296,21 @@ export default function AcfMappings() {
         />
       )}
 
-      {/* Field mapping table */}
-      <FieldTable
-        postType={configuredPostType}
-        cpubValues={localMappings}
-        onChangeField={handleFieldChange}
-        onFieldsLoaded={setLoadedFields}
-      />
+      {/* Field mapping tables per post type */}
+      {postTypesWithFields.length === 0 ? (
+        <p className="text-sm text-gray-500 py-2 italic">
+          No post types have ACF field groups configured. Create an ACF field
+          group and assign it to a post type first.
+        </p>
+      ) : (
+        <Tabs
+          ariaLabel="Post type ACF mappings"
+          tabs={postTypesWithFields.map((pt) => ({
+            tabLabel: pt.label,
+            panelContent: renderFieldTable(pt),
+          }))}
+        />
+      )}
 
       {/* User field matching — only when user-type ACF fields exist */}
       {hasUserFields && (
@@ -293,7 +325,7 @@ export default function AcfMappings() {
                 name="userMatchBy"
                 value="login"
                 checked={userMatchBy === "login"}
-                onChange={() => setUserMatchBy("login")}
+                onChange={() => { setUserMatchBy("login"); }}
                 className="accent-purple-600"
               />
               User login
@@ -304,7 +336,7 @@ export default function AcfMappings() {
                 name="userMatchBy"
                 value="email"
                 checked={userMatchBy === "email"}
-                onChange={() => setUserMatchBy("email")}
+                onChange={() => { setUserMatchBy("email"); }}
                 className="accent-purple-600"
               />
               User email
