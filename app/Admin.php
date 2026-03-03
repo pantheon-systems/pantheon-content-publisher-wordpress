@@ -148,6 +148,7 @@ class Admin
 			'plugin_main_page' => menu_page_url($this->menuSlug, false),
 			'is_pcc_configured' => $isPCCConfigured,
 			'acf_active' => (new AcfFieldMapper())->isAcfActive(),
+			'available_post_types' => (new PostTypes())->getAvailable(),
 			'configured' => [
 				'collection_url' => site_url(),
 				'collection_id' => get_option(CPUB_SITE_ID_OPTION_KEY),
