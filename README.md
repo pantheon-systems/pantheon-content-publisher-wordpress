@@ -41,6 +41,7 @@
 
 - [Table of contents](#table-of-contents)
 - [Quick start](#quick-start)
+- [Custom post types](#custom-post-types)
 - [Development](#development)
 - [Repository Actions](#repository-actions)
 - [Requirements](#requirements)
@@ -71,6 +72,36 @@ or
 
 **_If installing from source, make sure to follow the build instructions in the [Development](#development) section
 below_**
+
+## Custom post types
+
+The plugin supports publishing content to any public post type registered on your WordPress site, not just the default Post and Page types.
+
+For more details on configuring WordPress with Content Publisher, see the [WordPress Tutorial](https://docs.content.pantheon.io/wordpress-tutorial#h.dsdditst2j75).
+
+### Selecting a post type
+
+When creating or editing a collection in the plugin settings, you can choose which WordPress post type the collection's documents should be published as. The dropdown lists all public post types available on your WordPress site.
+
+You can also select **"Chosen by the author"** to allow document authors to control the post type on a per-document basis using the `wp-post-type` metadata field.
+
+### The `wp-post-type` metadata field
+
+When a collection is configured with "Chosen by the author", the plugin reads a metadata field called **`wp-post-type`** from each document to determine which post type to use.
+
+To set the post type for a document, add a metadata field in the Content Publisher dashboard (or the Google Docs add-on) with the system name `wp-post-type`. The value should be the slug of the desired post type (e.g. `post`, `page`).
+
+The list of allowed values must be configured manually by the administrator in the Content Publisher dashboard or the Google Docs add-on. The plugin does not automatically synchronize the available post types.
+
+### Fallback behavior
+
+The plugin falls back to the default `post` type in the following cases:
+
+1. The collection is set to "Chosen by the author" but the document does not have a `wp-post-type` metadata field.
+2. The `wp-post-type` metadata field is present but empty.
+3. The `wp-post-type` value does not match any public post type registered on the WordPress site.
+
+Changing the post type setting on a collection only affects future publishes and does not modify previously published content.
 
 ## Development
 
