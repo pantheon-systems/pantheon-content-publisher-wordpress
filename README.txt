@@ -26,6 +26,9 @@ Publish content to any public post type registered on your WordPress site, inclu
 = Smart Components =
 Embed rich media (YouTube, Vimeo, etc.) directly from Google Docs using the Content Publisher add-on. Components are rendered as native WordPress embeds on publish.
 
+= ACF Integration =
+Sync Content Publisher metadata fields to Advanced Custom Fields. Define field mappings per post type in the Integration tab and metadata values are automatically applied on every publish.
+
 For more information, please check [Pantheon Content Publisher documentation](https://docs.content.pantheon.io).
 
 == Installation ==
@@ -66,6 +69,7 @@ All posts/pages created with Pantheon Content Publisher will remain on your Word
 == Changelog ==
 
 = 1.3.5-dev =
+* Feature: ACF integration — sync Content Publisher metadata fields to Advanced Custom Fields with per-post-type mappings [#201](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/201)
 * Feature: Smart Components foundation with Media Embed support for embedding videos and media via Google Docs add-on [#200](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/200)
 * Feature: Add support for publishing to custom post types with author-choice mode via `wp-post-type` metadata field [#193](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/193)
 * Fix: Async thumbnail generation for featured images to prevent PHP-FPM timeouts on Pantheon [#196](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/196)
