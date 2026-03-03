@@ -11,6 +11,7 @@ interface Window {
     assets_url: string;
     plugin_main_page: string;
     is_pcc_configured: boolean;
+    acf_active: boolean;
     available_post_types: PostTypeOption[];
     configured: {
       collection_url: string;

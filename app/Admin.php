@@ -147,6 +147,7 @@ class Admin
 			'assets_url' => CPUB_PLUGIN_DIR_URL . 'assets',
 			'plugin_main_page' => menu_page_url($this->menuSlug, false),
 			'is_pcc_configured' => $isPCCConfigured,
+			'acf_active' => (new AcfFieldMapper())->isAcfActive(),
 			'available_post_types' => (new PostTypes())->getAvailable(),
 			'configured' => [
 				'collection_url' => site_url(),

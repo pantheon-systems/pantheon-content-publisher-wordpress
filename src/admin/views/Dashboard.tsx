@@ -8,6 +8,7 @@ import {
   TextInput,
   ButtonLink,
   ClipboardButton,
+  Tabs,
 } from "@pantheon-systems/pds-toolkit-react";
 import { useMemo, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
@@ -18,6 +19,7 @@ import { SRC_ACTIONS } from "../lib/constants";
 import { useCollectionData } from "../hooks/useCollectionData";
 import { usePostTypeOptions } from "../hooks/usePostTypeOptions";
 import CollectionInfo from "../components/CollectionInfo";
+import AcfMappings from "./AcfMappings";
 
 export default function Dashboard() {
   const { publish_as, webhook } = window.CPUB_BOOTSTRAP.configured;
@@ -30,7 +32,6 @@ export default function Dashboard() {
   const [addToast] = useToast();
   const [showDismissConfirmModal, setShowDismissConfirmModal] = useState(false);
   const [hideWebhookNotice, setHideWebhookNotice] = useState(false);
-
   const shouldShowWebhookNotice = useMemo(() => {
     // Show when not dismissed server-side AND we have a valid webhook url
     return (
@@ -132,6 +133,13 @@ export default function Dashboard() {
     <div className="space-y-6">
       <h2 className="pds-ts-2xl">{collectionName}</h2>
 
+      <Tabs
+        ariaLabel="Dashboard sections"
+        tabs={[
+          {
+            tabLabel: "Connection",
+            panelContent: (
+              <div className="space-y-6">
       {shouldShowWebhookNotice && (
         <div className="p-6 rounded bg-[#E5E0F8] flex gap-4">
           <div>
@@ -376,6 +384,15 @@ export default function Dashboard() {
           </div>
         </div>
       </Modal>
+              </div>
+            ),
+          },
+          {
+            tabLabel: "Integration",
+            panelContent: <AcfMappings />,
+          },
+        ]}
+      />
     </div>
   );
 }
