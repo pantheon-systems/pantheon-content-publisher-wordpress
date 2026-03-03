@@ -2,9 +2,11 @@
 
 namespace Pantheon\ContentPublisher;
 
+// phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols -- WordPress direct access guard.
 if (!defined('ABSPATH')) {
 	exit;
 }
+// phpcs:enable PSR1.Files.SideEffects.FoundWithSymbols
 
 /**
  * Utility class for working with WordPress post types in the plugin context.
