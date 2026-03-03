@@ -55,6 +55,6 @@ if (!function_exists('get_field_object')) {
 	function get_field_object($field, $postId)
 	{
 		$type = $GLOBALS['_acf_test_field_types'][$field] ?? 'text';
-		return ['type' => $type];
+		return ['type' => $type, 'post_id' => $postId];
 	}
 }

@@ -46,7 +46,9 @@ class AcfFieldMapperCrudTest extends WP_UnitTestCase
 
 	public function testSaveMappingsSanitisesFields(): void
 	{
-		$this->mapper->saveMappings([['post_type' => 'POST TYPE', 'acf_field' => 'my_field', 'cpub_field' => '  author  ']]);
+		$this->mapper->saveMappings([
+			['post_type' => 'POST TYPE', 'acf_field' => 'my_field', 'cpub_field' => '  author  '],
+		]);
 		$stored = $this->mapper->getMappings();
 		$this->assertSame('posttype', $stored[0]['post_type']);
 		$this->assertSame('author', $stored[0]['cpub_field']);
