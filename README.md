@@ -135,6 +135,21 @@ If a URL is not recognized by any WordPress oEmbed provider, the plugin falls ba
 
 Default dimensions are **100% width** and **400px height**. Authors can override these per component.
 
+### Registering custom components
+
+Developers can register custom smart components using the `cpub_register_smart_components` action hook. Each component must implement the `SmartComponentInterface` (`Pantheon\ContentPublisher\Interfaces\SmartComponentInterface`), which requires four methods:
+
+- `type(): string` — A unique identifier (e.g. `'MY_COMPONENT'`).
+- `schema(): array` — The field schema exposed to the Google Docs add-on.
+- `render(array $attrs): string` — Returns the HTML output for the component.
+- `allowedHtmlTags(): array` — HTML tags and attributes required by the component for `wp_kses`.
+
+```php
+add_action('cpub_register_smart_components', function ($registry) {
+    $registry->register(new My_Custom_Component());
+});
+```
+
 ### Limitations
 
 - Components must be placed in their own paragraph in Google Docs. Inline placement within other text can cause issues.
