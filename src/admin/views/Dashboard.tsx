@@ -1,6 +1,6 @@
 import {
   Button,
-  RadioGroup,
+  Select,
   SectionMessage,
   Modal,
   useToast,
@@ -8,6 +8,7 @@ import {
   TextInput,
   ButtonLink,
   ClipboardButton,
+  Tabs,
 } from "@pantheon-systems/pds-toolkit-react";
 import { useMemo, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
@@ -16,11 +17,14 @@ import { apiClient } from "../api/client";
 import { getErrorMessage } from "../lib/errors";
 import { SRC_ACTIONS } from "../lib/constants";
 import { useCollectionData } from "../hooks/useCollectionData";
+import { usePostTypeOptions } from "../hooks/usePostTypeOptions";
 import CollectionInfo from "../components/CollectionInfo";
+import AcfMappings from "./AcfMappings";
 
 export default function Dashboard() {
   const { publish_as, webhook } = window.CPUB_BOOTSTRAP.configured;
   const { collectionName, collectionUrl, collectionId } = useCollectionData();
+  const postTypeOptions = usePostTypeOptions();
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showDisconnectModal, setShowDisconnectModal] = useState(false);
@@ -28,7 +32,6 @@ export default function Dashboard() {
   const [addToast] = useToast();
   const [showDismissConfirmModal, setShowDismissConfirmModal] = useState(false);
   const [hideWebhookNotice, setHideWebhookNotice] = useState(false);
-
   const shouldShowWebhookNotice = useMemo(() => {
     // Show when not dismissed server-side AND we have a valid webhook url
     return (
@@ -67,7 +70,7 @@ export default function Dashboard() {
     reset,
     getValues,
   } = useForm<{
-    publishAs: "post" | "page";
+    publishAs: string;
   }>({
     mode: "onChange",
     defaultValues: {
@@ -76,7 +79,7 @@ export default function Dashboard() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async (publishAs: "post" | "page") => {
+    mutationFn: async (publishAs: string) => {
       return apiClient.put("/collection", {
         post_type: publishAs,
       });
@@ -111,7 +114,7 @@ export default function Dashboard() {
     },
   });
 
-  const onSubmit = (values: { publishAs: "post" | "page" }) => {
+  const onSubmit = (values: { publishAs: string }) => {
     updateMutation.mutate(values.publishAs);
   };
 
@@ -130,6 +133,13 @@ export default function Dashboard() {
     <div className="space-y-6">
       <h2 className="pds-ts-2xl">{collectionName}</h2>
 
+      <Tabs
+        ariaLabel="Dashboard sections"
+        tabs={[
+          {
+            tabLabel: "Connection",
+            panelContent: (
+              <div className="space-y-6">
       {shouldShowWebhookNotice && (
         <div className="p-6 rounded bg-[#E5E0F8] flex gap-4">
           <div>
@@ -258,17 +268,14 @@ export default function Dashboard() {
           <Controller
             name="publishAs"
             control={control}
-            render={({ field }) => (
-              <RadioGroup
+            render={({ field }: { field: { value: string; onChange: (v: string) => void; onBlur: () => void } }) => (
+              <Select
                 id="publish-as"
                 label="Publish your document as:"
-                options={[
-                  { label: "Post", value: "post" },
-                  { label: "Page", value: "page" },
-                ]}
+                options={postTypeOptions}
                 value={field.value}
-                onValueChange={field.onChange}
-                onBlur={field.onBlur}
+                onOptionSelect={(option: { value: string }) => field.onChange(option.value)}
+                onBlur={() => field.onBlur()}
               />
             )}
           />
@@ -276,7 +283,7 @@ export default function Dashboard() {
 
         <SectionMessage
           type="info"
-          message="You can find Content Publisher documents under the 'Posts' or 'Pages' menu in WordPress, depending on your selection at the time of publishing."
+          message="Select a post type to publish your documents as. Choose 'Chosen by the author' to let document authors specify the post type via the 'wp-post-type' metadata field."
         />
 
         <div className="pds-button-group mt-4">
@@ -377,6 +384,15 @@ export default function Dashboard() {
           </div>
         </div>
       </Modal>
+              </div>
+            ),
+          },
+          {
+            tabLabel: "Integration",
+            panelContent: <AcfMappings />,
+          },
+        ]}
+      />
     </div>
   );
 }

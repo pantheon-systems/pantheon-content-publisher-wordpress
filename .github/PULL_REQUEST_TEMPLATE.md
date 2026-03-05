@@ -16,7 +16,7 @@
 
 - [ ] I've tested the code.
 - [ ] My code follows the repository code
-  style. <!-- Ruleset: https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/primary/phpcs.xml/ -->
+  style. <!-- Ruleset: https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/main/phpcs.xml/ -->
 - [ ] My code follows the accessibility
   standards. <!-- Guidelines: https://make.wordpress.org/core/handbook/best-practices/coding-standards/accessibility-coding-standards/ -->
 - [ ] My code follows the PHP DocBlock documentation

@@ -2,6 +2,10 @@
 
 namespace Pantheon\ContentPublisher;
 
+if (!defined('ABSPATH')) {
+	exit;
+}
+
 use function add_action;
 use function add_menu_page;
 use function file_exists;
@@ -143,6 +147,8 @@ class Admin
 			'assets_url' => CPUB_PLUGIN_DIR_URL . 'assets',
 			'plugin_main_page' => menu_page_url($this->menuSlug, false),
 			'is_pcc_configured' => $isPCCConfigured,
+			'acf_active' => (new AcfFieldMapper())->isAcfActive(),
+			'available_post_types' => (new PostTypes())->getAvailable(),
 			'configured' => [
 				'collection_url' => site_url(),
 				'collection_id' => get_option(CPUB_SITE_ID_OPTION_KEY),

@@ -2,6 +2,10 @@
 
 namespace Pantheon\ContentPublisher;
 
+if (!defined('ABSPATH')) {
+	exit;
+}
+
 use PccPhpSdk\api\ArticlesApi;
 use PccPhpSdk\api\Query\Enums\ContentType;
 use PccPhpSdk\api\Query\Enums\PublishingLevel;
@@ -146,7 +150,7 @@ class PccSyncManager
 			'post_excerpt' => $preparedData['post_excerpt'],
 			'post_status' => $isDraft ? 'draft' : 'publish',
 			'post_name' => $article->slug,
-			'post_type' => $this->getIntegrationPostType(),
+			'post_type' => $this->getIntegrationPostType($article),
 		];
 
 		if (!$postId) {
@@ -164,7 +168,7 @@ class PccSyncManager
 		return $postId;
 	}
 
-	/**
+		/**
 	 * Update post tags.
 	 *
 	 * @param $postId
@@ -202,6 +206,13 @@ class PccSyncManager
 				update_post_meta($postId, '_yoast_wpseo_metadesc', $article->metadata['description']);
 			}
 		}
+
+		// Apply ACF field mappings when configured.
+		(new AcfFieldMapper())->applyMappings(
+			$postId,
+			$this->getIntegrationPostType($article),
+			(array) $article->metadata
+		);
 	}
 
 	private function getFeaturedImageKey()
@@ -252,19 +263,51 @@ class PccSyncManager
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 			require_once ABSPATH . 'wp-admin/includes/image.php';
 			if (!function_exists('media_sideload_image')) {
-				error_log('media_sideload_image does not exist after includes, returning');
-				// has to fail silently
+				error_log('Pantheon Content Publisher: media_sideload_image does not exist after includes');
 				return;
 			}
 		}
 
-		// Download and attach the new image.
-		$imageId = media_sideload_image($featuredImageURL, $postId, null, 'id');
+		// WordPress's media_sideload_image() normally generates thumbnails during upload (10-60+ seconds).
+		// This causes PHP-FPM timeout on Pantheon. We use filters to prevent thumbnail generation NOW,
+		// and defer it to WP-Cron instead. These filters intercept WordPress's internal calls and skip
+		// the expensive operations, allowing only the full-size image to upload (fast ~1-2s).
+		add_filter('intermediate_image_sizes_advanced', [$this, 'skipThumbnailGeneration']);
+		add_filter('big_image_size_threshold', [$this, 'skipImageScaling']);
+		add_filter('wp_generate_attachment_metadata', [$this, 'skipMetadataGeneration'], 10, 2);
 
-		if (is_int($imageId)) {
-			update_post_meta($imageId, 'cpub_feature_image_url', $featuredImageURL);
-			// Set as the featured image.
-			set_post_thumbnail($postId, $imageId);
+		try {
+			// Upload full-size image only (filters above prevent the timeout-causing thumbnail generation)
+			$imageId = media_sideload_image($featuredImageURL, $postId, null, 'id');
+
+			// Remove filters immediately - only this specific image should skip thumbnails, not subsequent uploads
+			remove_filter('intermediate_image_sizes_advanced', [$this, 'skipThumbnailGeneration']);
+			remove_filter('big_image_size_threshold', [$this, 'skipImageScaling']);
+			remove_filter('wp_generate_attachment_metadata', [$this, 'skipMetadataGeneration'], 10);
+
+			// Check if image download returned an error
+			if (is_wp_error($imageId)) {
+				$error_msg = 'Pantheon Content Publisher: Failed to download featured image - ';
+				error_log($error_msg . $imageId->get_error_message());
+				// Mark post as having a failed featured image for admin attention
+				update_post_meta($postId, '_pcc_featured_image_failed', [
+					'url' => $featuredImageURL,
+					'error' => $imageId->get_error_message(),
+					'timestamp' => current_time('mysql')
+				]);
+				return;
+			}
+
+			if (is_int($imageId)) {
+				update_post_meta($imageId, 'cpub_feature_image_url', $featuredImageURL);
+				// Set full-size image as featured image (thumbnails don't exist yet, but full-size displays correctly)
+				set_post_thumbnail($postId, $imageId);
+				// Schedule WP-Cron to generate the skipped thumbnails in background (~1 min delay).
+				// Thumbnails that would timeout NOW (10-60s) run safely later via WP-Cron.
+				$this->scheduleAsyncThumbnailGeneration($imageId);
+			}
+		} catch (\Exception $e) {
+			error_log('Pantheon Content Publisher: Exception processing featured image - ' . $e->getMessage());
 		}
 	}
 
@@ -344,11 +387,33 @@ class PccSyncManager
 	/**
 	 * Get selected integration post type.
 	 *
-	 * @return false|mixed|null
+	 * If the configured post type is 'author_choice', reads the 'wp-post-type'
+	 * metadata field from the article. Falls back to 'post' if:
+	 * - No article is provided
+	 * - The metadata field is missing
+	 * - The specified post type doesn't exist or isn't public
+	 *
+	 * @param Article|null $article The article to get the post type from (for author_choice mode)
+	 * @return string The post type to use
 	 */
-	private function getIntegrationPostType()
+	private function getIntegrationPostType(?Article $article = null): string
 	{
-		return get_option(CPUB_INTEGRATION_POST_TYPE_OPTION_KEY);
+		$configuredType = get_option(CPUB_INTEGRATION_POST_TYPE_OPTION_KEY, 'post');
+
+		if ($configuredType !== 'author_choice') {
+			return (new PostTypes())->validated($configuredType);
+		}
+
+		if (!$article || !isset($article->metadata) || !is_array($article->metadata)) {
+			return 'post';
+		}
+
+		$authorPostType = $article->metadata['wp-post-type'] ?? null;
+		if (empty($authorPostType)) {
+			return 'post';
+		}
+
+		return (new PostTypes())->validated($authorPostType);
 	}
 
 	/**
@@ -381,11 +446,21 @@ class PccSyncManager
 	 */
 	public function storeArticles()
 	{
-		if (!$this->getIntegrationPostType()) {
+		// Check if integration is configured (any post type set, including author_choice)
+		$configuredType = get_option(CPUB_INTEGRATION_POST_TYPE_OPTION_KEY);
+		if (!$configuredType) {
 			return;
 		}
 		$articlesApi = new ArticlesApi($this->pccClient());
-		$articles = $articlesApi->getAllArticles();
+		// Fetch only the fields we need; metadata is required for author_choice post type resolution.
+		$articles = $articlesApi->getAllArticles(null, null, [
+			'id',
+			'slug',
+			'title',
+			'tags',
+			'content',
+			'metadata',
+		]);
 		/** @var Article $article */
 		foreach ($articles->articles as $article) {
 			$this->storeArticle($article);
@@ -563,5 +638,101 @@ class PccSyncManager
 		}
 
 		return $site;
+	}
+
+	/**
+	 * Skip thumbnail generation during image upload to prevent timeout.
+	 * Returns empty array to prevent WordPress from creating any thumbnail sizes.
+	 *
+	 * @param array $sizes Array of thumbnail sizes
+	 * @return array Empty array
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+	 */
+	public function skipThumbnailGeneration($_sizes)
+	{
+		return [];
+	}
+
+	/**
+	 * Prevent WordPress from creating a "scaled" version of large images.
+	 * The scaled version is created when images exceed the threshold (default 2560px).
+	 *
+	 * @param int $threshold The pixel threshold
+	 * @return bool False to disable scaling
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+	 */
+	public function skipImageScaling($_threshold)
+	{
+		return false;
+	}
+
+	/**
+	 * Skip metadata generation during image upload.
+	 * Returns minimal metadata to prevent thumbnail generation from happening.
+	 *
+	 * @param array $metadata Attachment metadata
+	 * @param int $attachment_id Attachment ID
+	 * @return array Minimal metadata to prevent processing
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+	 */
+	public function skipMetadataGeneration($metadata, $_attachment_id)
+	{
+		// Return minimal metadata to prevent any image processing
+		// Full metadata will be generated async later
+		return [
+			'file' => isset($metadata['file']) ? $metadata['file'] : '',
+			'width' => isset($metadata['width']) ? $metadata['width'] : 0,
+			'height' => isset($metadata['height']) ? $metadata['height'] : 0,
+			'filesize' => isset($metadata['filesize']) ? $metadata['filesize'] : 0,
+		];
+	}
+
+	/**
+	 * Schedule asynchronous thumbnail generation for an image using WP-Cron.
+	 *
+	 * The full-size image is available immediately; thumbnails are deferred to avoid
+	 * PHP-FPM timeouts during the publish request. On hosts with WP-Cron enabled,
+	 * this runs on the next page load after the 60-second delay. On Pantheon, where
+	 * WP-Cron page-load triggers are disabled (DISABLE_WP_CRON), the event runs on
+	 * the next hourly Pantheon Cron cycle via `wp cron event run --due-now`.
+	 *
+	 * Images are never broken in either case — WordPress serves the full-size image
+	 * until thumbnails are generated.
+	 *
+	 * @param int $imageId The attachment ID to generate thumbnails for
+	 */
+	private function scheduleAsyncThumbnailGeneration($imageId)
+	{
+		wp_schedule_single_event(time() + 60, 'cpub_generate_thumbnails', [$imageId]);
+	}
+
+	/**
+	 * Generate thumbnails for an image asynchronously.
+	 * Called by the 'cpub_generate_thumbnails' WP-Cron event.
+	 *
+	 * @param int $imageId The attachment ID to generate thumbnails for
+	 */
+	public static function generateThumbnailsAsync($imageId)
+	{
+		require_once ABSPATH . 'wp-admin/includes/image.php';
+
+		$file_path = get_attached_file($imageId);
+		if (!$file_path || !file_exists($file_path)) {
+			$error_msg = 'Pantheon Content Publisher: File not found for async thumbnail generation, ';
+			error_log($error_msg . 'image ID: ' . $imageId);
+			return;
+		}
+
+		// Generate all thumbnail sizes
+		$metadata = wp_generate_attachment_metadata($imageId, $file_path);
+
+		if (is_wp_error($metadata)) {
+			$error_msg = 'Pantheon Content Publisher: Thumbnail generation failed for image ';
+			error_log($error_msg . $imageId . ' - ' . $metadata->get_error_message());
+			return;
+		}
+
+		// Update attachment metadata with new thumbnail info
+		wp_update_attachment_metadata($imageId, $metadata);
 	}
 }

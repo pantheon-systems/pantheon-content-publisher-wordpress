@@ -1,10 +1,10 @@
 # Pantheon Content Publisher for WordPress
 
 **Contributors:** [getpantheon](https://profiles.wordpress.org/getpantheon/), [a11rew](https://profiles.wordpress.org/a11rew), [anaispantheor](https://profiles.wordpress.org/anaispantheor/), [roshnykunjappan](https://profiles.wordpress.org/roshnykunjappan/), [mklasen](https://profiles.wordpress.org/mklasen/), [jazzs3quence](https://profiles.wordpress.org/jazzs3quence/), [swb1192](https://profiles.wordpress.org/swb1192)
-**Tags:** pantheon, content, google docs  
+**Tags:** pantheon, content, google docs, acf
 **Requires at least:** 5.7  
 **Tested up to:** 6.9  
-**Stable tag:** 1.3.4  
+**Stable tag:** 1.3.5  
 **Requires PHP:** 8.1.0  
 **License:** GPLv2 or later  
 **License URI:** <http://www.gnu.org/licenses/gpl-2.0.html>
@@ -41,6 +41,8 @@
 
 - [Table of contents](#table-of-contents)
 - [Quick start](#quick-start)
+- [Custom post types](#custom-post-types)
+- [ACF Integration](#acf-integration)
 - [Development](#development)
 - [Repository Actions](#repository-actions)
 - [Requirements](#requirements)
@@ -72,24 +74,77 @@ or
 **_If installing from source, make sure to follow the build instructions in the [Development](#development) section
 below_**
 
+## Custom post types
+
+The plugin supports publishing content to any public post type registered on your WordPress site, not just the default Post and Page types.
+
+For more details on configuring WordPress with Content Publisher, see the [WordPress Tutorial](https://docs.content.pantheon.io/wordpress-tutorial#h.dsdditst2j75).
+
+### Selecting a post type
+
+When creating or editing a collection in the plugin settings, you can choose which WordPress post type the collection's documents should be published as. The dropdown lists all public post types available on your WordPress site.
+
+You can also select **"Chosen by the author"** to allow document authors to control the post type on a per-document basis using the `wp-post-type` metadata field.
+
+### The `wp-post-type` metadata field
+
+When a collection is configured with "Chosen by the author", the plugin reads a metadata field called **`wp-post-type`** from each document to determine which post type to use.
+
+To set the post type for a document, add a metadata field in the Content Publisher dashboard (or the Google Docs add-on) with the system name `wp-post-type`. The value should be the slug of the desired post type (e.g. `post`, `page`).
+
+The list of allowed values must be configured manually by the administrator in the Content Publisher dashboard or the Google Docs add-on. The plugin does not automatically synchronize the available post types.
+
+### Fallback behavior
+
+The plugin falls back to the default `post` type in the following cases:
+
+1. The collection is set to "Chosen by the author" but the document does not have a `wp-post-type` metadata field.
+2. The `wp-post-type` metadata field is present but empty.
+3. The `wp-post-type` value does not match any public post type registered on the WordPress site.
+
+Changing the post type setting on a collection only affects future publishes and does not modify previously published content.
+
+## ACF Integration
+
+The plugin can sync Content Publisher metadata fields to [Advanced Custom Fields (ACF)](https://www.advancedcustomfields.com/). When a document is published, mapped ACF fields are automatically populated with the corresponding metadata values.
+
+### Requirements
+
+The ACF plugin (free or Pro) must be installed and active. If ACF is not detected, the Integration tab displays a warning and mappings are skipped during publish.
+
+### Configuring field mappings
+
+1. Navigate to **Settings > Pantheon Content Publisher** in the WordPress admin.
+2. Click the **Integration** tab.
+3. Select a **post type tab** — each tab shows ACF fields from the field groups assigned to that post type.
+4. For each ACF field you want to map, enter the **exact Content Publisher metadata field name** in the text input. Field names are **case-sensitive** and must match exactly as defined in your Content Publisher collection.
+5. Leave a field blank to skip it.
+6. Click **Save Mapping**.
+
+Mappings are scoped per post type. When a document is published, only the mappings for the target post type are applied.
+
+### Error visibility
+
+Sync errors (missing metadata fields, unresolved users, ACF inactive) are displayed in the Integration tab under a "Errors from last sync" banner. Errors auto-clear after one hour.
+
 ## Development
 
 1. `composer i && npm i` to install dependencies.
 2. `npm run watch` / `npm run dev` / `npm run prod` to build assets.
 Since version 1.3.0 `npm run build:vite` to build assets and dist/build folder.
 3. Read through
-   our [contributing guidelines](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/primary/.github/CONTRIBUTING.md)
+   our [contributing guidelines](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/main/.github/CONTRIBUTING.md)
    for additional information. Included are directions for opening issues, coding standards and miscellaneous notes.
 
 ## Repository Actions
 
 This repository takes advantage of the following workflows to automate the release & testing processes:
 
-- [PHPCS](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/primary/.github/workflows/php-style-lint.yml)
-- [PHPCompatibility](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/primary/.github/workflows/php-version-compatibility.yml)
+- [PHPCS](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/main/.github/workflows/php-style-lint.yml)
+- [PHPCompatibility](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/main/.github/workflows/php-version-compatibility.yml)
 - [Release Drafter](https://github.com/marketplace/actions/release-drafter)
 - [PR Labeler](https://github.com/marketplace/actions/pr-labeler)
-- [A custom workflow that builds release artifacts](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/primary/.github/workflows/release-artifact.yml)
+- [A custom workflow that builds release artifacts](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/main/.github/workflows/release-artifact.yml)
 
 These workflows will build a release draft and keep it up-to-date as new PRs are merged. Once a release is published, a
 ready-to-install zip file will be generated and attached to the newly-published release.
@@ -112,7 +167,7 @@ Pantheon Content Publisher is dependent on:
 ## Bugs and feature requests
 
 Have a bug or a feature request? Please first read
-the [issue guidelines](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/primary/.github/CONTRIBUTING.md#using-the-issue-tracker)
+the [issue guidelines](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/blob/main/.github/CONTRIBUTING.md#using-the-issue-tracker)
 and search for existing and closed issues. If your problem or idea is not addressed
 yet, [please open a new issue](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/issues/new).
 

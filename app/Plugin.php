@@ -7,6 +7,10 @@
 
 namespace Pantheon\ContentPublisher;
 
+if (!defined('ABSPATH')) {
+	exit;
+}
+
 /**
  * The main class
  */
@@ -39,6 +43,9 @@ class Plugin
 		new Settings();
 		new RestController();
 		new Admin();
+
+		// Register cron action for async thumbnail generation
+		add_action('cpub_generate_thumbnails', [PccSyncManager::class, 'generateThumbnailsAsync']);
 	}
 
 	/**

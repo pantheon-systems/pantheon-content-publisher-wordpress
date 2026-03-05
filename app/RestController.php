@@ -6,6 +6,10 @@
 
 namespace Pantheon\ContentPublisher;
 
+if (!defined('ABSPATH')) {
+	exit;
+}
+
 use WP_REST_Request;
 use WP_REST_Response;
 use PccPhpSdk\api\Query\Enums\PublishingLevel;
@@ -95,6 +99,26 @@ class RestController
 				'method' => 'GET',
 				'callback' => [$this, 'pantheonCloudStatusCheck'],
 			],
+			[
+				'route' => '/acf-mappings',
+				'method' => 'GET',
+				'callback' => [$this, 'getAcfMappings'],
+			],
+			[
+				'route' => '/acf-mappings',
+				'method' => 'PUT',
+				'callback' => [$this, 'updateAcfMappings'],
+			],
+			[
+				'route' => '/acf-fields',
+				'method' => 'GET',
+				'callback' => [$this, 'getAcfFields'],
+			],
+			[
+				'route' => '/post-types',
+				'method' => 'GET',
+				'callback' => [$this, 'getPostTypes'],
+			],
 		];
 
 		foreach ($endpoints as $endpoint) {
@@ -134,16 +158,41 @@ class RestController
 	}
 
 	/**
+	 * Get all available public post types.
+	 *
+	 * @return WP_REST_Response
+	 */
+	public function getPostTypes(): WP_REST_Response
+	{
+		if (!current_user_can('manage_options')) {
+			return new WP_REST_Response(
+				esc_html__(
+					'You are not authorized to perform this action.',
+					'pantheon-content-publisher'
+				),
+				401
+			);
+		}
+
+		return new WP_REST_Response((new PostTypes())->getAvailable());
+	}
+
+	/**
 	 * Handle incoming webhook requests.
 	 * @return void|WP_REST_Response
 	 */
 	public function handleWebhook(WP_REST_Request $request)
 	{
-		if (get_option(CPUB_WEBHOOK_SECRET_OPTION_KEY) !== $request->get_header('x-pcc-webhook-secret')) {
-			return new WP_REST_Response(
-				esc_html__('You are not authorized to perform this action', 'pantheon-content-publisher'),
-				401
-			);
+		// Webhook secrets are optional per PCC UI. If configured, validate them.
+		// If not configured, allow webhooks through (optional security feature).
+		$expected_secret = (string) get_option(CPUB_WEBHOOK_SECRET_OPTION_KEY);
+		$provided_secret = (string) $request->get_header('x-pcc-webhook-secret');
+
+		// Only validate if user opted-in to webhook secrets
+		if (!empty($expected_secret)) {
+			if (!hash_equals($expected_secret, $provided_secret)) {
+				return new WP_REST_Response('Unauthorized', 401);
+			}
 		}
 
 		$event = $request->get_param('event');
@@ -525,7 +574,11 @@ class RestController
 				$errorMessage = $parsedResponse['errors'][0]['message'] ?? 'Unknown error';
 				error_log('PCC connectCollection GraphQL error: ' . $errorMessage);
 				return new WP_REST_Response(
-					esc_html__('Failed to connect collection: ' . $errorMessage, 'pantheon-content-publisher'),
+					sprintf(
+						// translators: %s: Error message from the Content Publisher API
+						esc_html__( 'Failed to connect collection: %s', 'pantheon-content-publisher' ),
+						esc_html( $errorMessage )
+					),
 					400
 				);
 			}
@@ -586,5 +639,98 @@ class RestController
 	{
 		$headers = get_file_data(CPUB_PLUGIN_FILE, ['Version' => 'Version']);
 		return isset($headers['Version']) ? (string) $headers['Version'] : '';
+	}
+
+	/**
+	 * GET /acf-mappings — return all stored mappings and ACF availability.
+	 */
+	public function getAcfMappings(): WP_REST_Response
+	{
+		if (!current_user_can('manage_options')) {
+			return new WP_REST_Response(
+				esc_html__(
+					'You are not authorized to perform this action.',
+					'pantheon-content-publisher'
+				),
+				401
+			);
+		}
+
+		$mapper = (new AcfFieldMapper());
+
+		$postTypesWithFields = [];
+		if ($mapper->isAcfActive()) {
+			foreach ((new PostTypes())->getAvailable() as $pt) {
+				if (!empty($mapper->getAcfFields($pt['name']))) {
+					$postTypesWithFields[] = $pt;
+				}
+			}
+		}
+
+		return new WP_REST_Response([
+			'acf_active' => $mapper->isAcfActive(),
+			'mappings' => $mapper->getMappings(),
+			'user_match_by' => $mapper->getUserMatchBy(),
+			'errors' => $mapper->consumeErrors(),
+			'post_types_with_fields' => $postTypesWithFields,
+		]);
+	}
+
+	/**
+	 * PUT /acf-mappings — validate and persist a new mapping set.
+	 */
+	public function updateAcfMappings(WP_REST_Request $request): WP_REST_Response
+	{
+		if (!current_user_can('manage_options')) {
+			return new WP_REST_Response(
+				esc_html__(
+					'You are not authorized to perform this action.',
+					'pantheon-content-publisher'
+				),
+				401
+			);
+		}
+
+		$mappings = $request->get_param('mappings');
+		if (!is_array($mappings)) {
+			return new WP_REST_Response(
+				['message' => 'The "mappings" parameter must be an array.'],
+				400
+			);
+		}
+
+		$userMatchBy = sanitize_key((string) ($request->get_param('user_match_by') ?: 'login'));
+
+		try {
+			(new AcfFieldMapper())->saveMappings($mappings, $userMatchBy);
+		} catch (\InvalidArgumentException $e) {
+			return new WP_REST_Response(['message' => $e->getMessage()], 400);
+		}
+
+		$mapper = (new AcfFieldMapper());
+		return new WP_REST_Response([
+			'mappings' => $mapper->getMappings(),
+			'user_match_by' => $mapper->getUserMatchBy(),
+		]);
+	}
+
+	/**
+	 * GET /acf-fields?post_type=post — list ACF fields for a given post type.
+	 */
+	public function getAcfFields(WP_REST_Request $request): WP_REST_Response
+	{
+		if (!current_user_can('manage_options')) {
+			return new WP_REST_Response(
+				esc_html__(
+					'You are not authorized to perform this action.',
+					'pantheon-content-publisher'
+				),
+				401
+			);
+		}
+
+		$postType = sanitize_key((string) $request->get_param('post_type'));
+		$fields = (new AcfFieldMapper())->getAcfFields($postType ?: null);
+		return new WP_REST_Response(['fields' => $fields]);
 	}
 }
