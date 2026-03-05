@@ -23,6 +23,9 @@ Enable direct publishing from Google Docs to WordPress, simplifying content mana
 = Custom Post Type Support =
 Publish content to any public post type registered on your WordPress site, including custom post types. Authors can also specify the target post type per document via metadata.
 
+= Smart Components =
+Embed rich media (YouTube, Vimeo, etc.) directly from Google Docs using the Content Publisher add-on. Components are rendered as native WordPress embeds on publish.
+
 = ACF Integration =
 Sync Content Publisher metadata fields to Advanced Custom Fields (ACF). Navigate to Settings > Pantheon Content Publisher > Integration tab to define field mappings per post type. Each tab shows ACF fields from the field groups assigned to that post type — enter the exact Content Publisher metadata field name (case-sensitive) to create a mapping. Mapped values are automatically applied on every publish. Sync errors are displayed in the Integration tab and auto-clear after one hour. Requires the ACF plugin (free or Pro) to be installed and active. Works with custom post types.
 
@@ -83,6 +86,7 @@ Yes. When creating or editing a collection, select the target post type from the
 
 = 1.3.5 (5 March 2026) =
 * Feature: ACF integration — sync Content Publisher metadata fields to Advanced Custom Fields with per-post-type mappings [#201](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/201)
+* Feature: Smart Components foundation with Media Embed support for embedding videos and media via Google Docs add-on [#200](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/200)
 * Feature: Add support for publishing to custom post types with author-choice mode via `wp-post-type` metadata field [#193](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/193)
 * Fix: Async thumbnail generation for featured images to prevent PHP-FPM timeouts on Pantheon [#196](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/196)
 * Fix: Webhook secret validation is now optional rather than required, preventing 500 errors for unconfigured secrets [#195](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/195)
