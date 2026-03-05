@@ -270,7 +270,7 @@ class PccSyncManager
 		// Apply ACF field mappings when configured.
 		(new AcfFieldMapper())->applyMappings(
 			$postId,
-			$this->getIntegrationPostType(),
+			$this->getIntegrationPostType($article),
 			(array) $article->metadata
 		);
 	}
