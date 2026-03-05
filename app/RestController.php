@@ -28,13 +28,11 @@ use const CPUB_ACCESS_TOKEN_OPTION_KEY;
  */
 class RestController
 {
-	private SmartComponents $smartComponents;
 	/**
 	 * Class constructor, hooking into the REST API initialization.
 	 */
-	public function __construct(SmartComponents $smartComponents)
+	public function __construct()
 	{
-		$this->smartComponents = $smartComponents;
 		add_action('rest_api_init', [$this, 'registerRoutes']);
 	}
 
@@ -144,9 +142,9 @@ class RestController
 		$isPCCConfigured = $pccManager->isPCCConfigured();
 
 		$options = new StatusOptions(
-			smartComponents: $this->smartComponents->count() > 0,
-			smartComponentsCount: $this->smartComponents->count(),
-			smartComponentPreview: $this->smartComponents->count() > 0,
+			smartComponents: false,
+			smartComponentsCount: 0,
+			smartComponentPreview: false,
 			metadataGroups: false,
 			metadataGroupIdentifiers: null,
 			resolvePathConfigured: true,

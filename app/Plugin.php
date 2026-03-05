@@ -40,10 +40,8 @@ class Plugin
 	 */
 	private function init(): void
 	{
-		$smartComponents = new SmartComponents();
-		new Settings($smartComponents);
-		new RestController($smartComponents);
-		new ComponentEndpoints($smartComponents);
+		new Settings();
+		new RestController();
 		new Admin();
 
 		// Register cron action for async thumbnail generation
