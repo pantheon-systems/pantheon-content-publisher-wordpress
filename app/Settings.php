@@ -300,7 +300,9 @@ class Settings
 					$articlesApi = new ArticlesApi($pccClient);
 				} catch (Exception $e) {
 					status_header(500);
-					wp_die(esc_html__('Content Publisher: Failed to initialize PCC client.', 'pantheon-content-publisher'));
+					wp_die(
+						esc_html__('Content Publisher: Failed to initialize PCC client.', 'pantheon-content-publisher')
+					);
 					exit;
 				}
 
@@ -313,7 +315,12 @@ class Settings
 
 				if (!$article) {
 					status_header(403);
-					wp_die(esc_html__('Content Publisher: Document not found or not connected to your collection', 'pantheon-content-publisher'));
+					wp_die(
+						esc_html__(
+							'Content Publisher: Document not found or not connected to your collection',
+							'pantheon-content-publisher'
+						)
+					);
 					exit;
 				}
 
@@ -352,7 +359,12 @@ class Settings
 				try {
 					$pccClient = (new PccSyncManager())->pccClient($pccGrant);
 				} catch (Exception $e) {
-					wp_die(esc_html__('Content Publisher: Failed to initialize PCC client for preview.', 'pantheon-content-publisher'));
+					wp_die(
+						esc_html__(
+							'Content Publisher: Failed to initialize PCC client for preview.',
+							'pantheon-content-publisher'
+						)
+					);
 					exit;
 				}
 
@@ -394,7 +406,7 @@ class Settings
 						esc_html__(
 							'Content Publisher: Failed to preview this document. Confirm that this document is connected to your collection. Reach out to support if the issue persists.',
 							'pantheon-content-publisher'
-						) 
+						)
 					);
 					exit;
 				}
