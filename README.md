@@ -1,7 +1,7 @@
 # Pantheon Content Publisher for WordPress
 
 **Contributors:** [getpantheon](https://profiles.wordpress.org/getpantheon/), [a11rew](https://profiles.wordpress.org/a11rew), [anaispantheor](https://profiles.wordpress.org/anaispantheor/), [roshnykunjappan](https://profiles.wordpress.org/roshnykunjappan/), [mklasen](https://profiles.wordpress.org/mklasen/), [jazzs3quence](https://profiles.wordpress.org/jazzs3quence/), [swb1192](https://profiles.wordpress.org/swb1192)
-**Tags:** pantheon, content, google docs, acf, embeds
+**Tags:** pantheon, content, google docs, acf
 **Requires at least:** 5.7  
 **Tested up to:** 6.9  
 **Stable tag:** 1.3.5-dev  
@@ -42,7 +42,6 @@
 - [Table of contents](#table-of-contents)
 - [Quick start](#quick-start)
 - [Custom post types](#custom-post-types)
-- [Smart Components](#smart-components)
 - [ACF Integration](#acf-integration)
 - [Development](#development)
 - [Repository Actions](#repository-actions)
@@ -104,55 +103,6 @@ The plugin falls back to the default `post` type in the following cases:
 3. The `wp-post-type` value does not match any public post type registered on the WordPress site.
 
 Changing the post type setting on a collection only affects future publishes and does not modify previously published content.
-
-## Smart Components
-
-Smart Components let authors embed rich media directly from Google Docs. When a document is published, these components are rendered as native WordPress embeds.
-
-### Adding a component in Google Docs
-
-1. Open your document in Google Docs with the Content Publisher add-on enabled.
-2. Type the '@' symbol in the document, a pop-up will show in which you can search for integrations, search for "Pantheon" and choose the "Pantheon Component". You will then see a pop-up.
-3. Select **Media Embed** from the list of available components.
-4. Enter the media URL (e.g. a YouTube or Vimeo link).
-5. Optionally set custom **width** and **height** values (in px or %).
-6. A live preview of the embed appears in the sidebar.
-7. When the document is published, the component renders as a native WordPress embed in the post content.
-
-### Supported providers
-
-Media Embed supports any provider recognized by WordPress oEmbed, including:
-
-- YouTube
-- Vimeo
-- Spotify
-- DailyMotion
-- Flickr
-- Twitter / X
-- Instagram
-
-If a URL is not recognized by any WordPress oEmbed provider, the plugin falls back to rendering a plain `<iframe>`.
-
-Default dimensions are **100% width** and **400px height**. Authors can override these per component.
-
-### Registering custom components
-
-Developers can register custom smart components using the `cpub_register_smart_components` action hook. Each component must implement the `SmartComponentInterface` (`Pantheon\ContentPublisher\Interfaces\SmartComponentInterface`), which requires four methods:
-
-- `type(): string` — A unique identifier (e.g. `'MY_COMPONENT'`).
-- `schema(): array` — The field schema exposed to the Google Docs add-on.
-- `render(array $attrs): string` — Returns the HTML output for the component.
-- `allowedHtmlTags(): array` — HTML tags and attributes required by the component for `wp_kses`.
-
-```php
-add_action('cpub_register_smart_components', function ($registry) {
-    $registry->register(new My_Custom_Component());
-});
-```
-
-### Limitations
-
-- Components must be placed in their own paragraph in Google Docs. Inline placement within other text can cause issues.
 
 ## ACF Integration
 
