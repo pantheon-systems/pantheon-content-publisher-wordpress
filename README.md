@@ -1,7 +1,7 @@
 # Pantheon Content Publisher for WordPress
 
 **Contributors:** [getpantheon](https://profiles.wordpress.org/getpantheon/), [a11rew](https://profiles.wordpress.org/a11rew), [anaispantheor](https://profiles.wordpress.org/anaispantheor/), [roshnykunjappan](https://profiles.wordpress.org/roshnykunjappan/), [mklasen](https://profiles.wordpress.org/mklasen/), [jazzs3quence](https://profiles.wordpress.org/jazzs3quence/), [swb1192](https://profiles.wordpress.org/swb1192)
-**Tags:** pantheon, content, google docs  
+**Tags:** pantheon, content, google docs, acf
 **Requires at least:** 5.7  
 **Tested up to:** 6.9  
 **Stable tag:** 1.3.5-dev  
@@ -42,6 +42,7 @@
 - [Table of contents](#table-of-contents)
 - [Quick start](#quick-start)
 - [Custom post types](#custom-post-types)
+- [ACF Integration](#acf-integration)
 - [Development](#development)
 - [Repository Actions](#repository-actions)
 - [Requirements](#requirements)
@@ -102,6 +103,29 @@ The plugin falls back to the default `post` type in the following cases:
 3. The `wp-post-type` value does not match any public post type registered on the WordPress site.
 
 Changing the post type setting on a collection only affects future publishes and does not modify previously published content.
+
+## ACF Integration
+
+The plugin can sync Content Publisher metadata fields to [Advanced Custom Fields (ACF)](https://www.advancedcustomfields.com/). When a document is published, mapped ACF fields are automatically populated with the corresponding metadata values.
+
+### Requirements
+
+The ACF plugin (free or Pro) must be installed and active. If ACF is not detected, the Integration tab displays a warning and mappings are skipped during publish.
+
+### Configuring field mappings
+
+1. Navigate to **Settings > Pantheon Content Publisher** in the WordPress admin.
+2. Click the **Integration** tab.
+3. Select a **post type tab** — each tab shows ACF fields from the field groups assigned to that post type.
+4. For each ACF field you want to map, enter the **exact Content Publisher metadata field name** in the text input. Field names are **case-sensitive** and must match exactly as defined in your Content Publisher collection.
+5. Leave a field blank to skip it.
+6. Click **Save Mapping**.
+
+Mappings are scoped per post type. When a document is published, only the mappings for the target post type are applied.
+
+### Error visibility
+
+Sync errors (missing metadata fields, unresolved users, ACF inactive) are displayed in the Integration tab under a "Errors from last sync" banner. Errors auto-clear after one hour.
 
 ## Development
 

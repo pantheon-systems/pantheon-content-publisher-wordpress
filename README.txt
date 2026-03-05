@@ -1,6 +1,6 @@
 === Pantheon Content Publisher ===
 Contributors: getpantheon, a11rew, anaispantheor, roshnykunjappan, mklasen, jazzs3quence, swb1192
-Tags: pantheon
+Tags: pantheon, acf, google docs
 Requires at least: 5.7
 Tested up to: 6.9
 Stable tag: 1.3.5-dev
@@ -24,7 +24,7 @@ Enable direct publishing from Google Docs to WordPress, simplifying content mana
 Publish content to any public post type registered on your WordPress site, including custom post types. Authors can also specify the target post type per document via metadata.
 
 = ACF Integration =
-Sync Content Publisher metadata fields to Advanced Custom Fields. Define field mappings per post type in the Integration tab and metadata values are automatically applied on every publish.
+Sync Content Publisher metadata fields to Advanced Custom Fields (ACF). Navigate to Settings > Pantheon Content Publisher > Integration tab to define field mappings per post type. Each tab shows ACF fields from the field groups assigned to that post type — enter the exact Content Publisher metadata field name (case-sensitive) to create a mapping. Mapped values are automatically applied on every publish. Sync errors are displayed in the Integration tab and auto-clear after one hour. Requires the ACF plugin (free or Pro) to be installed and active. Works with custom post types.
 
 For more information, please check [Pantheon Content Publisher documentation](https://docs.content.pantheon.io).
 
@@ -33,6 +33,11 @@ For more information, please check [Pantheon Content Publisher documentation](ht
 The Pantheon Content Publisher plugin can be installed like any other WordPress Plugin, from your WordPress Dashboard, go to Plugins -> Add Plugin and search for: Pantheon Content Publisher, click the Install Now button and then click Activate. 
 
 After the plugin is active, set up your connection to Pantheon Content Publisher and Google Drive via the settings page in the WordPress admin dashboard.
+
+Once connected:
+
+* **Connection tab** — Configure collections and choose the target post type (including custom post types).
+* **Integration tab** — Map Content Publisher metadata fields to ACF fields per post type (requires the ACF plugin).
 
 == Integration with Third-Party Services ==
 
@@ -63,12 +68,22 @@ The connection will be established automatically.
 = What happens if I disconnect Pantheon Content Publisher from my Google Drive? =
 All posts/pages created with Pantheon Content Publisher will remain on your WordPress site. However, you will no longer be able to edit them from Google Docs.
 
+= How do I map metadata to ACF fields? =
+Go to Settings > Pantheon Content Publisher > Integration tab. Select a post type tab, then enter the exact Content Publisher metadata field name next to each ACF field you want to map. Values sync automatically on every publish. The ACF plugin (free or Pro) must be installed and active.
+
+= Does the ACF integration require the ACF plugin? =
+Yes. The ACF plugin must be installed and active. If ACF is not detected, the Integration tab displays a warning and field mappings are skipped during publish.
+
+= Can I publish to custom post types? =
+Yes. When creating or editing a collection, select the target post type from the dropdown. You can also select "Chosen by the author" to let document authors control the post type via the `wp-post-type` metadata field.
+
 == Changelog ==
 
 = 1.3.5-dev =
 * Feature: ACF integration — sync Content Publisher metadata fields to Advanced Custom Fields with per-post-type mappings [#201](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/201)
 * Feature: Add support for publishing to custom post types with author-choice mode via `wp-post-type` metadata field [#193](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/193)
 * Fix: Async thumbnail generation for featured images to prevent PHP-FPM timeouts on Pantheon [#196](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/196)
+* Fix: Webhook secret validation is now optional rather than required, preventing 500 errors for unconfigured secrets [#195](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/195)
 
 = 1.3.4 (1 December 2025) =
 * Compatibility: Supports Wordpress 6.9 [#178](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/178)
