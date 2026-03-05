@@ -1,6 +1,6 @@
 === Pantheon Content Publisher ===
 Contributors: getpantheon, a11rew, anaispantheor, roshnykunjappan, mklasen, jazzs3quence, swb1192
-Tags: pantheon
+Tags: pantheon, embeds
 Requires at least: 5.7
 Tested up to: 6.9
 Stable tag: 1.3.5-dev
@@ -24,7 +24,7 @@ Enable direct publishing from Google Docs to WordPress, simplifying content mana
 Publish content to any public post type registered on your WordPress site, including custom post types. Authors can also specify the target post type per document via metadata.
 
 = Smart Components =
-Embed rich media (YouTube, Vimeo, etc.) directly from Google Docs using the Content Publisher add-on. Components are rendered as native WordPress embeds on publish.
+Embed rich media directly from Google Docs using the Content Publisher add-on. In the add-on sidebar, click Add Component, select Media Embed and enter a URL. Supported providers include YouTube, Vimeo, Spotify, DailyMotion, Flickr, Twitter/X, Instagram and any other provider recognized by WordPress oEmbed. Unrecognized URLs fall back to an iframe embed. Authors can set custom width and height per component — defaults are 100% width and 400px height. Components are rendered as native WordPress embeds on publish with no admin configuration required. Developers can register custom components via the `cpub_register_smart_components` hook.
 
 = ACF Integration =
 Sync Content Publisher metadata fields to Advanced Custom Fields. Define field mappings per post type in the Integration tab and metadata values are automatically applied on every publish.
@@ -36,6 +36,10 @@ For more information, please check [Pantheon Content Publisher documentation](ht
 The Pantheon Content Publisher plugin can be installed like any other WordPress Plugin, from your WordPress Dashboard, go to Plugins -> Add Plugin and search for: Pantheon Content Publisher, click the Install Now button and then click Activate. 
 
 After the plugin is active, set up your connection to Pantheon Content Publisher and Google Drive via the settings page in the WordPress admin dashboard.
+
+Once connected:
+
+* **Smart Components** — Work automatically with no extra configuration. Authors add media embeds from the Google Docs add-on.
 
 == Integration with Third-Party Services ==
 
@@ -65,6 +69,9 @@ The connection will be established automatically.
 
 = What happens if I disconnect Pantheon Content Publisher from my Google Drive? =
 All posts/pages created with Pantheon Content Publisher will remain on your WordPress site. However, you will no longer be able to edit them from Google Docs.
+
+= How do I embed media from Google Docs? =
+Enter the '@' symbol in the document, a pop-up will show in which you can search for integrations, search for "Pantheon" and choose the "Pantheon Component". You will then see a pop-up in which you can select the Media Embed.
 
 == Changelog ==
 
