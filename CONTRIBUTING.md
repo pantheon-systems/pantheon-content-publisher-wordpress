@@ -17,37 +17,60 @@ The `release` branch matches the latest stable release deployed to [wp.org](wp.o
 
 ## Release Process
 
-1. Merge your feature branch into `main` with a PR. This PR should include any necessary updates to the changelog in readme.txt and README.md. Features should be squash merged. 
-1. From main, checkout a new branch `release_X.Y.Z`.
-1. Make a release commit: 
-    * In `package.json`, `README.md`, `readme.txt`, and `pantheon-content-publisher.php`, remove the `-dev`  from the version number. 
-    * For the README files, the version number must be updated both at the top of the document as well as the changelog. 
-    * Add the date to the  `** X.Y.Z **` heading in the changelogs in `README.md`, `readme.txt`, and any other appropriate location. 
-    * Commit these changes with the message `Release X.Y.Z`
-    * Push the release branch up.
-1. Open a Pull Request to merge `release_X.Y.Z` into `release`. Your PR should consist of all commits to `main` since the last release, and one commit to update the version number. The PR name should also be `Release X.Y.Z`.
-1. After all tests pass and you have received approval from a CODEOWNER (including resolving any merge conflicts), merge the PR into `release`. Use a "merge" commit, do no not rebase or squash. If the GitHub UI doesn't offer a "Merge commit" option (only showing "Squash and merge" or "Rebase and merge"), merge from the terminal instead:
+### Automation overview
+
+Three GitHub Actions workflows assist with releases:
+
+- **Draft Release PR** (`release-pr.yml`) — On every push to `main`, automatically creates or updates a draft PR from `main` to `release`. This PR accumulates all changes since the last release.
+- **Build, Tag & Release** (`build-tag-release.yml`) — On push to `release`, automatically creates a draft GitHub Release with compiled assets and generated release notes.
+- **WordPress.org Deploy** (`wordpress-plugin-deploy.yml`) — When a GitHub Release is published (non-prerelease), automatically deploys to the WordPress.org plugin repository.
+
+### Preparing a release
+
+1. Merge your feature branch into `main` with a PR. This PR should include any necessary updates to the changelog in readme.txt and README.md. Features should be squash merged.
+1. If the next release warrants a minor or major version bump, update the `-dev` version on `main` before proceeding (e.g., change `1.3.6-dev` to `1.4.0-dev`). The `-dev` version is a placeholder — it determines the version number the automation will use.
+1. On every push to `main`, the `release-pr.yml` workflow automatically:
+    * Creates a `release-X.Y.Z` branch from `main`
+    * Strips the `-dev` suffix and updates the version in all files
+    * Commits the changes as `Release X.Y.Z`
+    * Opens a draft PR from `release-X.Y.Z` to `release`
+1. Find the draft Release PR in the open pull requests. Add the release date to the changelog heading in `readme.txt` if the automation did not.
+1. After all tests pass and you have received approval from a CODEOWNER (including resolving any merge conflicts), merge the PR into `release`. Use a "merge" commit, do not rebase or squash. If the GitHub UI doesn't offer a "Merge commit" option (only showing "Squash and merge" or "Rebase and merge"), merge from the terminal instead:
     `git checkout release`
     `git merge release_X.Y.Z`
     `git push origin release`
-1. After merging to the `release` branch, a draft Release will be automatically created by the build-tag-release workflow. This draft release will be automatically pre-filled with release notes. 
-1. Confirm that the necessary assets are present in the newly created tag, and test on a WP install if desired. 
-1. Review the release notes, making any necessary changes, and publish the release. 
-1. Wait for the Release plugin to wp.org action to finish deploying to the WordPress.org plugin repository.
-1. If all goes well, users with SVN commit access for that plugin will receive an email with a diff of the changes. 
+
+### Publishing the release
+
+1. After merging to the `release` branch, a draft Release will be automatically created by the `build-tag-release.yml` workflow. This draft release will be automatically pre-filled with release notes.
+1. Confirm that the necessary assets are present in the newly created tag, and test on a WP install if desired.
+1. Review the release notes, making any necessary changes, and publish the release.
+1. The `wordpress-plugin-deploy.yml` workflow will automatically deploy to the WordPress.org plugin repository.
+1. If all goes well, users with SVN commit access for that plugin will receive an email with a diff of the changes.
 1. Check WordPress.org: Ensure that the changes are live on the plugin repository. This may take a few minutes.
-1. Following the release, prepare the next dev version with the following steps:
-    * `git checkout release`
-    * `git pull origin release`
-    * `git checkout main`
-    * `git rebase release`
-    * Update the version number in all locations, incrementing the version by one patch version, and add the `-dev` flag (e.g. after releasing `1.2.3`, the new verison will be `1.2.4-dev`)
-    * Add a new `** X.Y.Z-dev **` heading to the changelog
-    * `git add -A .`
-    * `git commit -m "Prepare X.Y.Z-dev"`
-    * `git checkout -b release-XYZ-dev`
-    * `git push origin release-XYZ-dev`
-    * Create a pull request on GitHub UI from `release-XYZ-dev` to `main` to trigger all required status checks
-    * _Wait for all required status checks to pass in CI. Once all tests pass, push to main from the terminal:_
-    * `git checkout main && git push origin main`
-    * _Note: While main is typically protected, having an open PR with passing tests allows direct push to main, which is the preferred method here._
+
+### Post-release: reconcile branches and prepare next dev version
+
+After publishing a release, `main` and `release` will have diverged due to merge commits on `release`. Follow these steps to reconcile them and prepare the next development cycle:
+
+1. Rebase `main` on `release`:
+    ```
+    git checkout release && git pull origin release
+    git checkout main && git rebase release
+    ```
+1. Increment the version to the next **patch** version with a `-dev` flag (e.g., after releasing `1.3.5`, set `1.3.6-dev`). This is a placeholder — the actual release version is determined at release time.
+    * Update the version in: `package.json`, `package-lock.json`, `README.md`, `readme.txt`, and `pantheon-content-publisher.php`
+    * Add a new empty `** X.Y.Z-dev **` heading to the changelog in `readme.txt`
+1. Commit and push via a PR branch to trigger CI:
+    ```
+    git add -A .
+    git commit -m "Prepare X.Y.Z-dev"
+    git checkout -b release-XYZ-dev
+    git push origin release-XYZ-dev
+    ```
+1. Create a pull request on the GitHub UI from `release-XYZ-dev` to `main` to trigger all required status checks.
+1. Wait for CI to pass and get approval from a CODEOWNER. Then push to main from the terminal:
+    ```
+    git checkout main && git push origin main
+    ```
+    _Note: `main` is protected, but having an approved PR with passing checks allows a direct push from the terminal. This is preferred over merging from the GitHub UI because the terminal push replaces remote `main` with the locally rebased version, reconciling it with `release`. A UI merge would add the commit on top of the old, un-reconciled remote `main`, leaving the branches still diverged._
