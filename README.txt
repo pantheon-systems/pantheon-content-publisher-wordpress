@@ -1,6 +1,6 @@
 === Pantheon Content Publisher ===
 Contributors: getpantheon, a11rew, anaispantheor, roshnykunjappan, mklasen, jazzs3quence, swb1192
-Tags: pantheon, acf, google docs
+Tags: pantheon, acf, google docs, embeds
 Requires at least: 5.7
 Tested up to: 6.9
 Stable tag: 1.4.0-dev
@@ -23,6 +23,9 @@ Enable direct publishing from Google Docs to WordPress, simplifying content mana
 = Custom Post Type Support =
 Publish content to any public post type registered on your WordPress site, including custom post types. Authors can also specify the target post type per document via metadata.
 
+= Smart Components =
+Embed rich media directly from Google Docs using the Content Publisher add-on. In the add-on sidebar, click Add Component, select Media Embed and enter a URL. Supported providers include YouTube, Vimeo, Spotify, DailyMotion, Flickr, Twitter/X, Instagram and any other provider recognized by WordPress oEmbed. Unrecognized URLs fall back to an iframe embed. Authors can set custom width and height per component — defaults are 100% width and 400px height. Components are rendered as native WordPress embeds on publish with no admin configuration required. Developers can register custom components via the `cpub_register_smart_components` hook.
+
 = ACF Integration =
 Sync Content Publisher metadata fields to Advanced Custom Fields (ACF). Navigate to Settings > Pantheon Content Publisher > Integration tab to define field mappings per post type. Each tab shows ACF fields from the field groups assigned to that post type — enter the exact Content Publisher metadata field name (case-sensitive) to create a mapping. Mapped values are automatically applied on every publish. Sync errors are displayed in the Integration tab and auto-clear after one hour. Requires the ACF plugin (free or Pro) to be installed and active. Works with custom post types.
 
@@ -38,6 +41,7 @@ Once connected:
 
 * **Connection tab** — Configure collections and choose the target post type (including custom post types).
 * **Integration tab** — Map Content Publisher metadata fields to ACF fields per post type (requires the ACF plugin).
+* **Smart Components** — Work automatically with no extra configuration. Authors add media embeds from the Google Docs add-on.
 
 == Integration with Third-Party Services ==
 
@@ -68,6 +72,7 @@ The connection will be established automatically.
 = What happens if I disconnect Pantheon Content Publisher from my Google Drive? =
 All posts/pages created with Pantheon Content Publisher will remain on your WordPress site. However, you will no longer be able to edit them from Google Docs.
 
+<<<<<<< HEAD
 = How do I map metadata to ACF fields? =
 Go to Settings > Pantheon Content Publisher > Integration tab. Select a post type tab, then enter the exact Content Publisher metadata field name next to each ACF field you want to map. Values sync automatically on every publish. The ACF plugin (free or Pro) must be installed and active.
 
@@ -76,6 +81,10 @@ Yes. The ACF plugin must be installed and active. If ACF is not detected, the In
 
 = Can I publish to custom post types? =
 Yes. When creating or editing a collection, select the target post type from the dropdown. You can also select "Chosen by the author" to let document authors control the post type via the `wp-post-type` metadata field.
+=======
+= How do I embed media from Google Docs? =
+Enter the '@' symbol in the document, a pop-up will show in which you can search for integrations, search for "Pantheon" and choose the "Pantheon Component". You will then see a pop-up in which you can select the Media Embed.
+>>>>>>> e19bbe2 (Add smart components documentation from PR #203)
 
 == Changelog ==
 
@@ -83,6 +92,7 @@ Yes. When creating or editing a collection, select the target post type from the
 
 = 1.3.5 (5 March 2026) =
 * Feature: ACF integration — sync Content Publisher metadata fields to Advanced Custom Fields with per-post-type mappings [#201](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/201)
+* Feature: Smart Components foundation with Media Embed support for embedding videos and media via Google Docs add-on [#200](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/200)
 * Feature: Add support for publishing to custom post types with author-choice mode via `wp-post-type` metadata field [#193](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/193)
 * Fix: Async thumbnail generation for featured images to prevent PHP-FPM timeouts on Pantheon [#196](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/196)
 * Fix: Webhook secret validation is now optional rather than required, preventing 500 errors for unconfigured secrets [#195](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/195)
