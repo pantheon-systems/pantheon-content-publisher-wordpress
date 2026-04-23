@@ -9,7 +9,7 @@ import {
   ButtonLink,
   ClipboardButton,
   Tabs,
-  Checkbox,
+  Switch,
 } from "@pantheon-systems/pds-toolkit-react";
 import { useMemo, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
@@ -296,10 +296,10 @@ export default function Dashboard() {
             name="publishAsDraft"
             control={control}
             render={({ field }: { field: { value: boolean; onChange: (v: boolean) => void } }) => (
-              <Checkbox
+              <Switch
                 id="publish-as-draft"
                 label="Publish documents as draft"
-                helpText="When enabled, all published or updated documents will be saved as drafts instead of being immediately published."
+                message="When enabled, all new or updated documents will be saved as drafts instead of being immediately published."
                 checked={field.value}
                 onChange={(e) => field.onChange(e.target.checked)}
               />
