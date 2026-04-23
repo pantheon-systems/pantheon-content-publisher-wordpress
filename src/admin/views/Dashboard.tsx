@@ -291,7 +291,7 @@ export default function Dashboard() {
           message="Select a post type to publish your documents as. Choose 'Chosen by the author' to let document authors specify the post type via the 'wp-post-type' metadata field."
         />
 
-        <div className="mt-6 max-w-xl">
+        <div className="mt-6 max-w-lg">
           <Controller
             name="publishAsDraft"
             control={control}
