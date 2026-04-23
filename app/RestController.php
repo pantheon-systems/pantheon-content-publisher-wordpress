@@ -427,6 +427,12 @@ class RestController
 			update_option(CPUB_INTEGRATION_POST_TYPE_OPTION_KEY, $postType);
 		}
 
+		// Handle the "publish as draft" setting
+		if ($request->has_param('publish_as_draft')) {
+			$publishAsDraft = rest_sanitize_boolean($request->get_param('publish_as_draft'));
+			update_option(CPUB_PUBLISH_AS_DRAFT_OPTION_KEY, $publishAsDraft);
+		}
+
 		return new WP_REST_Response(esc_html__('Saved!', 'pantheon-content-publisher'));
 	}
 

@@ -17,6 +17,7 @@ interface Window {
       collection_url: string;
       collection_id: string;
       publish_as: string;
+      publish_as_draft: boolean;
       webhook?: {
         url: string;
         notice_dismissed: boolean;

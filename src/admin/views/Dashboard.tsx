@@ -9,6 +9,7 @@ import {
   ButtonLink,
   ClipboardButton,
   Tabs,
+  Checkbox,
 } from "@pantheon-systems/pds-toolkit-react";
 import { useMemo, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
@@ -22,7 +23,7 @@ import CollectionInfo from "../components/CollectionInfo";
 import AcfMappings from "./AcfMappings";
 
 export default function Dashboard() {
-  const { publish_as, webhook } = window.CPUB_BOOTSTRAP.configured;
+  const { publish_as, publish_as_draft, webhook } = window.CPUB_BOOTSTRAP.configured;
   const { collectionName, collectionUrl, collectionId } = useCollectionData();
   const postTypeOptions = usePostTypeOptions();
 
@@ -71,17 +72,20 @@ export default function Dashboard() {
     getValues,
   } = useForm<{
     publishAs: string;
+    publishAsDraft: boolean;
   }>({
     mode: "onChange",
     defaultValues: {
       publishAs: publish_as ?? "post",
+      publishAsDraft: publish_as_draft ?? false,
     },
   });
 
   const updateMutation = useMutation({
-    mutationFn: async (publishAs: string) => {
+    mutationFn: async (data: { publishAs: string; publishAsDraft: boolean }) => {
       return apiClient.put("/collection", {
-        post_type: publishAs,
+        post_type: data.publishAs,
+        publish_as_draft: data.publishAsDraft,
       });
     },
     onSuccess: () => {
@@ -89,6 +93,7 @@ export default function Dashboard() {
       addToast(ToastType.Success, "Changes saved successfully");
       reset({
         publishAs: getValues("publishAs"),
+        publishAsDraft: getValues("publishAsDraft"),
       });
     },
     onError: () => {
@@ -114,8 +119,8 @@ export default function Dashboard() {
     },
   });
 
-  const onSubmit = (values: { publishAs: string }) => {
-    updateMutation.mutate(values.publishAs);
+  const onSubmit = (values: { publishAs: string; publishAsDraft: boolean }) => {
+    updateMutation.mutate(values);
   };
 
   const handleDisconnect = () => {
@@ -285,6 +290,22 @@ export default function Dashboard() {
           type="info"
           message="Select a post type to publish your documents as. Choose 'Chosen by the author' to let document authors specify the post type via the 'wp-post-type' metadata field."
         />
+
+        <div className="mt-6">
+          <Controller
+            name="publishAsDraft"
+            control={control}
+            render={({ field }: { field: { value: boolean; onChange: (v: boolean) => void } }) => (
+              <Checkbox
+                id="publish-as-draft"
+                label="Publish documents as draft"
+                helpText="When enabled, all published or updated documents will be saved as drafts instead of being immediately published."
+                checked={field.value}
+                onChange={(e) => field.onChange(e.target.checked)}
+              />
+            )}
+          />
+        </div>
 
         <div className="pds-button-group mt-4">
           <Button

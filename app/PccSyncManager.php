@@ -144,11 +144,16 @@ class PccSyncManager
 	{
 		$preparedData = $this->preparePostDataFromArticle($article);
 
+		// Determine post status: should be draft if EITHER it's a preview request
+		// OR the admin has enabled the "publish as draft" setting
+		$publishAsDraft = get_option(CPUB_PUBLISH_AS_DRAFT_OPTION_KEY, false);
+		$shouldBeDraft = $isDraft || $publishAsDraft;
+
 		$data = [
 			'post_title' => $preparedData['post_title'],
 			'post_content' => $preparedData['post_content'],
 			'post_excerpt' => $preparedData['post_excerpt'],
-			'post_status' => $isDraft ? 'draft' : 'publish',
+			'post_status' => $shouldBeDraft ? 'draft' : 'publish',
 			'post_name' => $article->slug,
 			'post_type' => $this->getIntegrationPostType($article),
 		];
@@ -524,6 +529,7 @@ class PccSyncManager
 		delete_option(CPUB_SITE_ID_OPTION_KEY);
 		delete_option(CPUB_ENCODED_SITE_URL_OPTION_KEY);
 		delete_option(CPUB_INTEGRATION_POST_TYPE_OPTION_KEY);
+		delete_option(CPUB_PUBLISH_AS_DRAFT_OPTION_KEY);
 		delete_option(CPUB_WEBHOOK_SECRET_OPTION_KEY);
 		delete_option(CPUB_API_KEY_OPTION_KEY);
 

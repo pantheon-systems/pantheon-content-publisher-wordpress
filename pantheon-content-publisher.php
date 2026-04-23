@@ -30,6 +30,7 @@ define('CPUB_SITE_ID_OPTION_KEY', 'cpub_site_id');
 define('CPUB_ENCODED_SITE_URL_OPTION_KEY', 'cpub_encoded_site_url');
 define('CPUB_API_KEY_OPTION_KEY', 'cpub_api_key');
 define('CPUB_INTEGRATION_POST_TYPE_OPTION_KEY', 'cpub_integration_post_type');
+define('CPUB_PUBLISH_AS_DRAFT_OPTION_KEY', 'cpub_publish_as_draft');
 define('CPUB_API_NAMESPACE', 'pcc/v1');
 define('CPUB_CONTENT_META_KEY', 'cpub_id');
 define('CPUB_ENDPOINT', 'https://addonapi-gfttxsojwq-uc.a.run.app');
