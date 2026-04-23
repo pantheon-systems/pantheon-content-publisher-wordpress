@@ -276,7 +276,7 @@ export default function Dashboard() {
             render={({ field }: { field: { value: string; onChange: (v: string) => void; onBlur: () => void } }) => (
               <Select
                 id="publish-as"
-                label="Publish your document as:"
+                label="Publish documents as:"
                 options={postTypeOptions}
                 value={field.value}
                 onOptionSelect={(option: { value: string }) => field.onChange(option.value)}
