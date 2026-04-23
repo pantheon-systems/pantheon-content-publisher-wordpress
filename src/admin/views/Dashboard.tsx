@@ -300,6 +300,7 @@ export default function Dashboard() {
                 id="publish-as-draft"
                 label="Publish documents as draft"
                 message="When enabled, all new or updated documents will be saved as drafts instead of being immediately published."
+                switchPlacement="right"
                 checked={field.value}
                 onChange={(e) => field.onChange(e.target.checked)}
               />
