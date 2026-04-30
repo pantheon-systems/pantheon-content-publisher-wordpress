@@ -153,7 +153,7 @@ class Admin
 				'collection_url' => site_url(),
 				'collection_id' => get_option(CPUB_SITE_ID_OPTION_KEY),
 				'publish_as' => get_option(CPUB_INTEGRATION_POST_TYPE_OPTION_KEY, 'post'),
-				'publish_as_draft' => (bool) get_option(CPUB_PUBLISH_AS_DRAFT_OPTION_KEY, false),
+				'publish_as_draft' => get_option(CPUB_PUBLISH_AS_DRAFT_OPTION_KEY, 'publish'),
 				'webhook' => [
 					'url' => rest_url(CPUB_API_NAMESPACE . '/webhook'),
 					'notice_dismissed' => (bool) get_option(CPUB_WEBHOOK_NOTICE_DISMISSED_OPTION_KEY, false),

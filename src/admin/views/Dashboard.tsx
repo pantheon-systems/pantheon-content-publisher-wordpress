@@ -9,7 +9,6 @@ import {
   ButtonLink,
   ClipboardButton,
   Tabs,
-  Switch,
 } from "@pantheon-systems/pds-toolkit-react";
 import { useMemo, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
@@ -72,17 +71,17 @@ export default function Dashboard() {
     getValues,
   } = useForm<{
     publishAs: string;
-    publishAsDraft: boolean;
+    publishAsDraft: string;
   }>({
     mode: "onChange",
     defaultValues: {
       publishAs: publish_as ?? "post",
-      publishAsDraft: publish_as_draft ?? false,
+      publishAsDraft: publish_as_draft ?? "publish",
     },
   });
 
   const updateMutation = useMutation({
-    mutationFn: async (data: { publishAs: string; publishAsDraft: boolean }) => {
+    mutationFn: async (data: { publishAs: string; publishAsDraft: string }) => {
       return apiClient.put("/collection", {
         post_type: data.publishAs,
         publish_as_draft: data.publishAsDraft,
@@ -119,7 +118,7 @@ export default function Dashboard() {
     },
   });
 
-  const onSubmit = (values: { publishAs: string; publishAsDraft: boolean }) => {
+  const onSubmit = (values: { publishAs: string; publishAsDraft: string }) => {
     updateMutation.mutate(values);
   };
 
@@ -291,22 +290,31 @@ export default function Dashboard() {
           message="Select a post type to publish your documents as. Choose 'Chosen by the author' to let document authors specify the post type via the 'wp-post-type' metadata field."
         />
 
-        <div className="mt-6 max-w-lg">
+        <div className="mt-6 max-w-xl">
           <Controller
             name="publishAsDraft"
             control={control}
-            render={({ field }: { field: { value: boolean; onChange: (v: boolean) => void } }) => (
-              <Switch
+            render={({ field }: { field: { value: string; onChange: (v: string) => void; onBlur: () => void } }) => (
+              <Select
                 id="publish-as-draft"
-                label="Publish documents as draft"
-                message="When enabled, all new or updated documents will be saved as drafts instead of being immediately published."
-                switchPlacement="right"
-                checked={field.value}
-                onChange={(e) => field.onChange(e.target.checked)}
+                label="Publication mode:"
+                options={[
+                  { value: "publish", label: "Publish directly" },
+                  { value: "draft", label: "Publish as draft" },
+                  { value: "author_choice", label: "Let the user choose" },
+                ]}
+                value={field.value}
+                onOptionSelect={(option: { value: string }) => field.onChange(option.value)}
+                onBlur={() => field.onBlur()}
               />
             )}
           />
         </div>
+
+        <SectionMessage
+          type="info"
+          message="Choose how documents should be published: directly as published posts, always as drafts (for new posts or existing drafts only), or let document authors decide using the 'publish-as-draft' metadata field."
+        />
 
         <div className="pds-button-group mt-4">
           <Button
