@@ -145,9 +145,13 @@ class PccSyncManager
 		$preparedData = $this->preparePostDataFromArticle($article);
 
 		// Determine post status: should be draft if EITHER it's a preview request
-		// OR the admin has enabled the "publish as draft" setting
+		// OR the admin has enabled the "publish as draft" setting (but only for new posts or existing drafts)
 		$publishAsDraft = get_option(CPUB_PUBLISH_AS_DRAFT_OPTION_KEY, false);
-		$shouldBeDraft = $isDraft || $publishAsDraft;
+
+		// Only apply the draft setting to new posts or posts that are currently drafts
+		// This prevents unpublishing already-published posts when the setting is enabled
+		$canApplyDraftSetting = !$postId || get_post_status($postId) === 'draft';
+		$shouldBeDraft = $isDraft || ($publishAsDraft && $canApplyDraftSetting);
 
 		$data = [
 			'post_title' => $preparedData['post_title'],
