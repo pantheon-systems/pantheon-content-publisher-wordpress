@@ -159,8 +159,8 @@ class PccSyncManager
 				$canApplyDraftSetting = !$postId || get_post_status($postId) === 'draft';
 				$shouldBeDraft = $canApplyDraftSetting;
 			} elseif ($publishAsDraftSetting === 'author_choice') {
-				// Check the 'publish-as-draft' metadata field
-				$authorChoice = $article->metadata['publish-as-draft'] ?? null;
+				// Check the 'publish_as_draft' metadata field
+				$authorChoice = $article->metadata['publish_as_draft'] ?? null;
 				if ($authorChoice === true || $authorChoice === 'true' || $authorChoice === '1') {
 					// Only apply to new posts or existing drafts
 					$canApplyDraftSetting = !$postId || get_post_status($postId) === 'draft';

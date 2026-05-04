@@ -1,7 +1,7 @@
 <?php
 
 /**
- * PHPUnit tests for the publish-as-draft setting functionality.
+ * PHPUnit tests for the publish_as_draft setting functionality.
  *
  * Tests the three-mode system: 'publish', 'draft', and 'author_choice',
  * ensuring posts are created with correct status and existing published
@@ -15,7 +15,7 @@ use PccPhpSdk\api\Response\Article;
 use WP_UnitTestCase;
 
 /**
- * Verifies publish-as-draft setting behavior across all three modes.
+ * Verifies publish_as_draft setting behavior across all three modes.
  */
 class PublishAsDraftSettingTest extends WP_UnitTestCase
 {
@@ -158,7 +158,7 @@ class PublishAsDraftSettingTest extends WP_UnitTestCase
 
 		$article = $this->makeArticle([
 			'id' => 'doc-author-1',
-			'metadata' => [], // No 'publish-as-draft' field
+			'metadata' => [], // No 'publish_as_draft' field
 		]);
 		$postId = $this->manager->storeArticle($article, false);
 
@@ -175,7 +175,7 @@ class PublishAsDraftSettingTest extends WP_UnitTestCase
 
 		$article = $this->makeArticle([
 			'id' => 'doc-author-2',
-			'metadata' => ['publish-as-draft' => false],
+			'metadata' => ['publish_as_draft' => false],
 		]);
 		$postId = $this->manager->storeArticle($article, false);
 
@@ -192,7 +192,7 @@ class PublishAsDraftSettingTest extends WP_UnitTestCase
 
 		$article = $this->makeArticle([
 			'id' => 'doc-author-3',
-			'metadata' => ['publish-as-draft' => true],
+			'metadata' => ['publish_as_draft' => true],
 		]);
 		$postId = $this->manager->storeArticle($article, false);
 
@@ -209,7 +209,7 @@ class PublishAsDraftSettingTest extends WP_UnitTestCase
 
 		$article = $this->makeArticle([
 			'id' => 'doc-author-4',
-			'metadata' => ['publish-as-draft' => 'true'],
+			'metadata' => ['publish_as_draft' => 'true'],
 		]);
 		$postId = $this->manager->storeArticle($article, false);
 
@@ -226,7 +226,7 @@ class PublishAsDraftSettingTest extends WP_UnitTestCase
 
 		$article = $this->makeArticle([
 			'id' => 'doc-author-5',
-			'metadata' => ['publish-as-draft' => '1'],
+			'metadata' => ['publish_as_draft' => '1'],
 		]);
 		$postId = $this->manager->storeArticle($article, false);
 
@@ -245,7 +245,7 @@ class PublishAsDraftSettingTest extends WP_UnitTestCase
 		// Create as published first
 		$article = $this->makeArticle([
 			'id' => 'doc-author-6',
-			'metadata' => ['publish-as-draft' => false],
+			'metadata' => ['publish_as_draft' => false],
 		]);
 		$publishedId = $this->manager->storeArticle($article, false);
 		$this->assertSame('publish', get_post_status($publishedId));
@@ -255,7 +255,7 @@ class PublishAsDraftSettingTest extends WP_UnitTestCase
 		$articleUpdated = $this->makeArticle([
 			'id' => 'doc-author-6',
 			'content' => '<p>Updated with draft metadata</p>',
-			'metadata' => ['publish-as-draft' => true], // Author now wants draft
+			'metadata' => ['publish_as_draft' => true], // Author now wants draft
 		]);
 		$updatedId = $this->manager->storeArticle($articleUpdated, false);
 
@@ -274,7 +274,7 @@ class PublishAsDraftSettingTest extends WP_UnitTestCase
 		// Create as draft with metadata
 		$article = $this->makeArticle([
 			'id' => 'doc-author-7',
-			'metadata' => ['publish-as-draft' => true],
+			'metadata' => ['publish_as_draft' => true],
 		]);
 		$draftId = $this->manager->storeArticle($article, true);
 		$this->assertSame('draft', get_post_status($draftId));
@@ -283,7 +283,7 @@ class PublishAsDraftSettingTest extends WP_UnitTestCase
 		$articleUpdated = $this->makeArticle([
 			'id' => 'doc-author-7',
 			'content' => '<p>Updated</p>',
-			'metadata' => ['publish-as-draft' => true],
+			'metadata' => ['publish_as_draft' => true],
 		]);
 		$updatedId = $this->manager->storeArticle($articleUpdated, false);
 
@@ -301,7 +301,7 @@ class PublishAsDraftSettingTest extends WP_UnitTestCase
 		// Create as draft
 		$article = $this->makeArticle([
 			'id' => 'doc-author-8',
-			'metadata' => ['publish-as-draft' => true],
+			'metadata' => ['publish_as_draft' => true],
 		]);
 		$draftId = $this->manager->storeArticle($article, true);
 		$this->assertSame('draft', get_post_status($draftId));
@@ -310,7 +310,7 @@ class PublishAsDraftSettingTest extends WP_UnitTestCase
 		$articleUpdated = $this->makeArticle([
 			'id' => 'doc-author-8',
 			'content' => '<p>Ready to publish</p>',
-			'metadata' => ['publish-as-draft' => false],
+			'metadata' => ['publish_as_draft' => false],
 		]);
 		$publishedId = $this->manager->storeArticle($articleUpdated, false);
 
@@ -319,7 +319,7 @@ class PublishAsDraftSettingTest extends WP_UnitTestCase
 	}
 
 	/**
-	 * Test preview mode: always draft regardless of publish-as-draft setting.
+	 * Test preview mode: always draft regardless of publish_as_draft setting.
 	 */
 	public function testPreviewModeAlwaysCreatesDraftRegardlessOfSetting(): void
 	{
@@ -355,7 +355,7 @@ class PublishAsDraftSettingTest extends WP_UnitTestCase
 
 		$article = $this->makeArticle([
 			'id' => 'doc-preview-3',
-			'metadata' => ['publish-as-draft' => false],
+			'metadata' => ['publish_as_draft' => false],
 		]);
 		$postId = $this->manager->storeArticle($article, true); // $isDraft = true
 
@@ -425,7 +425,7 @@ class PublishAsDraftSettingTest extends WP_UnitTestCase
 		// Test '0' string (falsy) - should publish
 		$article1 = $this->makeArticle([
 			'id' => 'doc-strings-1',
-			'metadata' => ['publish-as-draft' => '0'],
+			'metadata' => ['publish_as_draft' => '0'],
 		]);
 		$postId1 = $this->manager->storeArticle($article1, false);
 		$this->assertSame('publish', get_post_status($postId1));
@@ -433,7 +433,7 @@ class PublishAsDraftSettingTest extends WP_UnitTestCase
 		// Test 'false' string - should publish (not handled as special case)
 		$article2 = $this->makeArticle([
 			'id' => 'doc-strings-2',
-			'metadata' => ['publish-as-draft' => 'false'],
+			'metadata' => ['publish_as_draft' => 'false'],
 		]);
 		$postId2 = $this->manager->storeArticle($article2, false);
 		$this->assertSame('publish', get_post_status($postId2));
@@ -441,7 +441,7 @@ class PublishAsDraftSettingTest extends WP_UnitTestCase
 		// Test empty string - should publish
 		$article3 = $this->makeArticle([
 			'id' => 'doc-strings-3',
-			'metadata' => ['publish-as-draft' => ''],
+			'metadata' => ['publish_as_draft' => ''],
 		]);
 		$postId3 = $this->manager->storeArticle($article3, false);
 		$this->assertSame('publish', get_post_status($postId3));

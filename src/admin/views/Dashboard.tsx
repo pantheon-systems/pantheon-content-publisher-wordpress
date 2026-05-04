@@ -290,7 +290,7 @@ export default function Dashboard() {
           message="Select a post type to publish your documents as. Choose 'Chosen by the author' to let document authors specify the post type via the 'wp-post-type' metadata field."
         />
 
-        <div className="mt-6 max-w-xl">
+        <div className="mt-6 max-w-xl mb-5">
           <Controller
             name="publishAsDraft"
             control={control}
@@ -300,7 +300,7 @@ export default function Dashboard() {
                 label="Publication mode:"
                 options={[
                   { value: "publish", label: "Publish directly" },
-                  { value: "draft", label: "Publish as draft" },
+                  { value: "draft", label: "Create as draft" },
                   { value: "author_choice", label: "Let the user choose" },
                 ]}
                 value={field.value}
@@ -313,7 +313,7 @@ export default function Dashboard() {
 
         <SectionMessage
           type="info"
-          message="Choose how documents should be published: directly as published posts, always as drafts (for new posts or existing drafts only), or let document authors decide using the 'publish-as-draft' metadata field."
+          message="Choose how documents should be published: directly as published posts, always as drafts (for new posts or existing drafts only), or let document authors decide using the 'publish_as_draft' metadata field."
         />
 
         <div className="pds-button-group mt-4">
