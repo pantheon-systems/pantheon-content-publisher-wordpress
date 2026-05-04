@@ -16,6 +16,10 @@ use WP_UnitTestCase;
 
 /**
  * Verifies publish_as_draft setting behavior across all three modes.
+ *
+ * @SuppressWarnings(PHPMD.TooManyMethods)
+ * Note: Test classes naturally have many methods (one per test case).
+ * Having 20 focused test methods is better than artificial grouping.
  */
 class PublishAsDraftSettingTest extends WP_UnitTestCase
 {

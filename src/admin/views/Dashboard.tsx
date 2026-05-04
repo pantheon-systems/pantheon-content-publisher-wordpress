@@ -87,12 +87,12 @@ export default function Dashboard() {
         publish_as_draft: data.publishAsDraft,
       });
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       setShowConfirmModal(false);
       addToast(ToastType.Success, "Changes saved successfully");
       reset({
-        publishAs: getValues("publishAs"),
-        publishAsDraft: getValues("publishAsDraft"),
+        publishAs: variables.publishAs,
+        publishAsDraft: variables.publishAsDraft,
       });
     },
     onError: () => {
