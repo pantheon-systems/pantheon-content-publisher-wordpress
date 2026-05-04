@@ -146,7 +146,11 @@ class PublishAsDraftSettingTest extends WP_UnitTestCase
 
 		// Should be same post, still published
 		$this->assertSame($publishedId, $updatedId);
-		$this->assertSame('publish', get_post_status($updatedId), 'Existing published post should NOT be unpublished by draft mode');
+		$this->assertSame(
+			'publish',
+			get_post_status($updatedId),
+			'Existing published post should NOT be unpublished by draft mode'
+		);
 	}
 
 	/**
@@ -261,7 +265,11 @@ class PublishAsDraftSettingTest extends WP_UnitTestCase
 
 		// Should be same post, still published
 		$this->assertSame($publishedId, $updatedId);
-		$this->assertSame('publish', get_post_status($updatedId), 'Existing published post should NOT be unpublished even with draft metadata');
+		$this->assertSame(
+			'publish',
+			get_post_status($updatedId),
+			'Existing published post should NOT be unpublished even with draft metadata'
+		);
 	}
 
 	/**

@@ -145,30 +145,32 @@ class PccSyncManager
 		$preparedData = $this->preparePostDataFromArticle($article);
 
 		// Determine post status based on preview mode, admin setting, or author choice
-		$publishAsDraftSetting = get_option(CPUB_PUBLISH_AS_DRAFT_OPTION_KEY, 'publish');
+		$draftMode = get_option(CPUB_PUBLISH_AS_DRAFT_OPTION_KEY, 'publish');
 		$shouldBeDraft = false;
 
 		// Always draft for preview requests
 		if ($isDraft) {
 			$shouldBeDraft = true;
-		} else {
-			// Handle three modes: 'publish', 'draft', 'author_choice'
-			if ($publishAsDraftSetting === 'draft') {
-				// Only apply draft setting to new posts or existing drafts
-				// This prevents unpublishing already-published posts
+		}
+
+		// Handle three modes: 'publish', 'draft', 'author_choice'
+		if (!$isDraft && $draftMode === 'draft') {
+			// Only apply draft setting to new posts or existing drafts
+			// This prevents unpublishing already-published posts
+			$canApplyDraftSetting = !$postId || get_post_status($postId) === 'draft';
+			$shouldBeDraft = $canApplyDraftSetting;
+		}
+
+		if (!$isDraft && $draftMode === 'author_choice') {
+			// Check the 'publish_as_draft' metadata field
+			$authorChoice = $article->metadata['publish_as_draft'] ?? null;
+			if ($authorChoice === true || $authorChoice === 'true' || $authorChoice === '1') {
+				// Only apply to new posts or existing drafts
 				$canApplyDraftSetting = !$postId || get_post_status($postId) === 'draft';
 				$shouldBeDraft = $canApplyDraftSetting;
-			} elseif ($publishAsDraftSetting === 'author_choice') {
-				// Check the 'publish_as_draft' metadata field
-				$authorChoice = $article->metadata['publish_as_draft'] ?? null;
-				if ($authorChoice === true || $authorChoice === 'true' || $authorChoice === '1') {
-					// Only apply to new posts or existing drafts
-					$canApplyDraftSetting = !$postId || get_post_status($postId) === 'draft';
-					$shouldBeDraft = $canApplyDraftSetting;
-				}
 			}
-			// If 'publish' mode, $shouldBeDraft remains false
 		}
+		// If 'publish' mode, $shouldBeDraft remains false
 
 		$data = [
 			'post_title' => $preparedData['post_title'],

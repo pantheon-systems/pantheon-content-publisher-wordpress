@@ -76,7 +76,7 @@ export default function Dashboard() {
     mode: "onChange",
     defaultValues: {
       publishAs: publish_as ?? "post",
-      publishAsDraft: publish_as_draft ?? "publish",
+      publishAsDraft: publish_as_draft || "publish",
     },
   });
 

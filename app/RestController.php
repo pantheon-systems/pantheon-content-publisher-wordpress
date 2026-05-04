@@ -432,8 +432,10 @@ class RestController
 			$publishAsDraft = sanitize_text_field($request->get_param('publish_as_draft'));
 			// Validate the value is one of the allowed options
 			if (!in_array($publishAsDraft, ['publish', 'draft', 'author_choice'], true)) {
+				$error = 'Invalid publish_as_draft value. ' .
+					'Must be "publish", "draft", or "author_choice".';
 				return new WP_REST_Response(
-					esc_html__('Invalid publish_as_draft value. Must be "publish", "draft", or "author_choice".', 'pantheon-content-publisher'),
+					esc_html__($error, 'pantheon-content-publisher'),
 					400
 				);
 			}
