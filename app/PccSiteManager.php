@@ -59,7 +59,7 @@ class PccSiteManager
 	/**
 	 * @return array[]
 	 */
-	private function getHeaders(string $token = null)
+	private function getHeaders(?string $token = null)
 	{
 		return [
 			'Content-Type' => 'application/json',
