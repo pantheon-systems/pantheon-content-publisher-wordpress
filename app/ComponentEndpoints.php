@@ -116,6 +116,7 @@ class ComponentEndpoints
 		$response->header('Access-Control-Allow-Origin', '*');
 		$response->header('Access-Control-Allow-Methods', 'GET, OPTIONS');
 		$response->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+		$response->header('Cache-Control', 'no-store');
 
 		return $response;
 	}
@@ -143,6 +144,7 @@ class ComponentEndpoints
 		$html = $this->smartComponents->renderComponent($componentId, $attrs);
 
 		header('Access-Control-Allow-Origin: *');
+		header('Cache-Control: no-store');
 		header('Content-Type: text/html; charset=UTF-8');
 		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- pre-escaped by component render()
 		echo '<!DOCTYPE html><html><head>'
