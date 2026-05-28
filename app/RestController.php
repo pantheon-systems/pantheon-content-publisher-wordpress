@@ -156,7 +156,9 @@ class RestController
 
 		$payload = $status->toArray();
 
-		return new WP_REST_Response($payload);
+		$response = new WP_REST_Response($payload);
+		$response->header('Cache-Control', 'no-store');
+		return $response;
 	}
 
 	/**
