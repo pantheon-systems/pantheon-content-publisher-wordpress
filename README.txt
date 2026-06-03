@@ -89,6 +89,7 @@ Enter the '@' symbol in the document, a pop-up will show in which you can search
 == Changelog ==
 
 = 1.4.0-dev =
+* Compatibility: Supports PHP 8.5
 
 = 1.3.5 (5 March 2026) =
 * Feature: ACF integration — sync Content Publisher metadata fields to Advanced Custom Fields with per-post-type mappings [#201](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/201)
