@@ -95,7 +95,7 @@ class SmartComponentsPipelineTest extends WP_UnitTestCase
 
 	public function testProcessContentEndToEnd(): void
 	{
-		$attrs = base64_encode(json_encode([
+		$attrs = base64_encode(wp_json_encode([
 			'url' => 'https://example.com/video',
 			'width' => '80%',
 			'height' => '350px',

@@ -44,7 +44,7 @@ class SmartComponentsDetectionTest extends WP_UnitTestCase
 
 	public function testExtractSingleComponent(): void
 	{
-		$attrs = base64_encode(json_encode(['url' => 'https://youtube.com/watch?v=abc']));
+		$attrs = base64_encode(wp_json_encode(['url' => 'https://youtube.com/watch?v=abc']));
 		$raw = '<p>Text</p>'
 			. '<pcc-component id="c1" type="MEDIA_EMBED" attrs="' . $attrs . '"></pcc-component>';
 
@@ -57,8 +57,8 @@ class SmartComponentsDetectionTest extends WP_UnitTestCase
 
 	public function testExtractMultipleComponents(): void
 	{
-		$attrs1 = base64_encode(json_encode(['url' => 'https://youtube.com/watch?v=1']));
-		$attrs2 = base64_encode(json_encode(['url' => 'https://vimeo.com/123']));
+		$attrs1 = base64_encode(wp_json_encode(['url' => 'https://youtube.com/watch?v=1']));
+		$attrs2 = base64_encode(wp_json_encode(['url' => 'https://vimeo.com/123']));
 		$raw = '<pcc-component id="c1" type="MEDIA_EMBED" attrs="' . $attrs1 . '"></pcc-component>'
 			. '<p>Middle</p>'
 			. '<pcc-component id="c2" type="MEDIA_EMBED" attrs="' . $attrs2 . '"></pcc-component>';
@@ -97,7 +97,7 @@ class SmartComponentsDetectionTest extends WP_UnitTestCase
 
 	public function testExtractPreservesWidthAndHeight(): void
 	{
-		$attrs = base64_encode(json_encode([
+		$attrs = base64_encode(wp_json_encode([
 			'url' => 'https://example.com/video',
 			'width' => '80%',
 			'height' => '350px',
