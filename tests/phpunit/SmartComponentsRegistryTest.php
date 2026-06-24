@@ -4,6 +4,8 @@
  * Tests for SmartComponents registration, schema, and rendering.
  */
 
+require_once __DIR__ . '/StubComponent.php';
+
 namespace Pantheon\ContentPublisher\Tests;
 
 use Pantheon\ContentPublisher\SmartComponents;
