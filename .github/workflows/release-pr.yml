@@ -13,9 +13,9 @@ jobs:
     name: Draft Release PR
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Create Draft Release PR
-        uses: pantheon-systems/plugin-release-actions/release-pr@main
+        uses: pantheon-systems/plugin-release-actions/release-pr@b1c7493f44edb8d0053515b4551a80112b5376c0 # main
         with:
           gh_token: ${{ github.token }}
           readme_md: README.md
