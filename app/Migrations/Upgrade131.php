@@ -6,7 +6,7 @@ if (!defined('ABSPATH')) {
 	exit;
 }
 
-class Upgrade_131
+class Upgrade131
 {
 	/**
 	 * Run all migrations for version 1.3.1
