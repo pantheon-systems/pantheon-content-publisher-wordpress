@@ -22,4 +22,4 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-      - uses: pantheon-systems/validate-readme-spacing@v1
+      - uses: pantheon-systems/validate-readme-spacing@229ea162621009cf8e09bf2beba405017150130e # v1
