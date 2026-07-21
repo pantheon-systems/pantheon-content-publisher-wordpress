@@ -39,7 +39,10 @@ jobs:
         npm run build
 
     - name: Create Dist Archive for wp.org validation
+      env:
+        COMPOSER_AUTH: '{"github-oauth": {}}'
       run: |
+        rm -f ~/.composer/auth.json
         wp package install wp-cli/dist-archive-command:v3.1.0
         wp dist-archive . --plugin-dirname=pantheon-content-publisher --filename-format=pantheon-content-publisher-dist
         unzip ../pantheon-content-publisher-dist.zip
