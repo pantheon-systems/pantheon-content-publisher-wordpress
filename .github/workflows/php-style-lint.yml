@@ -15,3 +15,11 @@ jobs:
     steps:
       - name: Skip
         run: echo 'workflow broke - skip for PR checks'
+
+  validate-readme-spacing:
+    name: Validate README Spacing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - uses: pantheon-systems/validate-readme-spacing@v1
