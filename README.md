@@ -1,6 +1,6 @@
 # Pantheon Content Publisher for WordPress
 
-**Contributors:** [getpantheon](https://profiles.wordpress.org/getpantheon/), [a11rew](https://profiles.wordpress.org/a11rew), [anaispantheor](https://profiles.wordpress.org/anaispantheor/), [roshnykunjappan](https://profiles.wordpress.org/roshnykunjappan/), [mklasen](https://profiles.wordpress.org/mklasen/), [jazzs3quence](https://profiles.wordpress.org/jazzs3quence/), [swb1192](https://profiles.wordpress.org/swb1192)
+**Contributors:** [getpantheon](https://profiles.wordpress.org/getpantheon/), [a11rew](https://profiles.wordpress.org/a11rew), [anaispantheor](https://profiles.wordpress.org/anaispantheor/), [roshnykunjappan](https://profiles.wordpress.org/roshnykunjappan/), [mklasen](https://profiles.wordpress.org/mklasen/), [jazzs3quence](https://profiles.wordpress.org/jazzs3quence/), [swb1192](https://profiles.wordpress.org/swb1192), [metasim](https://profiles.wordpress.org/metasim/)
 **Tags:** pantheon, content, google docs, acf
 **Requires at least:** 5.7  
 **Tested up to:** 6.9  
