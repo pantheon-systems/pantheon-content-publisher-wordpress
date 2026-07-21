@@ -2,7 +2,7 @@
 Contributors: getpantheon, a11rew, anaispantheor, roshnykunjappan, mklasen, jazzs3quence, swb1192
 Tags: pantheon, acf, google docs
 Requires at least: 6.5
-Tested up to: 7.0
+Tested up to: 6.9
 Stable tag: 1.4.0-dev
 Requires PHP: 8.1.0
 License: GPLv2 or later
