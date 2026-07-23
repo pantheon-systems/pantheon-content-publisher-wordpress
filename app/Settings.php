@@ -35,6 +35,9 @@ use const CPUB_PLUGIN_DIR_URL;
  */
 class Settings
 {
+	private SmartComponents $smartComponents;
+	private PccSyncManager $pccSyncManager;
+
 	/**
 	 * Pantheon menu icon in base64
 	 */
@@ -56,8 +59,10 @@ class Settings
 	 */
 	private const CPUB_DOCUMENT_EDIT_URL = 'https://docs.google.com/document/d/%s/edit';
 
-	public function __construct()
+	public function __construct(SmartComponents $smartComponents)
 	{
+		$this->smartComponents = $smartComponents;
+		$this->pccSyncManager = new PccSyncManager();
 		$this->addHooks();
 	}
 
@@ -87,7 +92,7 @@ class Settings
 		add_filter('the_content', [$this, 'addPreviewContainer']);
 		// TODO: Decide if we need to verify the collection URL given a site can have multiple domains
 		// add_filter('admin_init', [$this, 'verifyCollectionUrl']);
-		add_filter('wp_kses_allowed_html', [$this, 'allowStyleTags'], PHP_INT_MAX);
+		add_filter('wp_kses_allowed_html', [$this, 'extendAllowedHtmlTags'], PHP_INT_MAX);
 		add_filter('get_the_excerpt', [$this, 'stripExcerptTags'], -PHP_INT_MAX);
 	}
 
@@ -230,15 +235,25 @@ class Settings
 	}
 
 	/**
-	 * Allow style tags in the content.
+	 * Extend allowed HTML tags for Content Publisher posts.
 	 *
 	 * @param $allowedTags
 	 * @return mixed
 	 */
-	public function allowStyleTags($allowedTags)
+	public function extendAllowedHtmlTags($allowedTags)
 	{
-		if (get_post_meta(get_the_ID(), CPUB_CONTENT_META_KEY, true)) {
+		// Resolve post ID. In REST/webhook context get_the_ID() returns 0;
+		// PccSyncManager exposes the ID being saved in that case.
+		$postId = get_the_ID() ?: $this->pccSyncManager->getSavingPostId();
+
+		// Check if this is a Content Publisher document.
+		if ($postId && get_post_meta($postId, CPUB_CONTENT_META_KEY, true)) {
 			$allowedTags['style'] = [];
+
+			// Collect allowed tags (e.g. iframe for MediaEmbed).
+			foreach ($this->smartComponents->getAllowedHtmlTags() as $tag => $attrs) {
+				$allowedTags[$tag] = array_merge($allowedTags[$tag] ?? [], $attrs);
+			}
 		}
 
 		return $allowedTags;
@@ -538,6 +553,23 @@ class Settings
 			// return the original posts array. WP will handle it (e.g., show draft, 404).
 			if (!$article) {
 				return $posts;
+			}
+
+			// Process smart components (e.g. Media Embed) if present.
+			if ($this->smartComponents->contentHasComponents($article->content)) {
+				$rawArticle = $articlesApi->getArticleById(
+					$documentId,
+					['id', 'content'],
+					$publishingLevel,
+					null,
+					$versionId ?: null
+				);
+				if ($rawArticle && $rawArticle->content) {
+					$article->content = $this->smartComponents->processContent(
+						$article->content,
+						$rawArticle->content
+					);
+				}
 			}
 
 			// Apply updates to the in-memory post object
