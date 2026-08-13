@@ -79,7 +79,7 @@ Yes. When creating or editing a collection, select the target post type from the
 
 == Changelog ==
 
-= 1.3.6 (13 August 2026) =
+= 1.3.6 (14 August 2026) =
 * Compatibility: Supports PHP 8.5 (#217)
 * Compatibility: Supports WordPress 7.0
 * Fix: Updated npm and Composer dependencies (#221, #231, #232, #233, #236)
