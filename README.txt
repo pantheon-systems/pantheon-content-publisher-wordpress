@@ -81,8 +81,8 @@ Yes. When creating or editing a collection, select the target post type from the
 
 = 1.3.6-dev =
 * Compatibility: Supports PHP 8.5 (#217)
-* Tested up to WordPress 7.0
-* Updated npm and Composer dependencies (#221, #231, #232, #233, #236)
+* Compatibility: Supports WordPress 7.0
+* Fix: Updated npm and Composer dependencies (#221, #231, #232, #233, #236)
 
 = 1.3.5 (5 March 2026) =
 * Feature: ACF integration — sync Content Publisher metadata fields to Advanced Custom Fields with per-post-type mappings [#201](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/201)
