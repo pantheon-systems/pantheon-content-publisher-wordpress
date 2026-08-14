@@ -52,6 +52,9 @@
     "allow-plugins": {
       "dealerdirect/phpcodesniffer-composer-installer": true,
       "pantheon-systems/wpunit-helpers": true
+    },
+    "platform": {
+      "php": "8.1"
     }
   }
 }

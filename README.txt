@@ -1,9 +1,9 @@
 === Pantheon Content Publisher ===
 Contributors: getpantheon, a11rew, anaispantheor, roshnykunjappan, mklasen, jazzs3quence, swb1192
 Tags: pantheon, acf, google docs
-Requires at least: 5.7
-Tested up to: 6.9
-Stable tag: 1.3.5
+Requires at least: 6.5
+Tested up to: 7.0
+Stable tag: 1.3.6
 Requires PHP: 8.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -30,7 +30,7 @@ For more information, please check [Pantheon Content Publisher documentation](ht
 
 == Installation ==
 
-The Pantheon Content Publisher plugin can be installed like any other WordPress Plugin, from your WordPress Dashboard, go to Plugins -> Add Plugin and search for: Pantheon Content Publisher, click the Install Now button and then click Activate. 
+The Pantheon Content Publisher plugin can be installed like any other WordPress Plugin, from your WordPress Dashboard, go to Plugins -> Add Plugin and search for: Pantheon Content Publisher, click the Install Now button and then click Activate.
 
 After the plugin is active, set up your connection to Pantheon Content Publisher and Google Drive via the settings page in the WordPress admin dashboard.
 
@@ -43,15 +43,15 @@ Once connected:
 
 = Important Disclosure =
 This plugin integrates with Google Drive and Google Docs to facilitate document publishing to WordPress.
-When enabled, it will access documents from these services for the purposes of rendering previews and enabling publishing functionality via the [Pantheon Content Publisher service](https://docs.content.pantheon.io). These services are not processing any data or content originating from WordPress or the plugin itself and no other third-party service is used to process data. 
-Pantheon Content Publisher policies and terms are available at [https://legal.pantheon.io/](https://legal.pantheon.io/) 
+When enabled, it will access documents from these services for the purposes of rendering previews and enabling publishing functionality via the [Pantheon Content Publisher service](https://docs.content.pantheon.io). These services are not processing any data or content originating from WordPress or the plugin itself and no other third-party service is used to process data.
+Pantheon Content Publisher policies and terms are available at [https://legal.pantheon.io/](https://legal.pantheon.io/)
 
-This plugin makes use of the Apollo open-source GraphQL Client library and references its [Chrome extension](https://chromewebstore.google.com/detail/apollo-client-devtools/jdkknkkbebbapilgoeccciglkfbmbnfm). 
-Google Chrome Web Store: [Terms of Service](https://ssl.gstatic.com/chrome/webstore/intl/en/gallery_tos.html),  [Privacy Policy](https://policies.google.com/privacy?hl=en). 
+This plugin makes use of the Apollo open-source GraphQL Client library and references its [Chrome extension](https://chromewebstore.google.com/detail/apollo-client-devtools/jdkknkkbebbapilgoeccciglkfbmbnfm).
+Google Chrome Web Store: [Terms of Service](https://ssl.gstatic.com/chrome/webstore/intl/en/gallery_tos.html),  [Privacy Policy](https://policies.google.com/privacy?hl=en).
 
 Mozilla/FireFox:  [Terms of Service](https://www.mozilla.org/en-US/about/legal/terms/mozilla/), [Privacy Policy](https://www.mozilla.org/en-US/privacy/websites/)
 
-This library only suggests the use of this tool to developers. Users don't interact with it and no data is exchanged with this service. 
+This library only suggests the use of this tool to developers. Users don't interact with it and no data is exchanged with this service.
 
 This service is provided by [Apollo](https://www.apollographql.com). See the [Apollo Term of Service](https://www.apollographql.com/Apollo-Terms-of-Service.pdf) and [Apollo Privacy Policy](https://www.apollographql.com/Apollo-Privacy-Policy.pdf) for details on terms.
 
@@ -78,6 +78,11 @@ Yes. The ACF plugin must be installed and active. If ACF is not detected, the In
 Yes. When creating or editing a collection, select the target post type from the dropdown. You can also select "Chosen by the author" to let document authors control the post type via the `wp-post-type` metadata field.
 
 == Changelog ==
+
+= 1.3.6 (14 August 2026) =
+* Compatibility: Supports PHP 8.5 (#217)
+* Compatibility: Supports WordPress 7.0
+* Fix: Updated npm and Composer dependencies (#221, #231, #232, #233, #236)
 
 = 1.3.5 (5 March 2026) =
 * Feature: ACF integration — sync Content Publisher metadata fields to Advanced Custom Fields with per-post-type mappings [#201](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/201)
@@ -113,7 +118,7 @@ Yes. When creating or editing a collection, select the target post type from the
 * Feature: Add support for draft publishing level and versioning
 
 = 1.2.6-dev =
-* Compatibility: Supports PHP 8.4 
+* Compatibility: Supports PHP 8.4
 
 = 1.2.5 =
 * Fix: Disables the plugin disconnecting itself when the site URL changes
