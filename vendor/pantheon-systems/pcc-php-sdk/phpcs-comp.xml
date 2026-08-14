@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<ruleset name="PCC PHP SDK Compatibility">
+  <description>Compatibility checks for PHP 8+.</description>
+
+  <file>src</file>
+  <exclude-pattern>vendor/*</exclude-pattern>
+
+  <rule ref="PHPCompatibility"/>
+  <config name="testVersion" value="8.0-"/>
+</ruleset> 
