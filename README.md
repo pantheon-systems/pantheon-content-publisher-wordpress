@@ -4,7 +4,7 @@
 **Tags:** pantheon, content, google docs, acf  
 **Requires at least:** 6.5  
 **Tested up to:** 7.0  
-**Stable tag:** 1.3.6-dev  
+**Stable tag:** 1.3.6  
 **Requires PHP:** 8.1.0  
 **License:** GPLv2 or later  
 **License URI:** <http://www.gnu.org/licenses/gpl-2.0.html>

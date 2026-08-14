@@ -20,7 +20,7 @@ The `release` branch matches the latest stable release deployed to [wp.org](wp.o
 ### Preparing a release
 
 1. Merge your feature branch into `main` with a PR. This PR should include any necessary updates to the changelog in readme.txt and README.md. Features should be squash merged.
-1. The `-dev` version on `main` determines the version number the release automation will use. If the next release warrants a minor or major bump (e.g., `1.3.6-dev` should become `1.4.0`), include the version change in the last feature PR merged to `main` before releasing. Update the version in `package.json`, `package-lock.json`, `README.md`, `readme.txt`, and `pantheon-content-publisher.php`.
+1. The `-dev` version on `main` determines the version number the release automation will use. If the next release warrants a minor or major bump (e.g., `1.3.6` should become `1.4.0`), include the version change in the last feature PR merged to `main` before releasing. Update the version in `package.json`, `package-lock.json`, `README.md`, `readme.txt`, and `pantheon-content-publisher.php`.
 1. The `release-pr.yml` workflow automatically creates a `release-X.Y.Z` branch and a draft PR from it to `release`. The branch is updated on every subsequent push to `main`, stripping the `-dev` suffix and updating the version in all files.
 1. Find the draft Release PR in the open pull requests. Add the release date to the changelog heading in `readme.txt` (the automation does not add it).
 1. After all tests pass and you have received approval from a CODEOWNER (including resolving any merge conflicts), merge the PR into `release`. Use a "merge" commit, do not rebase or squash. If the GitHub UI doesn't offer a "Merge commit" option (only showing "Squash and merge" or "Rebase and merge"), merge from the terminal instead:
@@ -46,7 +46,7 @@ After publishing a release, `main` and `release` will have diverged due to merge
     git checkout release && git pull origin release
     git checkout main && git rebase release
     ```
-1. Increment the version to the next **patch** version with a `-dev` flag (e.g., after releasing `1.3.5`, set `1.3.6-dev`). This is a placeholder — the actual release version is determined at release time.
+1. Increment the version to the next **patch** version with a `-dev` flag (e.g., after releasing `1.3.5`, set `1.3.6`). This is a placeholder — the actual release version is determined at release time.
     * Update the version in: `package.json`, `package-lock.json`, `README.md`, `readme.txt`, and `pantheon-content-publisher.php`
     * Add a new empty `** X.Y.Z-dev **` heading to the changelog in `readme.txt`
 1. Commit and push via a PR branch to trigger CI:
