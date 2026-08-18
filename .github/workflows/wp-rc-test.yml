@@ -4,6 +4,9 @@ permissions:
   contents: read
 
 on:
+  # TEMPORARY: remove before merge. Present only so GitHub registers the
+  # workflow and runs it on this PR; the intended trigger is dispatch-only.
+  pull_request:
   workflow_dispatch:
     inputs:
       wp_version:
