@@ -86,7 +86,8 @@ Enter the '@' symbol in the document, a pop-up will show in which you can search
 
 == Changelog ==
 
-= 1.3.7-dev =
+= 1.4.0-dev =
+* Feature: Smart Components foundation with Media Embed support for embedding videos and media via Google Docs add-on [#206](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/206)
 
 = 1.3.6 (14 August 2026) =
 * Compatibility: Supports PHP 8.5 (#217)
@@ -95,7 +96,6 @@ Enter the '@' symbol in the document, a pop-up will show in which you can search
 
 = 1.3.5 (5 March 2026) =
 * Feature: ACF integration — sync Content Publisher metadata fields to Advanced Custom Fields with per-post-type mappings [#201](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/201)
-* Feature: Smart Components foundation with Media Embed support for embedding videos and media via Google Docs add-on [#200](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/200)
 * Feature: Add support for publishing to custom post types with author-choice mode via `wp-post-type` metadata field [#193](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/193)
 * Fix: Async thumbnail generation for featured images to prevent PHP-FPM timeouts on Pantheon [#196](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/196)
 * Fix: Webhook secret validation is now optional rather than required, preventing 500 errors for unconfigured secrets [#195](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/195)
