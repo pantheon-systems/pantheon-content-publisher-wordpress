@@ -3,7 +3,7 @@ Contributors: getpantheon, a11rew, anaispantheor, roshnykunjappan, mklasen, jazz
 Tags: pantheon, acf, google docs
 Requires at least: 6.5
 Tested up to: 7.0
-Stable tag: 1.3.7-dev
+Stable tag: 1.3.7
 Requires PHP: 8.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -79,7 +79,7 @@ Yes. When creating or editing a collection, select the target post type from the
 
 == Changelog ==
 
-= 1.3.7-dev =
+= 1.3.7 (25 August 2026) =
 
 = 1.3.6 (14 August 2026) =
 * Compatibility: Supports PHP 8.5 (#217)
