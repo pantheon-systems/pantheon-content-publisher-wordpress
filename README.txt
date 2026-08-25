@@ -3,7 +3,7 @@ Contributors: getpantheon, a11rew, anaispantheor, roshnykunjappan, mklasen, jazz
 Tags: pantheon, acf, google docs
 Requires at least: 6.5
 Tested up to: 7.0
-Stable tag: 1.3.6
+Stable tag: 1.3.7
 Requires PHP: 8.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -78,6 +78,8 @@ Yes. The ACF plugin must be installed and active. If ACF is not detected, the In
 Yes. When creating or editing a collection, select the target post type from the dropdown. You can also select "Chosen by the author" to let document authors control the post type via the `wp-post-type` metadata field.
 
 == Changelog ==
+
+= 1.3.7 (25 August 2026) =
 
 = 1.3.6 (14 August 2026) =
 * Compatibility: Supports PHP 8.5 (#217)
