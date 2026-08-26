@@ -228,7 +228,7 @@ class PccSyncManager
 		return $postId;
 	}
 
-		/**
+	/**
 	 * Update post tags.
 	 *
 	 * @param $postId
