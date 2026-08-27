@@ -1,5 +1,5 @@
 === Pantheon Content Publisher ===
-Contributors: getpantheon, a11rew, anaispantheor, roshnykunjappan, mklasen, jazzs3quence, swb1192
+Contributors: getpantheon, a11rew, anaispantheor, roshnykunjappan, mklasen, jazzs3quence, swb1192, metasim
 Tags: pantheon, acf, google docs
 Requires at least: 6.5
 Tested up to: 7.0
