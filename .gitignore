@@ -1,7 +1,7 @@
 node_modules/
 vendor/
 assets/dist/
-bin/
+/bin/
 .DS_Store
 *.code-workspace
 .idea
