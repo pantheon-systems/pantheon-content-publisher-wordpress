@@ -1,0 +1,125 @@
+name: WordPress RC Tests
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      wp_version:
+        description: "WordPress version to test (blank = auto-detect latest RC; e.g. 6.9-RC1 or nightly)"
+        required: false
+        type: string
+
+jobs:
+  resolve:
+    name: Resolve WordPress version
+    runs-on: ubuntu-latest
+    outputs:
+      wp-version: ${{ steps.resolve.outputs.wp-version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98
+
+      - name: Resolve target WordPress version
+        id: resolve
+        env:
+          REQUESTED_VERSION: ${{ inputs.wp_version }}
+        run: |
+          WP_VERSION="$(bash .github/workflows/bin/resolve-wp-rc.sh "$REQUESTED_VERSION")"
+          echo "wp-version=${WP_VERSION}" >> "$GITHUB_OUTPUT"
+
+          if [ -z "$WP_VERSION" ]; then
+            echo "::notice::No WordPress Release Candidate is currently available. Nothing to test."
+            echo "No WordPress RC in flight — tests skipped." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          echo "::notice::Testing against WordPress ${WP_VERSION}"
+          echo "Testing against WordPress \`${WP_VERSION}\`" >> "$GITHUB_STEP_SUMMARY"
+
+  phpunit:
+    name: WP ${{ needs.resolve.outputs.wp-version }} / PHP ${{ matrix.php-version }} / ${{ matrix.name }}
+    needs: resolve
+    if: needs.resolve.outputs.wp-version != ''
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Min and max supported PHP: RC breakage is nearly always WordPress-core
+        # related rather than PHP-version specific, so the ends are sufficient.
+        php-version: ["8.1", "8.5"]
+        multisite: ["0", "1"]
+        include:
+          - multisite: "0"
+            name: Single Site
+          - multisite: "1"
+            name: Multisite
+    services:
+      database:
+        image: mysql:latest
+        env:
+          MYSQL_DATABASE: content_publisher_tests
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+    steps:
+      - name: Checkout
+        uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98
+
+      - name: Setup PHP ${{ matrix.php-version }}
+        uses: shivammathur/setup-php@44454db4f0199b8b9685a5d763dc37cbf79108e1
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: mysqli
+          tools: composer,wp-cli
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7
+        with:
+          path: |
+            ~/.composer/cache
+            vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist --no-scripts --no-ansi
+
+      # Install at "latest" rather than at the RC directly: Release Candidates
+      # have no tag in the WordPress develop svn repo (tags/X.Y-RCn does not
+      # exist), so install-wp-tests.sh cannot fetch a test suite for one. We
+      # install the supported way, then upgrade core in place below.
+      #
+      # Note: the test suite and its fixtures therefore come from the stable
+      # tag while core is the RC. If a future RC changes fixture expectations,
+      # a failure here may need a test-suite refresh from branches/X.Y rather
+      # than a plugin fix.
+      - name: Setup test
+        run: bash bin/install-wp-tests.sh --dbname=content_publisher_tests --dbuser=root --dbpass=root --dbhost=127.0.0.1 --version=latest --tmpdir=/tmp --skip-db=true
+
+      - name: Upgrade WordPress core to ${{ needs.resolve.outputs.wp-version }}
+        env:
+          TARGET_VERSION: ${{ needs.resolve.outputs.wp-version }}
+        run: |
+          # --force is required: wp-cli declines a move it considers a
+          # downgrade, and an RC sorts oddly against the installed stable.
+          wp core upgrade --version="$TARGET_VERSION" --force --path=/tmp/wordpress
+          INSTALLED="$(wp core version --path=/tmp/wordpress)"
+          echo "::notice::WordPress core is now ${INSTALLED}"
+
+          # Aliases such as "nightly" do not report back as themselves, so only
+          # assert an exact match for concrete version numbers.
+          if [ "$TARGET_VERSION" != "nightly" ] && [ "$INSTALLED" != "$TARGET_VERSION" ]; then
+            echo "::error::Expected WordPress ${TARGET_VERSION} but found ${INSTALLED}"
+            exit 1
+          fi
+
+      - name: Run tests
+        run: WP_MULTISITE=${{ matrix.multisite }} vendor/bin/phpunit
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "- WP \`${{ needs.resolve.outputs.wp-version }}\` / PHP \`${{ matrix.php-version }}\` / ${{ matrix.name }}: **${{ job.status }}**" >> "$GITHUB_STEP_SUMMARY"
