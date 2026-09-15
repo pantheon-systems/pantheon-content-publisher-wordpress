@@ -4,18 +4,49 @@ updates:
     directory: "/"
     schedule:
       interval: daily
-    target-branch: "primary"
     open-pull-requests-limit: 99
     groups:
-      composer-minor-patch:
+      composer-security:
+        applies-to: security-updates
         update-types:
           - minor
           - patch
-  - package-ecosystem: "github-actions"
+      composer-minor-patch:
+        applies-to: version-updates
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: npm
     directory: "/"
     schedule:
       interval: daily
+    open-pull-requests-limit: 99
     groups:
-      github-actions:
-        patterns:
-          - "*"
+      npm-security:
+        applies-to: security-updates
+        update-types:
+          - minor
+          - patch
+      npm-minor-patch:
+        applies-to: version-updates
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: daily
+    open-pull-requests-limit: 99
+    groups:
+      github-actions-security:
+        applies-to: security-updates
+        update-types:
+          - minor
+          - patch
+      github-actions-minor-patch:
+        applies-to: version-updates
+        update-types:
+          - minor
+          - patch
