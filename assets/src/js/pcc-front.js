@@ -42,12 +42,16 @@ observable.subscribe({
         entryTitle.innerHTML = article.title;
 
         var previewContentContainer = document.getElementById('pcc-content-preview');
+
+        // Preserve server-rendered embeds (oEmbed) before clearing content.
+        const savedEmbeds = [...previewContentContainer.querySelectorAll('.cpub-media-embed')];
+
         previewContentContainer.innerHTML = '';
-        previewContentContainer.appendChild(generateHTMLFromJSON(JSON.parse(update.data.article.content)));
+        previewContentContainer.appendChild(generateHTMLFromJSON(JSON.parse(update.data.article.content), null, savedEmbeds));
     },
 });
 
-function generateHTMLFromJSON(json, parentElement = null) {
+function generateHTMLFromJSON(json, parentElement = null, savedEmbeds = []) {
     const createElement = (tag, attrs = {}, styles = {}, content = '') => {
         if (undefined === tag) {
             tag = 'div';
@@ -81,6 +85,15 @@ function generateHTMLFromJSON(json, parentElement = null) {
 
     const processNode = (node, parent, uniqueClass) => {
         const {tag, data, children, style, attrs} = node;
+
+        // Re-use the server-rendered embed if available, otherwise skip.
+        if (tag === 'component' || tag === 'pcc-component') {
+            const embed = savedEmbeds.shift();
+            if (embed) {
+                parent.appendChild(embed);
+            }
+            return;
+        }
 
         const hasChildren = children && children.length;
         const hasData = data !== null && data !== '';
@@ -116,3 +129,4 @@ function generateHTMLFromJSON(json, parentElement = null) {
 
     return container;
 }
+

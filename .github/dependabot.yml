@@ -6,7 +6,16 @@ updates:
       interval: daily
     target-branch: "primary"
     open-pull-requests-limit: 99
+    groups:
+      composer-minor-patch:
+        update-types:
+          - minor
+          - patch
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: daily
+    groups:
+      github-actions:
+        patterns:
+          - "*"
