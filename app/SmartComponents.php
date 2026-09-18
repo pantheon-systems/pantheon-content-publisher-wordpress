@@ -231,7 +231,9 @@ class SmartComponents
 					$component = $byId[$placeholderId];
 				} elseif (isset($components[$index])) {
 					$component = $components[$index++];
-				} else {
+				}
+
+				if (!isset($component)) {
 					$index++;
 					return $matches[0];
 				}
