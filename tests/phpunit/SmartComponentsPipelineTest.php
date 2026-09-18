@@ -91,7 +91,99 @@ class SmartComponentsPipelineTest extends WP_UnitTestCase
 		$this->assertStringContainsString('<component></component>', $result);
 	}
 
+	public function testReplaceMatchesByIdEvenWhenOutOfOrder(): void
+	{
+		// Placeholder order is reversed relative to the extracted components
+		// array, simulating the two independent parsing passes diverging.
+		$processed = '<component id="c2"></component><component id="c1"></component>';
+		$components = [
+			['id' => 'c1', 'type' => 'MEDIA_EMBED', 'attrs' => ['url' => 'https://example.com/first']],
+			['id' => 'c2', 'type' => 'MEDIA_EMBED', 'attrs' => ['url' => 'https://example.com/second']],
+		];
+
+		$result = $this->registry->replaceComponentPlaceholders($processed, $components);
+
+		$secondPos = strpos($result, 'example.com/second');
+		$firstPos = strpos($result, 'example.com/first');
+		$this->assertNotFalse($secondPos);
+		$this->assertNotFalse($firstPos);
+		$this->assertLessThan($firstPos, $secondPos);
+	}
+
+	public function testReplaceFallsBackToPositionalWhenNoIds(): void
+	{
+		$processed = '<component></component><component></component>';
+		$components = [
+			['type' => 'MEDIA_EMBED', 'attrs' => ['url' => 'https://example.com/first']],
+			['type' => 'MEDIA_EMBED', 'attrs' => ['url' => 'https://example.com/second']],
+		];
+
+		$result = $this->registry->replaceComponentPlaceholders($processed, $components);
+
+		$firstPos = strpos($result, 'example.com/first');
+		$secondPos = strpos($result, 'example.com/second');
+		$this->assertNotFalse($firstPos);
+		$this->assertNotFalse($secondPos);
+		$this->assertLessThan($secondPos, $firstPos);
+	}
+
+	public function testReplaceFallsBackToPositionalWhenIdNotFound(): void
+	{
+		$processed = '<component id="unknown"></component>';
+		$components = [
+			['id' => 'c1', 'type' => 'MEDIA_EMBED', 'attrs' => ['url' => 'https://example.com/only']],
+		];
+
+		$result = $this->registry->replaceComponentPlaceholders($processed, $components);
+
+		$this->assertStringContainsString('example.com/only', $result);
+	}
+
+	// ── extractFromRawContent() ──────────────────────────────────────
+
+	public function testExtractFromRawContentCapturesId(): void
+	{
+		$attrs = base64_encode(wp_json_encode(['url' => 'https://example.com/video']));
+		$rawContent = '<pcc-component id="c1" type="MEDIA_EMBED" attrs="' . $attrs . '"></pcc-component>';
+
+		$components = $this->registry->extractFromRawContent($rawContent);
+
+		$this->assertCount(1, $components);
+		$this->assertSame('c1', $components[0]['id']);
+		$this->assertSame('MEDIA_EMBED', $components[0]['type']);
+	}
+
+	public function testExtractFromRawContentWithoutIdReturnsNullId(): void
+	{
+		$attrs = base64_encode(wp_json_encode(['url' => 'https://example.com/video']));
+		$rawContent = '<pcc-component type="MEDIA_EMBED" attrs="' . $attrs . '"></pcc-component>';
+
+		$components = $this->registry->extractFromRawContent($rawContent);
+
+		$this->assertCount(1, $components);
+		$this->assertNull($components[0]['id']);
+	}
+
 	// ── processContent() ────────────────────────────────────────────
+
+	public function testProcessContentEndToEndMatchesById(): void
+	{
+		$attrsOne = base64_encode(wp_json_encode(['url' => 'https://example.com/first']));
+		$attrsTwo = base64_encode(wp_json_encode(['url' => 'https://example.com/second']));
+		$rawContent = '<pcc-component id="c1" type="MEDIA_EMBED" attrs="' . $attrsOne . '"></pcc-component>'
+			. '<pcc-component id="c2" type="MEDIA_EMBED" attrs="' . $attrsTwo . '"></pcc-component>';
+		// Placeholders arrive in the opposite order from the raw metadata,
+		// as can happen when the two parsing passes diverge.
+		$processedContent = '<component id="c2"></component><component id="c1"></component>';
+
+		$result = $this->registry->processContent($processedContent, $rawContent);
+
+		$secondPos = strpos($result, 'example.com/second');
+		$firstPos = strpos($result, 'example.com/first');
+		$this->assertNotFalse($secondPos);
+		$this->assertNotFalse($firstPos);
+		$this->assertLessThan($firstPos, $secondPos);
+	}
 
 	public function testProcessContentEndToEnd(): void
 	{
