@@ -127,8 +127,11 @@ class SmartComponentsPipelineTest extends WP_UnitTestCase
 		$this->assertLessThan($secondPos, $firstPos);
 	}
 
-	public function testReplaceFallsBackToPositionalWhenIdNotFound(): void
+	public function testReplaceStrictModeLeavesUnknownIdPlaceholder(): void
 	{
+		// Once any placeholder carries an id the whole document uses strict id
+		// matching. An unmatched id must not positionally borrow an unrelated
+		// component; the placeholder is left in place instead.
 		$processed = '<component id="unknown"></component>';
 		$components = [
 			['id' => 'c1', 'type' => 'MEDIA_EMBED', 'attrs' => ['url' => 'https://example.com/only']],
@@ -136,7 +139,25 @@ class SmartComponentsPipelineTest extends WP_UnitTestCase
 
 		$result = $this->registry->replaceComponentPlaceholders($processed, $components);
 
-		$this->assertStringContainsString('example.com/only', $result);
+		$this->assertStringNotContainsString('example.com/only', $result);
+		$this->assertStringContainsString('<component id="unknown"></component>', $result);
+	}
+
+	public function testReplaceStrictModeDoesNotReuseMetadataForIdlessPlaceholder(): void
+	{
+		// Mixed markup: an id-tagged placeholder followed by an id-less one.
+		// Because a placeholder has an id, the document is in strict id mode,
+		// so the id-less placeholder must NOT positionally reuse the already
+		// id-matched component — the exact divergence this fix prevents.
+		$processed = '<component id="c1"></component><component></component>';
+		$components = [
+			['id' => 'c1', 'type' => 'MEDIA_EMBED', 'attrs' => ['url' => 'https://example.com/first']],
+		];
+
+		$result = $this->registry->replaceComponentPlaceholders($processed, $components);
+
+		$this->assertSame(1, substr_count($result, 'example.com/first'));
+		$this->assertStringContainsString('<component></component>', $result);
 	}
 
 	// ── extractFromRawContent() ──────────────────────────────────────

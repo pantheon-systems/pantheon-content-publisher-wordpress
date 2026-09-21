@@ -194,12 +194,15 @@ class SmartComponents
 	 * Replace <component></component> placeholders in processed content
 	 * with rendered embed HTML.
 	 *
-	 * Placeholders are matched to extracted component data by `id` when both
-	 * the placeholder and the extracted component carry one, since the two are
-	 * fetched via independent requests/parsers that can diverge in ordering.
-	 * When a placeholder has no id (or its id isn't found), it falls back to
-	 * positional pairing for compatibility with content processed before
-	 * placeholders carried an id.
+	 * The matching strategy is chosen once for the whole document rather than
+	 * per placeholder. If any placeholder carries an `id`, every placeholder is
+	 * matched strictly by `id` against the extracted component data (the two are
+	 * fetched via independent requests/parsers that can diverge in ordering);
+	 * a placeholder with no id, or with an id that isn't found, is left in place
+	 * rather than guessed at positionally. Positional matching is reserved for
+	 * fully legacy markup where no placeholder carries an id — content processed
+	 * before placeholders emitted ids. Mixing the two per placeholder can reuse
+	 * or mispair metadata when markup is only partially id-tagged.
 	 *
 	 * @param string $processedContent TREE_PANTHEON_V2 HTML.
 	 * @param array $components Extracted component data from raw content.
@@ -213,6 +216,43 @@ class SmartComponents
 			return $processedContent;
 		}
 
+		if ($this->placeholdersHaveIds($processedContent)) {
+			return $this->replaceById($processedContent, $components);
+		}
+
+		return $this->replaceByPosition($processedContent, $components);
+	}
+
+	/**
+	 * Determine whether any <component> placeholder carries an id attribute.
+	 *
+	 * @param string $processedContent TREE_PANTHEON_V2 HTML.
+	 * @return bool True if at least one placeholder has an id.
+	 */
+	private function placeholdersHaveIds(string $processedContent): bool
+	{
+		if (!preg_match_all('/<component([^>]*)><\/component>/i', $processedContent, $matches)) {
+			return false;
+		}
+
+		foreach ($matches[1] as $attrsHtml) {
+			if ($this->extractHtmlAttr($attrsHtml, 'id') !== null) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Replace placeholders by matching their id against the component data.
+	 *
+	 * @param string $processedContent TREE_PANTHEON_V2 HTML.
+	 * @param array $components Extracted component data from raw content.
+	 * @return string Content with id-matched embeds rendered.
+	 */
+	private function replaceById(string $processedContent, array $components): string
+	{
 		$byId = [];
 		foreach ($components as $component) {
 			if (!empty($component['id'])) {
@@ -220,34 +260,61 @@ class SmartComponents
 			}
 		}
 
+		return preg_replace_callback(
+			'/<component([^>]*)><\/component>/i',
+			function ($matches) use ($byId) {
+				$placeholderId = $this->extractHtmlAttr($matches[1], 'id');
+
+				if ($placeholderId === null || !isset($byId[$placeholderId])) {
+					return $matches[0];
+				}
+
+				return $this->renderMatchedComponent($byId[$placeholderId]);
+			},
+			$processedContent
+		);
+	}
+
+	/**
+	 * Replace placeholders by their position in the component data (legacy).
+	 *
+	 * @param string $processedContent TREE_PANTHEON_V2 HTML.
+	 * @param array $components Extracted component data from raw content.
+	 * @return string Content with positionally-matched embeds rendered.
+	 */
+	private function replaceByPosition(string $processedContent, array $components): string
+	{
 		$index = 0;
 
 		return preg_replace_callback(
 			'/<component([^>]*)><\/component>/i',
-			function ($matches) use (&$index, $components, $byId) {
-				$placeholderId = $this->extractHtmlAttr($matches[1], 'id');
-
-				if ($placeholderId !== null && isset($byId[$placeholderId])) {
-					$component = $byId[$placeholderId];
-				} elseif (isset($components[$index])) {
-					$component = $components[$index++];
-				}
-
-				if (!isset($component)) {
+			function ($matches) use (&$index, $components) {
+				if (!isset($components[$index])) {
 					$index++;
 					return $matches[0];
 				}
 
-				$type = strtoupper($component['type']);
-
-				if (isset($this->components[$type])) {
-					return $this->components[$type]->render($component['attrs']);
-				}
-
-				return '<!-- unsupported smart component: ' . esc_html($component['type']) . ' -->';
+				return $this->renderMatchedComponent($components[$index++]);
 			},
 			$processedContent
 		);
+	}
+
+	/**
+	 * Render a matched component's embed HTML.
+	 *
+	 * @param array $component Component data with 'type' and 'attrs' keys.
+	 * @return string Rendered embed HTML, or an HTML comment for unsupported types.
+	 */
+	private function renderMatchedComponent(array $component): string
+	{
+		$type = strtoupper($component['type']);
+
+		if (isset($this->components[$type])) {
+			return $this->components[$type]->render($component['attrs']);
+		}
+
+		return '<!-- unsupported smart component: ' . esc_html($component['type']) . ' -->';
 	}
 
 	/**
