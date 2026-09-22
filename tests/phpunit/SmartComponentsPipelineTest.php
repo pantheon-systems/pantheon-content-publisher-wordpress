@@ -185,6 +185,21 @@ class SmartComponentsPipelineTest extends WP_UnitTestCase
 		$this->assertNull($components[0]['id']);
 	}
 
+	public function testExtractFromRawContentIsAttributeOrderIndependent(): void
+	{
+		// Attributes may arrive in any order; extraction matches each by name,
+		// not position. Guard against a regression to order-dependent parsing.
+		$attrs = base64_encode(wp_json_encode(['url' => 'https://example.com/video']));
+		$rawContent = '<pcc-component attrs="' . $attrs . '" type="MEDIA_EMBED" id="c1"></pcc-component>';
+
+		$components = $this->registry->extractFromRawContent($rawContent);
+
+		$this->assertCount(1, $components);
+		$this->assertSame('c1', $components[0]['id']);
+		$this->assertSame('MEDIA_EMBED', $components[0]['type']);
+		$this->assertSame('https://example.com/video', $components[0]['attrs']['url']);
+	}
+
 	// ── processContent() ────────────────────────────────────────────
 
 	public function testProcessContentEndToEndMatchesById(): void
