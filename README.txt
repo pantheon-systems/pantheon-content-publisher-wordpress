@@ -3,7 +3,7 @@ Contributors: getpantheon, a11rew, anaispantheor, roshnykunjappan, mklasen, jazz
 Tags: pantheon, acf, google docs, embeds
 Requires at least: 6.5
 Tested up to: 7.1
-Stable tag: 1.4.0
+Stable tag: 1.4.1-dev
 Requires PHP: 8.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -85,6 +85,8 @@ Yes. When creating or editing a collection, select the target post type from the
 Enter the '@' symbol in the document, a pop-up will show in which you can search for integrations, search for "Pantheon" and choose the "Pantheon Component". You will then see a pop-up in which you can select the Media Embed.
 
 == Changelog ==
+
+= 1.4.1-dev =
 
 = 1.4.0 (16 September 2026) =
 * Feature: Smart Components foundation with Media Embed support for embedding videos and media via Google Docs add-on [#206](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/206)
