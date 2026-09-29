@@ -3,7 +3,7 @@ Contributors: getpantheon, a11rew, anaispantheor, roshnykunjappan, mklasen, jazz
 Tags: pantheon, acf, google docs, embeds
 Requires at least: 6.5
 Tested up to: 7.1
-Stable tag: 1.4.1-dev
+Stable tag: 1.4.1
 Requires PHP: 8.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -86,7 +86,7 @@ Enter the '@' symbol in the document, a pop-up will show in which you can search
 
 == Changelog ==
 
-= 1.4.1-dev =
+= 1.4.1 (29 September 2026) =
 * Fix: Match Smart Component placeholders to their metadata by id, not position [#261](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/261)
 
 = 1.4.0 =
