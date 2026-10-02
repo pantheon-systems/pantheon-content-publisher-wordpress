@@ -1,16 +1,13 @@
-# https://backstage.io/docs/features/software-catalog/
-# https://backstage.io/docs/features/software-catalog/descriptor-format
+# Managed by github-terraform — do not edit manually
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: pantheon-content-wordpress-publisher
-  description: A PCC publisher module for publishing wordpress content
+  name: "pantheon-content-publisher-wordpress"
+  description: "Pantheon Content Publisher for WordPress - A plugin that connects Pantheon Content Publisher to WordPress"
   annotations:
-    pantheon.io/service-catalog/subdir: /
-    github.com/project-slug: pantheon-systems/pantheon-content-publisher-wordpress
-    github.com/team-slug: pantheon-systems/pcc
+    "backstage.io/techdocs-ref": "dir:docs/"
 spec:
-  type: library
-  lifecycle: Introduction
-  owner: content-cloud
+  type: "library"
+  lifecycle: "experimental"
+  owner: "content-experience"
