@@ -87,6 +87,7 @@ Enter the '@' symbol in the document, a pop-up will show in which you can search
 == Changelog ==
 
 = 1.4.2-dev =
+* Fix: Update pcc-php-sdk to 1.1.2 so Smart Components display in the real-time preview
 
 = 1.4.1 (29 September 2026) =
 * Fix: Match Smart Component placeholders to their metadata by id, not position [#261](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/261)
