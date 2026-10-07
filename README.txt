@@ -3,7 +3,7 @@ Contributors: getpantheon, a11rew, anaispantheor, roshnykunjappan, mklasen, jazz
 Tags: pantheon, acf, google docs, embeds
 Requires at least: 6.5
 Tested up to: 7.1
-Stable tag: 1.4.2-dev
+Stable tag: 1.4.3-dev
 Requires PHP: 8.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -86,13 +86,15 @@ Enter the '@' symbol in the document, a pop-up will show in which you can search
 
 == Changelog ==
 
-= 1.4.2-dev =
+= 1.4.3-dev =
+
+= 1.4.2 (6 October 2026) =
 * Fix: Update pcc-php-sdk to 1.1.2 so Smart Components display in the real-time preview
 
 = 1.4.1 (29 September 2026) =
 * Fix: Match Smart Component placeholders to their metadata by id, not position [#261](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/261)
 
-= 1.4.0 =
+= 1.4.0 (16 September 2026) =
 * Feature: Smart Components foundation with Media Embed support for embedding videos and media via Google Docs add-on [#206](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/206)
 
 = 1.3.6 (14 August 2026) =
