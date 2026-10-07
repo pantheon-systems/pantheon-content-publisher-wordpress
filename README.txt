@@ -92,7 +92,7 @@ Enter the '@' symbol in the document, a pop-up will show in which you can search
 = 1.4.1 (29 September 2026) =
 * Fix: Match Smart Component placeholders to their metadata by id, not position [#261](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/261)
 
-= 1.4.0 =
+= 1.4.0 (16 September 2026) =
 * Feature: Smart Components foundation with Media Embed support for embedding videos and media via Google Docs add-on [#206](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/206)
 
 = 1.3.6 (14 August 2026) =
