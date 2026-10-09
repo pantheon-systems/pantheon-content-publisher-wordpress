@@ -23,6 +23,12 @@ use Pantheon\ContentPublisher\Interfaces\SmartComponentInterface;
 class SmartComponents
 {
 	/**
+	 * Class of the marker element wrapped around each rendered component in
+	 * realtime preview output. Must match the selector used in pcc-front.js.
+	 */
+	public const PREVIEW_WRAPPER_CLASS = 'cpub-smart-component';
+
+	/**
 	 * @var SmartComponentInterface[] Registered components keyed by type.
 	 */
 	private array $components = [];
@@ -206,21 +212,25 @@ class SmartComponents
 	 *
 	 * @param string $processedContent TREE_PANTHEON_V2 HTML.
 	 * @param array $components Extracted component data from raw content.
+	 * @param bool $wrapForPreview Wrap each rendered component in a marker element
+	 *   that the realtime preview script can locate and re-insert. Only used for
+	 *   preview requests; synced post content is left unwrapped.
 	 * @return string Content with embeds rendered.
 	 */
 	public function replaceComponentPlaceholders(
 		string $processedContent,
-		array $components
+		array $components,
+		bool $wrapForPreview = false
 	): string {
 		if (empty($components)) {
 			return $processedContent;
 		}
 
 		if ($this->placeholdersHaveIds($processedContent)) {
-			return $this->replaceById($processedContent, $components);
+			return $this->replaceById($processedContent, $components, $wrapForPreview);
 		}
 
-		return $this->replaceByPosition($processedContent, $components);
+		return $this->replaceByPosition($processedContent, $components, $wrapForPreview);
 	}
 
 	/**
@@ -249,9 +259,10 @@ class SmartComponents
 	 *
 	 * @param string $processedContent TREE_PANTHEON_V2 HTML.
 	 * @param array $components Extracted component data from raw content.
+	 * @param bool $wrapForPreview See replaceComponentPlaceholders().
 	 * @return string Content with id-matched embeds rendered.
 	 */
-	private function replaceById(string $processedContent, array $components): string
+	private function replaceById(string $processedContent, array $components, bool $wrapForPreview): string
 	{
 		$byId = [];
 		foreach ($components as $component) {
@@ -262,14 +273,14 @@ class SmartComponents
 
 		return preg_replace_callback(
 			'/<component([^>]*)><\/component>/i',
-			function ($matches) use ($byId) {
+			function ($matches) use ($byId, $wrapForPreview) {
 				$placeholderId = $this->extractHtmlAttr($matches[1], 'id');
 
 				if ($placeholderId === null || !isset($byId[$placeholderId])) {
 					return $matches[0];
 				}
 
-				return $this->renderMatchedComponent($byId[$placeholderId]);
+				return $this->renderMatchedComponent($byId[$placeholderId], $wrapForPreview);
 			},
 			$processedContent
 		);
@@ -280,21 +291,22 @@ class SmartComponents
 	 *
 	 * @param string $processedContent TREE_PANTHEON_V2 HTML.
 	 * @param array $components Extracted component data from raw content.
+	 * @param bool $wrapForPreview See replaceComponentPlaceholders().
 	 * @return string Content with positionally-matched embeds rendered.
 	 */
-	private function replaceByPosition(string $processedContent, array $components): string
+	private function replaceByPosition(string $processedContent, array $components, bool $wrapForPreview): string
 	{
 		$index = 0;
 
 		return preg_replace_callback(
 			'/<component([^>]*)><\/component>/i',
-			function ($matches) use (&$index, $components) {
+			function ($matches) use (&$index, $components, $wrapForPreview) {
 				if (!isset($components[$index])) {
 					$index++;
 					return $matches[0];
 				}
 
-				return $this->renderMatchedComponent($components[$index++]);
+				return $this->renderMatchedComponent($components[$index++], $wrapForPreview);
 			},
 			$processedContent
 		);
@@ -304,17 +316,53 @@ class SmartComponents
 	 * Render a matched component's embed HTML.
 	 *
 	 * @param array $component Component data with 'type' and 'attrs' keys.
+	 * @param bool $wrapForPreview See replaceComponentPlaceholders().
 	 * @return string Rendered embed HTML, or an HTML comment for unsupported types.
 	 */
-	private function renderMatchedComponent(array $component): string
+	private function renderMatchedComponent(array $component, bool $wrapForPreview = false): string
 	{
 		$type = strtoupper($component['type']);
 
 		if (isset($this->components[$type])) {
-			return $this->components[$type]->render($component['attrs']);
+			$html = $this->components[$type]->render($component['attrs']);
+		} else {
+			$html = '<!-- unsupported smart component: ' . esc_html($component['type']) . ' -->';
 		}
 
-		return '<!-- unsupported smart component: ' . esc_html($component['type']) . ' -->';
+		if (!$wrapForPreview) {
+			return $html;
+		}
+
+		return $this->wrapForPreview($html, $type, $component['id'] ?? null);
+	}
+
+	/**
+	 * Wrap rendered component HTML in a marker element for the realtime preview.
+	 *
+	 * The preview page (pcc-front.js) rebuilds the article from the
+	 * TREE_PANTHEON_V2 JSON on every realtime update. It cannot render smart
+	 * components itself (that needs PHP, oEmbed, third-party renderers, ...),
+	 * so it keeps every server-rendered component and re-inserts it where the
+	 * tree has a `component` node, matching by id when available. The wrapper
+	 * is what lets the script find each rendered component regardless of which
+	 * renderer produced it or what markup it produced. Unsupported components
+	 * are wrapped too (around their HTML comment) so positional matching stays
+	 * aligned with the tree.
+	 *
+	 * @param string $html Rendered component HTML.
+	 * @param string $type Upper-cased component type.
+	 * @param string|null $id Component id from the raw content, if any.
+	 * @return string Wrapped HTML.
+	 */
+	private function wrapForPreview(string $html, string $type, ?string $id): string
+	{
+		return sprintf(
+			'<div class="%s" data-cpub-component-type="%s"%s>%s</div>',
+			self::PREVIEW_WRAPPER_CLASS,
+			esc_attr($type),
+			$id !== null && $id !== '' ? ' data-cpub-component-id="' . esc_attr($id) . '"' : '',
+			$html
+		);
 	}
 
 	/**
@@ -325,11 +373,13 @@ class SmartComponents
 	 *
 	 * @param string $processedContent TREE_PANTHEON_V2 HTML.
 	 * @param string|null $rawContent Raw HTML (fetched with null content type).
+	 * @param bool $wrapForPreview See replaceComponentPlaceholders().
 	 * @return string Final content with embeds rendered.
 	 */
 	public function processContent(
 		string $processedContent,
-		?string $rawContent
+		?string $rawContent,
+		bool $wrapForPreview = false
 	): string {
 		if (!$rawContent) {
 			return $processedContent;
@@ -340,6 +390,6 @@ class SmartComponents
 			return $processedContent;
 		}
 
-		return $this->replaceComponentPlaceholders($processedContent, $components);
+		return $this->replaceComponentPlaceholders($processedContent, $components, $wrapForPreview);
 	}
 }

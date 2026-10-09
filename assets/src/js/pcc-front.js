@@ -1,5 +1,10 @@
 import {ARTICLE_UPDATE_SUBSCRIPTION, PantheonClient, PublishingLevel} from "@pantheon-systems/pcc-sdk-core";
 
+// Must match SmartComponents::PREVIEW_WRAPPER_CLASS in PHP.
+const RENDERED_COMPONENT_SELECTOR = '.cpub-smart-component';
+// Markup produced before the generic wrapper existed (Media Embed only).
+const LEGACY_RENDERED_COMPONENT_SELECTOR = '.cpub-media-embed';
+
 const url = new URL(window.location.href);
 const params = new URLSearchParams(url.search);
 const siteId = params.get('site_id') || window.PCCFront.site_id;
@@ -42,16 +47,78 @@ observable.subscribe({
         entryTitle.innerHTML = article.title;
 
         var previewContentContainer = document.getElementById('pcc-content-preview');
+        const tree = JSON.parse(update.data.article.content);
 
-        // Preserve server-rendered embeds (oEmbed) before clearing content.
-        const savedEmbeds = [...previewContentContainer.querySelectorAll('.cpub-media-embed')];
+        // Smart components are rendered server-side (PHP renderers, oEmbed,
+        // third-party plugins) and cannot be rebuilt here. Keep every
+        // server-rendered component so it can be re-inserted where the
+        // updated tree has a component node.
+        const renderedComponents = collectRenderedComponents(previewContentContainer, tree);
 
         previewContentContainer.innerHTML = '';
-        previewContentContainer.appendChild(generateHTMLFromJSON(JSON.parse(update.data.article.content), null, savedEmbeds));
+        previewContentContainer.appendChild(generateHTMLFromJSON(tree, null, renderedComponents));
     },
 });
 
-function generateHTMLFromJSON(json, parentElement = null, savedEmbeds = []) {
+/**
+ * Collect the server-rendered smart components currently in the preview
+ * container and return a store that hands them back per component node.
+ *
+ * Components are matched by id (data-cpub-component-id vs the tree node's
+ * id). Rendered components without an id are handed out positionally, in
+ * document order, for markup that predates ids. A rendered component whose
+ * id no longer appears in the tree was removed from the document and is
+ * dropped.
+ */
+function collectRenderedComponents(container, tree) {
+    let elements = [...container.querySelectorAll(RENDERED_COMPONENT_SELECTOR)];
+    if (!elements.length) {
+        elements = [...container.querySelectorAll(LEGACY_RENDERED_COMPONENT_SELECTOR)];
+    }
+
+    const treeIds = new Set();
+    const walk = (node) => {
+        if (!node || typeof node !== 'object') return;
+        if (isComponentNode(node) && componentNodeId(node)) {
+            treeIds.add(componentNodeId(node));
+        }
+        (node.children || []).forEach(walk);
+    };
+    walk(tree);
+
+    const byId = new Map();
+    const positional = [];
+    const treeHasIds = treeIds.size > 0;
+    elements.forEach((element) => {
+        const id = element.getAttribute('data-cpub-component-id');
+        if (!id || !treeHasIds) {
+            positional.push(element);
+        } else if (treeIds.has(id)) {
+            byId.set(id, element);
+        }
+    });
+
+    return {
+        take(id) {
+            if (id && byId.has(id)) {
+                const element = byId.get(id);
+                byId.delete(id);
+                return element;
+            }
+            return positional.shift() || null;
+        },
+    };
+}
+
+function isComponentNode(node) {
+    return node.tag === 'component' || node.tag === 'pcc-component';
+}
+
+function componentNodeId(node) {
+    return node.id || (node.attrs && node.attrs.id) || null;
+}
+
+function generateHTMLFromJSON(json, parentElement = null, renderedComponents = null) {
     const createElement = (tag, attrs = {}, styles = {}, content = '') => {
         if (undefined === tag) {
             tag = 'div';
@@ -86,11 +153,12 @@ function generateHTMLFromJSON(json, parentElement = null, savedEmbeds = []) {
     const processNode = (node, parent, uniqueClass) => {
         const {tag, data, children, style, attrs} = node;
 
-        // Re-use the server-rendered embed if available, otherwise skip.
-        if (tag === 'component' || tag === 'pcc-component') {
-            const embed = savedEmbeds.shift();
-            if (embed) {
-                parent.appendChild(embed);
+        // Re-insert the server-rendered component if there is one. A component
+        // added since the page was rendered has nothing to show until reload.
+        if (isComponentNode(node)) {
+            const rendered = renderedComponents ? renderedComponents.take(componentNodeId(node)) : null;
+            if (rendered) {
+                parent.appendChild(rendered);
             }
             return;
         }

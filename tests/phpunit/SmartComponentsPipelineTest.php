@@ -160,6 +160,85 @@ class SmartComponentsPipelineTest extends WP_UnitTestCase
 		$this->assertStringContainsString('<component></component>', $result);
 	}
 
+	// ── preview wrapper ─────────────────────────────────────────────
+
+	public function testReplaceDoesNotWrapByDefault(): void
+	{
+		$processed = '<component id="c1"></component>';
+		$components = [
+			['id' => 'c1', 'type' => 'MEDIA_EMBED', 'attrs' => ['url' => 'https://example.com/embed']],
+		];
+
+		$result = $this->registry->replaceComponentPlaceholders($processed, $components);
+
+		$this->assertStringNotContainsString(SmartComponents::PREVIEW_WRAPPER_CLASS, $result);
+		$this->assertStringNotContainsString('data-cpub-component', $result);
+	}
+
+	public function testReplaceWrapsRenderedComponentForPreviewWithIdAndType(): void
+	{
+		$processed = '<p>Before</p><component id="c1"></component><p>After</p>';
+		$components = [
+			['id' => 'c1', 'type' => 'media_embed', 'attrs' => ['url' => 'https://example.com/embed']],
+		];
+
+		$result = $this->registry->replaceComponentPlaceholders($processed, $components, true);
+
+		$this->assertStringContainsString(
+			'<div class="cpub-smart-component" data-cpub-component-type="MEDIA_EMBED" data-cpub-component-id="c1">',
+			$result
+		);
+		$this->assertStringContainsString('cpub-media-embed', $result);
+		$this->assertStringContainsString('</div><p>After</p>', $result);
+	}
+
+	public function testReplaceWrapsUnsupportedComponentForPreview(): void
+	{
+		// Unsupported components keep their wrapper so the preview script's
+		// positional matching stays aligned with the tree.
+		$processed = '<component id="c1"></component>';
+		$components = [
+			['id' => 'c1', 'type' => 'SOME_OTHER_TYPE', 'attrs' => ['key' => 'value']],
+		];
+
+		$result = $this->registry->replaceComponentPlaceholders($processed, $components, true);
+
+		$this->assertStringContainsString(
+			'<div class="cpub-smart-component" data-cpub-component-type="SOME_OTHER_TYPE" data-cpub-component-id="c1">',
+			$result
+		);
+		$this->assertStringContainsString('unsupported smart component', $result);
+	}
+
+	public function testReplaceWrapsPositionalComponentForPreviewWithoutId(): void
+	{
+		$processed = '<component></component>';
+		$components = [
+			['type' => 'MEDIA_EMBED', 'attrs' => ['url' => 'https://example.com/embed']],
+		];
+
+		$result = $this->registry->replaceComponentPlaceholders($processed, $components, true);
+
+		$this->assertStringContainsString(
+			'<div class="cpub-smart-component" data-cpub-component-type="MEDIA_EMBED">',
+			$result
+		);
+		$this->assertStringNotContainsString('data-cpub-component-id', $result);
+	}
+
+	public function testReplaceEscapesWrapperAttributesForPreview(): void
+	{
+		$processed = '<component id="c1"></component>';
+		$components = [
+			['id' => 'c1', 'type' => 'X"><script>', 'attrs' => []],
+		];
+
+		$result = $this->registry->replaceComponentPlaceholders($processed, $components, true);
+
+		$this->assertStringNotContainsString('<script>', $result);
+		$this->assertStringContainsString('data-cpub-component-type="X&quot;&gt;&lt;SCRIPT&gt;"', $result);
+	}
+
 	// ── extractFromRawContent() ──────────────────────────────────────
 
 	public function testExtractFromRawContentCapturesId(): void
@@ -237,6 +316,20 @@ class SmartComponentsPipelineTest extends WP_UnitTestCase
 		$this->assertStringNotContainsString('<component>', $result);
 		$this->assertStringContainsString('cpub-media-embed', $result);
 		$this->assertStringContainsString('width:80%', $result);
+	}
+
+	public function testProcessContentWrapsForPreviewOnlyWhenRequested(): void
+	{
+		$attrs = base64_encode(wp_json_encode(['url' => 'https://example.com/video']));
+		$rawContent = '<pcc-component id="c1" type="MEDIA_EMBED" attrs="' . $attrs . '"></pcc-component>';
+		$processedContent = '<p>Hello</p><component id="c1"></component>';
+
+		$synced = $this->registry->processContent($processedContent, $rawContent);
+		$preview = $this->registry->processContent($processedContent, $rawContent, true);
+
+		$this->assertStringNotContainsString(SmartComponents::PREVIEW_WRAPPER_CLASS, $synced);
+		$this->assertStringContainsString('data-cpub-component-id="c1"', $preview);
+		$this->assertStringContainsString('cpub-media-embed', $preview);
 	}
 
 	public function testProcessContentWithNullRawReturnsOriginal(): void
