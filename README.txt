@@ -87,6 +87,7 @@ Enter the '@' symbol in the document, a pop-up will show in which you can search
 == Changelog ==
 
 = 1.4.3-dev =
+* Fix: Send no-cache headers on the signed preview redirect and on any URL carrying preview parameters, so CDN and page caches cannot serve an expired preview link [#275](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/275)
 
 = 1.4.2 (6 October 2026) =
 * Fix: Update pcc-php-sdk to 1.1.2 so Smart Components display in the real-time preview
