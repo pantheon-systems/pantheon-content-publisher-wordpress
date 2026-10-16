@@ -565,9 +565,12 @@ class Settings
 					$versionId ?: null
 				);
 				if ($rawArticle && $rawArticle->content) {
+					// Wrap each rendered component so pcc-front.js can keep it
+					// across realtime updates (see SmartComponents::wrapForPreview).
 					$article->content = $this->smartComponents->processContent(
 						$article->content,
-						$rawArticle->content
+						$rawArticle->content,
+						true
 					);
 				}
 			}
