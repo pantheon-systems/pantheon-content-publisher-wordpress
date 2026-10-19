@@ -91,7 +91,135 @@ class SmartComponentsPipelineTest extends WP_UnitTestCase
 		$this->assertStringContainsString('<component></component>', $result);
 	}
 
+	public function testReplaceMatchesByIdEvenWhenOutOfOrder(): void
+	{
+		// Placeholder order is reversed relative to the extracted components
+		// array, simulating the two independent parsing passes diverging.
+		$processed = '<component id="c2"></component><component id="c1"></component>';
+		$components = [
+			['id' => 'c1', 'type' => 'MEDIA_EMBED', 'attrs' => ['url' => 'https://example.com/first']],
+			['id' => 'c2', 'type' => 'MEDIA_EMBED', 'attrs' => ['url' => 'https://example.com/second']],
+		];
+
+		$result = $this->registry->replaceComponentPlaceholders($processed, $components);
+
+		$secondPos = strpos($result, 'example.com/second');
+		$firstPos = strpos($result, 'example.com/first');
+		$this->assertNotFalse($secondPos);
+		$this->assertNotFalse($firstPos);
+		$this->assertLessThan($firstPos, $secondPos);
+	}
+
+	public function testReplaceFallsBackToPositionalWhenNoIds(): void
+	{
+		$processed = '<component></component><component></component>';
+		$components = [
+			['type' => 'MEDIA_EMBED', 'attrs' => ['url' => 'https://example.com/first']],
+			['type' => 'MEDIA_EMBED', 'attrs' => ['url' => 'https://example.com/second']],
+		];
+
+		$result = $this->registry->replaceComponentPlaceholders($processed, $components);
+
+		$firstPos = strpos($result, 'example.com/first');
+		$secondPos = strpos($result, 'example.com/second');
+		$this->assertNotFalse($firstPos);
+		$this->assertNotFalse($secondPos);
+		$this->assertLessThan($secondPos, $firstPos);
+	}
+
+	public function testReplaceStrictModeLeavesUnknownIdPlaceholder(): void
+	{
+		// Once any placeholder carries an id the whole document uses strict id
+		// matching. An unmatched id must not positionally borrow an unrelated
+		// component; the placeholder is left in place instead.
+		$processed = '<component id="unknown"></component>';
+		$components = [
+			['id' => 'c1', 'type' => 'MEDIA_EMBED', 'attrs' => ['url' => 'https://example.com/only']],
+		];
+
+		$result = $this->registry->replaceComponentPlaceholders($processed, $components);
+
+		$this->assertStringNotContainsString('example.com/only', $result);
+		$this->assertStringContainsString('<component id="unknown"></component>', $result);
+	}
+
+	public function testReplaceStrictModeDoesNotReuseMetadataForIdlessPlaceholder(): void
+	{
+		// Mixed markup: an id-tagged placeholder followed by an id-less one.
+		// Because a placeholder has an id, the document is in strict id mode,
+		// so the id-less placeholder must NOT positionally reuse the already
+		// id-matched component — the exact divergence this fix prevents.
+		$processed = '<component id="c1"></component><component></component>';
+		$components = [
+			['id' => 'c1', 'type' => 'MEDIA_EMBED', 'attrs' => ['url' => 'https://example.com/first']],
+		];
+
+		$result = $this->registry->replaceComponentPlaceholders($processed, $components);
+
+		$this->assertSame(1, substr_count($result, 'example.com/first'));
+		$this->assertStringContainsString('<component></component>', $result);
+	}
+
+	// ── extractFromRawContent() ──────────────────────────────────────
+
+	public function testExtractFromRawContentCapturesId(): void
+	{
+		$attrs = base64_encode(wp_json_encode(['url' => 'https://example.com/video']));
+		$rawContent = '<pcc-component id="c1" type="MEDIA_EMBED" attrs="' . $attrs . '"></pcc-component>';
+
+		$components = $this->registry->extractFromRawContent($rawContent);
+
+		$this->assertCount(1, $components);
+		$this->assertSame('c1', $components[0]['id']);
+		$this->assertSame('MEDIA_EMBED', $components[0]['type']);
+	}
+
+	public function testExtractFromRawContentWithoutIdReturnsNullId(): void
+	{
+		$attrs = base64_encode(wp_json_encode(['url' => 'https://example.com/video']));
+		$rawContent = '<pcc-component type="MEDIA_EMBED" attrs="' . $attrs . '"></pcc-component>';
+
+		$components = $this->registry->extractFromRawContent($rawContent);
+
+		$this->assertCount(1, $components);
+		$this->assertNull($components[0]['id']);
+	}
+
+	public function testExtractFromRawContentIsAttributeOrderIndependent(): void
+	{
+		// Attributes may arrive in any order; extraction matches each by name,
+		// not position. Guard against a regression to order-dependent parsing.
+		$attrs = base64_encode(wp_json_encode(['url' => 'https://example.com/video']));
+		$rawContent = '<pcc-component attrs="' . $attrs . '" type="MEDIA_EMBED" id="c1"></pcc-component>';
+
+		$components = $this->registry->extractFromRawContent($rawContent);
+
+		$this->assertCount(1, $components);
+		$this->assertSame('c1', $components[0]['id']);
+		$this->assertSame('MEDIA_EMBED', $components[0]['type']);
+		$this->assertSame('https://example.com/video', $components[0]['attrs']['url']);
+	}
+
 	// ── processContent() ────────────────────────────────────────────
+
+	public function testProcessContentEndToEndMatchesById(): void
+	{
+		$attrsOne = base64_encode(wp_json_encode(['url' => 'https://example.com/first']));
+		$attrsTwo = base64_encode(wp_json_encode(['url' => 'https://example.com/second']));
+		$rawContent = '<pcc-component id="c1" type="MEDIA_EMBED" attrs="' . $attrsOne . '"></pcc-component>'
+			. '<pcc-component id="c2" type="MEDIA_EMBED" attrs="' . $attrsTwo . '"></pcc-component>';
+		// Placeholders arrive in the opposite order from the raw metadata,
+		// as can happen when the two parsing passes diverge.
+		$processedContent = '<component id="c2"></component><component id="c1"></component>';
+
+		$result = $this->registry->processContent($processedContent, $rawContent);
+
+		$secondPos = strpos($result, 'example.com/second');
+		$firstPos = strpos($result, 'example.com/first');
+		$this->assertNotFalse($secondPos);
+		$this->assertNotFalse($firstPos);
+		$this->assertLessThan($firstPos, $secondPos);
+	}
 
 	public function testProcessContentEndToEnd(): void
 	{
