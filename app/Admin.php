@@ -96,13 +96,13 @@ class Admin
 	{
 		$manifestPath = CPUB_PLUGIN_DIR . 'assets/dist/build/.vite/manifest.json';
 		if (!file_exists($manifestPath)) {
-			error_log('Manifest file not found');
+			Logger::log('Manifest file not found');
 			return;
 		}
 		$manifest = json_decode((string) file_get_contents($manifestPath), true);
 		$entry = reset($manifest) ?? null;
 		if (!$entry) {
-			error_log('Entry not found');
+			Logger::log('Entry not found');
 			return;
 		}
 

@@ -591,7 +591,7 @@ class Settings
 			// Return the array containing the modified post object
 			return $posts;
 		} catch (Exception $e) {
-			error_log('PCC Preview Error: Failed to fetch article ' . $documentId . ' - ' . $e->getMessage());
+			Logger::log('PCC Preview Error: Failed to fetch article ' . $documentId . ' - ' . $e->getMessage());
 			return $posts;
 		}
 	}

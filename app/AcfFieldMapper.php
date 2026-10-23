@@ -95,7 +95,7 @@ class AcfFieldMapper
 		}
 
 		if (!$this->isAcfActive()) {
-			error_log(sprintf(
+			Logger::log(sprintf(
 				'[Content Publisher / ACF] post_id=%d: ACF field mappings are configured but ACF is not active.',
 				$postId
 			));
@@ -121,7 +121,7 @@ class AcfFieldMapper
 
 		if (!empty($errors)) {
 			foreach ($errors as $msg) {
-				error_log(sprintf('[Content Publisher / ACF] post_id=%d: %s', $postId, $msg));
+				Logger::log(sprintf('[Content Publisher / ACF] post_id=%d: %s', $postId, $msg));
 			}
 			$this->storeErrors($errors);
 		}

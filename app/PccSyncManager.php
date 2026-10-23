@@ -323,7 +323,7 @@ class PccSyncManager
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 			require_once ABSPATH . 'wp-admin/includes/image.php';
 			if (!function_exists('media_sideload_image')) {
-				error_log('Pantheon Content Publisher: media_sideload_image does not exist after includes');
+				Logger::log('Pantheon Content Publisher: media_sideload_image does not exist after includes');
 				return;
 			}
 		}
@@ -348,7 +348,7 @@ class PccSyncManager
 			// Check if image download returned an error
 			if (is_wp_error($imageId)) {
 				$error_msg = 'Pantheon Content Publisher: Failed to download featured image - ';
-				error_log($error_msg . $imageId->get_error_message());
+				Logger::log($error_msg . $imageId->get_error_message());
 				// Mark post as having a failed featured image for admin attention
 				update_post_meta($postId, '_pcc_featured_image_failed', [
 					'url' => $featuredImageURL,
@@ -367,7 +367,7 @@ class PccSyncManager
 				$this->scheduleAsyncThumbnailGeneration($imageId);
 			}
 		} catch (\Exception $e) {
-			error_log('Pantheon Content Publisher: Exception processing featured image - ' . $e->getMessage());
+			Logger::log('Pantheon Content Publisher: Exception processing featured image - ' . $e->getMessage());
 		}
 	}
 
@@ -424,7 +424,7 @@ class PccSyncManager
 	{
 		$ids = [];
 		if (!function_exists('wp_insert_term')) {
-			error_log('wp_insert_term does not exist, category insert will fail');
+			Logger::log('wp_insert_term does not exist, category insert will fail');
 			// has to fail silently
 			return $ids;
 		}
@@ -687,7 +687,7 @@ class PccSyncManager
 		// Check for GraphQL errors
 		if (isset($parsedResponse['errors']) && !empty($parsedResponse['errors'])) {
 			$errorMessage = $parsedResponse['errors'][0]['message'] ?? 'Unknown error';
-			error_log('PCC connectCollection GraphQL error: ' . $errorMessage);
+			Logger::log('PCC connectCollection GraphQL error: ' . $errorMessage);
 			return null;
 		}
 
@@ -779,7 +779,7 @@ class PccSyncManager
 		$file_path = get_attached_file($imageId);
 		if (!$file_path || !file_exists($file_path)) {
 			$error_msg = 'Pantheon Content Publisher: File not found for async thumbnail generation, ';
-			error_log($error_msg . 'image ID: ' . $imageId);
+			Logger::log($error_msg . 'image ID: ' . $imageId);
 			return;
 		}
 
@@ -788,7 +788,7 @@ class PccSyncManager
 
 		if (is_wp_error($metadata)) {
 			$error_msg = 'Pantheon Content Publisher: Thumbnail generation failed for image ';
-			error_log($error_msg . $imageId . ' - ' . $metadata->get_error_message());
+			Logger::log($error_msg . $imageId . ' - ' . $metadata->get_error_message());
 			return;
 		}
 

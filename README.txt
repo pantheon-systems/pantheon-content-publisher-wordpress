@@ -87,6 +87,7 @@ Enter the '@' symbol in the document, a pop-up will show in which you can search
 == Changelog ==
 
 = 1.4.3-dev =
+* Fix: Write error messages to the PHP error log only when WP_DEBUG is on
 
 = 1.4.2 (6 October 2026) =
 * Fix: Update pcc-php-sdk to 1.1.2 so Smart Components display in the real-time preview
