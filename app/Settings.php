@@ -549,10 +549,22 @@ class Settings
 				$versionId ?: null
 			);
 
-			// If fetching the article fails (invalid grant, network error, document deleted),
-			// return the original posts array. WP will handle it (e.g., show draft, 404).
+			// A null article means Content Publisher answered but could not
+			// return the document (not connected to this collection, deleted,
+			// or the grant was rejected). Silently returning $posts here would
+			// render the last-synced copy of the post as if it were a live
+			// preview, which hides the real problem from the editor. Stop with
+			// the same message publishDocuments() uses when the redirect-time
+			// fetch fails.
 			if (!$article) {
-				return $posts;
+				status_header(403);
+				wp_die(
+					esc_html__(
+						'Content Publisher: Failed to preview this document. Confirm that this document is connected '
+						. 'to your collection, or try previewing it again from Content Publisher.',
+						'pantheon-content-publisher'
+					)
+				);
 			}
 
 			// Process smart components (e.g. Media Embed) if present.
@@ -591,6 +603,8 @@ class Settings
 			// Return the array containing the modified post object
 			return $posts;
 		} catch (Exception $e) {
+			// Transport-level failures (timeout, DNS, malformed response) keep
+			// the previous fallback: log and let WP render the stored post.
 			error_log('PCC Preview Error: Failed to fetch article ' . $documentId . ' - ' . $e->getMessage());
 			return $posts;
 		}
