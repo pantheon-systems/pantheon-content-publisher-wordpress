@@ -323,10 +323,9 @@ class SmartComponents
 	{
 		$type = strtoupper($component['type']);
 
+		$html = '<!-- unsupported smart component: ' . esc_html($component['type']) . ' -->';
 		if (isset($this->components[$type])) {
 			$html = $this->components[$type]->render($component['attrs']);
-		} else {
-			$html = '<!-- unsupported smart component: ' . esc_html($component['type']) . ' -->';
 		}
 
 		if (!$wrapForPreview) {
@@ -351,16 +350,21 @@ class SmartComponents
 	 *
 	 * @param string $html Rendered component HTML.
 	 * @param string $type Upper-cased component type.
-	 * @param string|null $id Component id from the raw content, if any.
+	 * @param string|null $componentId Component id from the raw content, if any.
 	 * @return string Wrapped HTML.
 	 */
-	private function wrapForPreview(string $html, string $type, ?string $id): string
+	private function wrapForPreview(string $html, string $type, ?string $componentId): string
 	{
+		$idAttribute = '';
+		if ($componentId !== null && $componentId !== '') {
+			$idAttribute = ' data-cpub-component-id="' . esc_attr($componentId) . '"';
+		}
+
 		return sprintf(
 			'<div class="%s" data-cpub-component-type="%s"%s>%s</div>',
 			self::PREVIEW_WRAPPER_CLASS,
 			esc_attr($type),
-			$id !== null && $id !== '' ? ' data-cpub-component-id="' . esc_attr($id) . '"' : '',
+			$idAttribute,
 			$html
 		);
 	}
