@@ -560,8 +560,7 @@ class Settings
 				status_header(403);
 				wp_die(
 					esc_html__(
-						'Content Publisher: Failed to preview this document. Confirm that this document is connected '
-						. 'to your collection, or try previewing it again from Content Publisher.',
+						'Content Publisher: Failed to preview this document. Confirm that this document is connected to your collection. Reach out to support if the issue persists.',
 						'pantheon-content-publisher'
 					)
 				);
