@@ -90,6 +90,7 @@ Enter the '@' symbol in the document, a pop-up will show in which you can search
 * Fix: Stop embedded videos reloading and flickering in the real-time preview on every live update [#282](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/282)
 * Fix: Send no-cache headers on the signed preview redirect and on any URL carrying preview parameters, so CDN and page caches cannot serve an expired preview link [#275](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/275)
 * Fix: Keep every Smart Component (not only Media Embed) on the page in the real-time preview after the first live update [#284](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/284)
+* Fix: Show an error instead of the last-synced post when the real-time preview cannot fetch the document from Content Publisher [#285](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/285)
 
 = 1.4.2 (6 October 2026) =
 * Fix: Update pcc-php-sdk to 1.1.2 so Smart Components display in the real-time preview
