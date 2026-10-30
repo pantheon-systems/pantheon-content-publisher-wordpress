@@ -3,7 +3,7 @@ Contributors: getpantheon, a11rew, anaispantheor, roshnykunjappan, mklasen, jazz
 Tags: pantheon, acf, google docs, embeds
 Requires at least: 6.5
 Tested up to: 7.1
-Stable tag: 1.4.3-dev
+Stable tag: 1.4.3
 Requires PHP: 8.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -86,7 +86,7 @@ Enter the '@' symbol in the document, a pop-up will show in which you can search
 
 == Changelog ==
 
-= 1.4.3-dev =
+= 1.4.3 (30 October 2026) =
 * Fix: Stop embedded videos reloading and flickering in the real-time preview on every live update [#282](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/282)
 * Fix: Send no-cache headers on the signed preview redirect and on any URL carrying preview parameters, so CDN and page caches cannot serve an expired preview link [#275](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/275)
 * Fix: Keep every Smart Component (not only Media Embed) on the page in the real-time preview after the first live update [#284](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/284)
