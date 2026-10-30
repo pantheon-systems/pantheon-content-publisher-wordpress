@@ -87,7 +87,8 @@ Enter the '@' symbol in the document, a pop-up will show in which you can search
 == Changelog ==
 
 = 1.4.3-dev =
-* Fix: Show an error instead of the last-synced post when the real-time preview cannot fetch the document from Content Publisher [#279](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/279)
+* Fix: Stop embedded videos reloading and flickering in the real-time preview on every live update [#282](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/282)
+* Fix: Show an error instead of the last-synced post when the real-time preview cannot fetch the document from Content Publisher [#285](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/285)
 
 = 1.4.2 (6 October 2026) =
 * Fix: Update pcc-php-sdk to 1.1.2 so Smart Components display in the real-time preview

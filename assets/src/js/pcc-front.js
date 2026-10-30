@@ -1,4 +1,5 @@
 import {ARTICLE_UPDATE_SUBSCRIPTION, PantheonClient, PublishingLevel} from "@pantheon-systems/pcc-sdk-core";
+import {createSlot, updatePreview} from "./live-preview-dom";
 
 const url = new URL(window.location.href);
 const params = new URLSearchParams(url.search);
@@ -41,17 +42,14 @@ observable.subscribe({
         const entryTitle = document.querySelector('h1');
         entryTitle.innerHTML = article.title;
 
-        var previewContentContainer = document.getElementById('pcc-content-preview');
+        const previewContentContainer = document.getElementById('pcc-content-preview');
 
-        // Preserve server-rendered embeds (oEmbed) before clearing content.
-        const savedEmbeds = [...previewContentContainer.querySelectorAll('.cpub-media-embed')];
-
-        previewContentContainer.innerHTML = '';
-        previewContentContainer.appendChild(generateHTMLFromJSON(JSON.parse(update.data.article.content), null, savedEmbeds));
+        // Update in place so server-rendered embeds (oEmbed iframes) are not reloaded.
+        updatePreview(previewContentContainer, generateHTMLFromJSON(JSON.parse(update.data.article.content)));
     },
 });
 
-function generateHTMLFromJSON(json, parentElement = null, savedEmbeds = []) {
+function generateHTMLFromJSON(json, parentElement = null) {
     const createElement = (tag, attrs = {}, styles = {}, content = '') => {
         if (undefined === tag) {
             tag = 'div';
@@ -86,12 +84,9 @@ function generateHTMLFromJSON(json, parentElement = null, savedEmbeds = []) {
     const processNode = (node, parent, uniqueClass) => {
         const {tag, data, children, style, attrs} = node;
 
-        // Re-use the server-rendered embed if available, otherwise skip.
+        // Mark where the server-rendered embed goes; updatePreview() keeps it in place.
         if (tag === 'component' || tag === 'pcc-component') {
-            const embed = savedEmbeds.shift();
-            if (embed) {
-                parent.appendChild(embed);
-            }
+            parent.appendChild(createSlot());
             return;
         }
 
