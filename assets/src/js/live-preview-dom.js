@@ -114,11 +114,10 @@ function patchChildren(target, source, preservedSet, treeHasIds) {
     for (const node of incoming) {
         if (isSlot(node)) {
             const wantedId = node.getAttribute(ID_ATTRIBUTE);
-            let next = pointer;
-            while (next < current.length && !slotMatches(current[next], wantedId, treeHasIds, preservedSet)) {
-                next++;
-            }
-            if (next < current.length) {
+            const matched = current.findIndex((candidate, index) =>
+                index >= pointer && slotMatches(candidate, wantedId, treeHasIds, preservedSet));
+            const next = matched === -1 ? current.length : matched;
+            if (matched !== -1) {
                 for (let i = pointer; i < next; i++) {
                     current[i].remove();
                 }
