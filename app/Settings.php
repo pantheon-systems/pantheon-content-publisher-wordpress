@@ -212,14 +212,24 @@ class Settings
 		return hash_equals($expected, $signature);
 	}
 
+	/**
+	 * Whether the request carries the query parameters of a preview URL.
+	 *
+	 * This only checks presence; see isPreviewRequest() for validation.
+	 *
+	 * @return bool
+	 */
+	private function hasPreviewParams(): bool
+	{
+		return filter_has_var(INPUT_GET, 'document_id')
+			&& filter_has_var(INPUT_GET, 'publishing_level')
+			&& filter_has_var(INPUT_GET, 'pccGrant');
+	}
+
 	public function isPreviewRequest(): bool
 	{
 		// Check if required parameters exist
-		if (
-			!filter_has_var(INPUT_GET, 'document_id') ||
-			!filter_has_var(INPUT_GET, 'publishing_level') ||
-			!filter_has_var(INPUT_GET, 'pccGrant')
-		) {
+		if (!$this->hasPreviewParams()) {
 			return false;
 		}
 
@@ -430,6 +440,10 @@ class Settings
 				$sig = hash_hmac('sha256', $base, $this->previewSecretForTs($ts, 900));
 				$url = add_query_arg(['ts' => $ts, 'sig' => $sig], $url);
 
+				// The signature expires after 15 minutes, so this redirect must
+				// never be served from a CDN/page cache: a cached redirect would
+				// keep sending later previews to an already-expired URL.
+				nocache_headers();
 				wp_redirect($url);
 				exit;
 			}
@@ -449,8 +463,14 @@ class Settings
 	 */
 	public function setPreviewHeaders(): void
 	{
-		if ($this->isPreviewRequest()) {
+		// Any URL carrying preview parameters must stay out of CDN/page caches,
+		// even when the signature no longer validates. Otherwise the fallback
+		// (non-preview) response is cached under the preview URL.
+		if ($this->hasPreviewParams()) {
 			nocache_headers();
+		}
+
+		if ($this->isPreviewRequest()) {
 			header("X-Testing: true");
 			header('X-Robots-Tag: noindex');
 		}
