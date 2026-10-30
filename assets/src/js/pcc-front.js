@@ -44,10 +44,20 @@ observable.subscribe({
 
         const previewContentContainer = document.getElementById('pcc-content-preview');
 
-        // Update in place so server-rendered embeds (oEmbed iframes) are not reloaded.
+        // Update in place so server-rendered components (oEmbed iframes, etc.)
+        // are not reloaded; updatePreview() re-inserts each one where the
+        // updated tree has a matching component node, by id when available.
         updatePreview(previewContentContainer, generateHTMLFromJSON(JSON.parse(update.data.article.content)));
     },
 });
+
+function isComponentNode(node) {
+    return node.tag === 'component' || node.tag === 'pcc-component';
+}
+
+function componentNodeId(node) {
+    return node.id || (node.attrs && node.attrs.id) || null;
+}
 
 function generateHTMLFromJSON(json, parentElement = null) {
     const createElement = (tag, attrs = {}, styles = {}, content = '') => {
@@ -84,9 +94,11 @@ function generateHTMLFromJSON(json, parentElement = null) {
     const processNode = (node, parent, uniqueClass) => {
         const {tag, data, children, style, attrs} = node;
 
-        // Mark where the server-rendered embed goes; updatePreview() keeps it in place.
-        if (tag === 'component' || tag === 'pcc-component') {
-            parent.appendChild(createSlot());
+        // Mark where the server-rendered component goes. updatePreview() keeps
+        // it in place when possible (matching by id when the tree has one) and
+        // moves or drops it otherwise.
+        if (isComponentNode(node)) {
+            parent.appendChild(createSlot(componentNodeId(node)));
             return;
         }
 
@@ -124,4 +136,3 @@ function generateHTMLFromJSON(json, parentElement = null) {
 
     return container;
 }
-
