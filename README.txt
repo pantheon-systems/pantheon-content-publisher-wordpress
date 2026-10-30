@@ -87,7 +87,8 @@ Enter the '@' symbol in the document, a pop-up will show in which you can search
 == Changelog ==
 
 = 1.4.3-dev =
-* Fix: Keep every Smart Component (not only Media Embed) on the page in the real-time preview after the first live update [#276](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/276)
+* Fix: Stop embedded videos reloading and flickering in the real-time preview on every live update [#282](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/282)
+* Fix: Keep every Smart Component (not only Media Embed) on the page in the real-time preview after the first live update [#284](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/284)
 
 = 1.4.2 (6 October 2026) =
 * Fix: Update pcc-php-sdk to 1.1.2 so Smart Components display in the real-time preview
