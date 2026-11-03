@@ -212,14 +212,24 @@ class Settings
 		return hash_equals($expected, $signature);
 	}
 
+	/**
+	 * Whether the request carries the query parameters of a preview URL.
+	 *
+	 * This only checks presence; see isPreviewRequest() for validation.
+	 *
+	 * @return bool
+	 */
+	private function hasPreviewParams(): bool
+	{
+		return filter_has_var(INPUT_GET, 'document_id')
+			&& filter_has_var(INPUT_GET, 'publishing_level')
+			&& filter_has_var(INPUT_GET, 'pccGrant');
+	}
+
 	public function isPreviewRequest(): bool
 	{
 		// Check if required parameters exist
-		if (
-			!filter_has_var(INPUT_GET, 'document_id') ||
-			!filter_has_var(INPUT_GET, 'publishing_level') ||
-			!filter_has_var(INPUT_GET, 'pccGrant')
-		) {
+		if (!$this->hasPreviewParams()) {
 			return false;
 		}
 
@@ -430,6 +440,10 @@ class Settings
 				$sig = hash_hmac('sha256', $base, $this->previewSecretForTs($ts, 900));
 				$url = add_query_arg(['ts' => $ts, 'sig' => $sig], $url);
 
+				// The signature expires after 15 minutes, so this redirect must
+				// never be served from a CDN/page cache: a cached redirect would
+				// keep sending later previews to an already-expired URL.
+				nocache_headers();
 				wp_redirect($url);
 				exit;
 			}
@@ -449,8 +463,14 @@ class Settings
 	 */
 	public function setPreviewHeaders(): void
 	{
-		if ($this->isPreviewRequest()) {
+		// Any URL carrying preview parameters must stay out of CDN/page caches,
+		// even when the signature no longer validates. Otherwise the fallback
+		// (non-preview) response is cached under the preview URL.
+		if ($this->hasPreviewParams()) {
 			nocache_headers();
+		}
+
+		if ($this->isPreviewRequest()) {
 			header("X-Testing: true");
 			header('X-Robots-Tag: noindex');
 		}
@@ -549,10 +569,21 @@ class Settings
 				$versionId ?: null
 			);
 
-			// If fetching the article fails (invalid grant, network error, document deleted),
-			// return the original posts array. WP will handle it (e.g., show draft, 404).
+			// A null article means Content Publisher answered but could not
+			// return the document (not connected to this collection, deleted,
+			// or the grant was rejected). Silently returning $posts here would
+			// render the last-synced copy of the post as if it were a live
+			// preview, which hides the real problem from the editor. Stop with
+			// the same message publishDocuments() uses when the redirect-time
+			// fetch fails.
 			if (!$article) {
-				return $posts;
+				status_header(403);
+				wp_die(
+					esc_html__(
+						'Content Publisher: Failed to preview this document. Confirm that this document is connected to your collection. Reach out to support if the issue persists.',
+						'pantheon-content-publisher'
+					)
+				);
 			}
 
 			// Process smart components (e.g. Media Embed) if present.
@@ -565,9 +596,12 @@ class Settings
 					$versionId ?: null
 				);
 				if ($rawArticle && $rawArticle->content) {
+					// Wrap each rendered component so pcc-front.js can keep it
+					// across realtime updates (see SmartComponents::wrapForPreview).
 					$article->content = $this->smartComponents->processContent(
 						$article->content,
-						$rawArticle->content
+						$rawArticle->content,
+						true
 					);
 				}
 			}
@@ -591,6 +625,8 @@ class Settings
 			// Return the array containing the modified post object
 			return $posts;
 		} catch (Exception $e) {
+			// Transport-level failures (timeout, DNS, malformed response) keep
+			// the previous fallback: log and let WP render the stored post.
 			error_log('PCC Preview Error: Failed to fetch article ' . $documentId . ' - ' . $e->getMessage());
 			return $posts;
 		}

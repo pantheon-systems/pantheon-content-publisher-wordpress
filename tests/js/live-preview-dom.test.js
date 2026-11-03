@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { EMBED_SELECTOR, SLOT_ATTRIBUTE, createSlot, updatePreview } from "../../assets/src/js/live-preview-dom";
+import { COMPONENT_SELECTOR, EMBED_SELECTOR, ID_ATTRIBUTE, SLOT_ATTRIBUTE, createSlot, updatePreview } from "../../assets/src/js/live-preview-dom";
 
 const embed = (id) =>
     `<div class="cpub-media-embed" data-id="${id}"><iframe src="https://www.youtube.com/embed/${id}"></iframe></div>`;
@@ -10,7 +10,7 @@ function freshTree(html, scopedClass = "scoped-next") {
     tree.classList.add(scopedClass);
     tree.innerHTML = html;
     for (const placeholder of tree.querySelectorAll("x-slot")) {
-        placeholder.replaceWith(createSlot());
+        placeholder.replaceWith(createSlot(placeholder.getAttribute("id")));
     }
     return tree;
 }
@@ -141,5 +141,56 @@ describe("updatePreview", () => {
 
         expect(container.querySelector("div > div > div > div.cpub-media-embed")).toBe(a);
         expect(embedIds(container)).toEqual(["a"]);
+    });
+
+    describe("wrapped smart components", () => {
+        // Markup from SmartComponents::wrapForPreview(): any component type, with its id.
+        const component = (id, type = "media_embed", inner = `<iframe src="https://example.test/${id}"></iframe>`) =>
+            `<div class="cpub-smart-component" data-cpub-component-type="${type}" ${ID_ATTRIBUTE}="${id}">${inner}</div>`;
+        const componentIds = (container) =>
+            [...container.querySelectorAll(COMPONENT_SELECTOR)].map((el) => el.getAttribute(ID_ATTRIBUTE));
+
+        it("keeps every component type, not only Media Embed", () => {
+            container.innerHTML = `<p>Intro</p>${component("a", "callout", "<aside>Note</aside>")}${component("b", "media_embed")}`;
+            const [a, b] = container.querySelectorAll(COMPONENT_SELECTOR);
+
+            updatePreview(container, freshTree('<p>Intro</p><x-slot id="a"></x-slot><x-slot id="b"></x-slot>'));
+
+            const kept = container.querySelectorAll(COMPONENT_SELECTOR);
+            expect(kept[0]).toBe(a);
+            expect(kept[1]).toBe(b);
+            expect(container.textContent).toBe("IntroNote");
+        });
+
+        it("matches components by id when the tree reorders them", () => {
+            container.innerHTML = `${component("a")}<p>Between</p>${component("b")}`;
+            updatePreview(container, freshTree('<x-slot id="a"></x-slot><p>Between</p><x-slot id="b"></x-slot>', "scoped-first"));
+
+            updatePreview(container, freshTree('<x-slot id="b"></x-slot><p>Between</p><x-slot id="a"></x-slot>'));
+
+            expect(componentIds(container)).toEqual(["b", "a"]);
+        });
+
+        it("keeps the other components in place when one is removed by id", () => {
+            container.innerHTML = `${component("a")}<p>Between</p>${component("b")}<p>End</p>${component("c")}`;
+            updatePreview(container, freshTree('<x-slot id="a"></x-slot><p>Between</p><x-slot id="b"></x-slot><p>End</p><x-slot id="c"></x-slot>', "scoped-first"));
+            const reloaded = watchReloads(container);
+
+            updatePreview(container, freshTree('<x-slot id="a"></x-slot><p>Between</p><p>End</p><x-slot id="c"></x-slot>'));
+
+            expect(componentIds(container)).toEqual(["a", "c"]);
+            expect(reloaded()).toEqual([]);
+        });
+
+        it("ignores the legacy embed selector once components are wrapped", () => {
+            container.innerHTML = `${component("a", "media_embed", '<div class="cpub-media-embed"><iframe src="https://example.test/a"></iframe></div>')}`;
+            const a = container.querySelector(COMPONENT_SELECTOR);
+
+            updatePreview(container, freshTree('<x-slot id="a"></x-slot>'));
+
+            expect(container.querySelectorAll(COMPONENT_SELECTOR).length).toBe(1);
+            expect(container.querySelector(COMPONENT_SELECTOR)).toBe(a);
+            expect(a.querySelector(EMBED_SELECTOR)).not.toBeNull();
+        });
     });
 });
