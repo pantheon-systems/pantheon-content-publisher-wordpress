@@ -1,0 +1,13 @@
+# Managed by github-terraform — do not edit manually
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: "pcc-php-sdk"
+  description: "This repository contains the code for Pantheon PCC offering"
+  annotations:
+    "backstage.io/techdocs-ref": "dir:docs/"
+spec:
+  type: "library"
+  lifecycle: "experimental"
+  owner: "content-experience"

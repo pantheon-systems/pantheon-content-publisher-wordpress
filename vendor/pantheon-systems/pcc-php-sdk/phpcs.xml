@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<ruleset name="PCC PHP SDK">
+  <description>PSR-12 baseline adapted for project style (2-space indentation) with PHPCompatibility for PHP 8+.</description>
+
+  <file>src</file>
+  <exclude-pattern>vendor/*</exclude-pattern>
+
+  <rule ref="PSR12">
+    <exclude name="PSR12.Properties.ConstantVisibility"/>
+  </rule>
+
+  <rule ref="Generic.WhiteSpace.ScopeIndent">
+    <properties>
+      <property name="indent" value="2"/>
+      <property name="tabIndent" value="false"/>
+    </properties>
+  </rule>
+
+  <rule ref="PHPCompatibility"/>
+  <config name="testVersion" value="8.0-"/>
+</ruleset> 
