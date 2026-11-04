@@ -3,7 +3,7 @@ Contributors: getpantheon, a11rew, anaispantheor, roshnykunjappan, mklasen, jazz
 Tags: pantheon, acf, google docs, embeds
 Requires at least: 6.5
 Tested up to: 7.1
-Stable tag: 1.4.2
+Stable tag: 1.4.3
 Requires PHP: 8.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -85,6 +85,12 @@ Yes. When creating or editing a collection, select the target post type from the
 Enter the '@' symbol in the document, a pop-up will show in which you can search for integrations, search for "Pantheon" and choose the "Pantheon Component". You will then see a pop-up in which you can select the Media Embed.
 
 == Changelog ==
+
+= 1.4.3 (4 November 2026) =
+* Fix: Stop embedded videos reloading and flickering in the real-time preview on every live update [#282](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/282)
+* Fix: Send no-cache headers on the signed preview redirect and on any URL carrying preview parameters, so CDN and page caches cannot serve an expired preview link [#283](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/283)
+* Fix: Keep every Smart Component (not only Media Embed) on the page in the real-time preview after the first live update [#284](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/284)
+* Fix: Show an error instead of the last-synced post when the real-time preview cannot fetch the document from Content Publisher [#285](https://github.com/pantheon-systems/pantheon-content-publisher-wordpress/pull/285)
 
 = 1.4.2 (6 October 2026) =
 * Fix: Update pcc-php-sdk to 1.1.2 so Smart Components display in the real-time preview
